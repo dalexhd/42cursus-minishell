@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:42:14 by aborboll          #+#    #+#             */
-/*   Updated: 2021/04/15 19:01:38 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/04/25 15:33:28 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ char	**ft_split(char const *s, char c)
 	t_uint	j;
 	char	**words;
 
-	if (s == NULL
-		|| !(words = (char**)malloc(sizeof(char*) * (ft_countwords(s, c) + 1))))
+	words = (char **)malloc(sizeof(char *) * (ft_countwords(s, c) + 1));
+	if (s == NULL || !words)
 		return (NULL);
 	j = 0;
 	while (*s != '\0')

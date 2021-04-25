@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/04/24 18:49:55 by aborboll         ###   ########.fr        #
+#    Updated: 2021/04/25 15:16:26 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -173,7 +173,7 @@ fclean:		## Remove all objects and executables.
 normi:		## Check norminette.
 			@$(call disp_title,Checking norminette,$(NORM_COLOR_T))
 			@if [ ${OS} = "Ubuntu" ]; then\
-				$(COVID_NORM) $(NORME) | sed "s/Norme/$(NORM_COLOR_T)➤  $(NORM_COLOR)Norme/g;s/Warning/\t $(NORM_COLOR_WAR)Warning/g;s/Error/\t🚨 $(NORM_COLOR_ERR)Error/gm;s/$$/$(X)/g"; \
+				norminette $(NORME) | sed "s/Norme/$(NORM_COLOR_T)➤  $(NORM_COLOR)Norme/g;s/Warning/\t $(NORM_COLOR_WAR)Warning/g;s/Error/\t🚨 $(NORM_COLOR_ERR)Error/gm;s/$$/$(X)/g"; \
 			else\
 				norminette $(NORME) | sed "s/Norme/$(NORM_COLOR_T)➤  $(NORM_COLOR)Norme/g;s/Warning/\t $(NORM_COLOR_WAR)Warning/g;s/Error/\t🚨 $(NORM_COLOR_ERR)Error/g"; \
 			fi

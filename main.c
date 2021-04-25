@@ -1,6 +1,6 @@
 #include "includes/minishell.h"
 
-int main(void)
+int	main(void)
 {
-	return 0;
+	return (0);
 }
