@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/04/25 15:16:26 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/01 18:30:47 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ VER					=	$(shell lsb_release -sr)
 
 # Mandatory part
 
-SRCS				=	test.c
+SRCS				=	init.c
 
 SOURCES				=	$(SRCS)
 
