@@ -5,8 +5,11 @@
 #include <stdio.h>
 #include <errno.h>
 #include <sys/ioctl.h>
+#include <string.h>
 
 #define CTRL_KEY(k) ((k) & 0x1f)
+#define ABUF_INIT {NULL, 0}
+#define KILO_VERSION "0.0.1"
 //27
 //91 ('[')
 //65 ('A')
@@ -18,6 +21,8 @@
 
 struct	editorConfig
 {
+	int	cx;
+	int	cy;
 	int	screenrows;
 	int	screencols;
 	struct	termios orig_termios;
@@ -72,11 +77,29 @@ char	editorReadKey()
 
 int	getCursorPosition(int *rows, int *cols)
 {
-	char	c;
+	char	buf[32];
+	unsigned int	i;
+
+	i = 0;
 
 	if (write(STDOUT_FILENO, "\x1b[6n", 4) != 4)
 		return (-1);
-	printf("\r\n");
+	while (i < sizeof(buf) - 1)
+	{
+		if (read(STDIN_FILENO, &buf[i], 1) != 1)
+			break;
+		if (buf[i] == 'R')
+			break;
+		i++;
+	}
+	buf[i] = '\0';
+	if (buf[0] != '\x1b' || buf[1] != '[')
+		return (-1);
+	if (sscanf(&buf[2], "%d;%d", rows, cols) != 2)
+		return (-1);
+	return (0);
+	//printf("\r\n&buf[1]: '%s'\r\n", &buf[1]);
+	/*	printf("\r\n");
 	while (read(STDIN_FILENO, &c, 1) == 1)
 	{
 		if (iscntrl(c))
@@ -84,8 +107,8 @@ int	getCursorPosition(int *rows, int *cols)
 		else
 			printf("%D ('%c')\r\n", c, c);
 	}
-	editorReadKey();
-	return (-1);
+*/	//editorReadKey();
+	//return (-1);
 }
 
 int	getWindowSize(int *rows, int *cols)
@@ -107,30 +130,110 @@ int	getWindowSize(int *rows, int *cols)
 	}
 }
 
+/*** APPEND BUFFER ***/
+
+struct	abuf
+{
+	char	*b;
+	int		len;
+};
+
+void	abAppend(struct abuf *ab, const char  *s, int len)
+{
+	char	*new;
+
+	new = realloc(ab->b, ab->len + len);
+	if (new == NULL)
+	return ;
+	memcpy(&new[ab->len], s, len);
+	ab->b = new;
+	ab->len += len;
+}
+
+void	abFree(struct abuf *ab)
+{
+	free(ab->b);
+}
+
 /*** OUTPUT ***/
 
-void	editorDrawRows()
+void	editorDrawRows(struct abuf  *ab)
 {
 	int	y;
-
+	int	welcomelen;
+	int	padding;
+	char	welcome[79];
 	y = 0;
 	while (y < E.screenrows)
 	{
-		write(STDOUT_FILENO, "~\r\n", 3);
+		if (y == E.screenrows / 3)
+		{
+			welcomelen = snprintf(welcome, sizeof(welcome), "Hellraiser -- version %s", KILO_VERSION);
+			if (welcomelen > E.screencols)
+				welcomelen = E.screencols;
+			padding = (E.screencols - welcomelen) / 2;
+			if (padding)
+			{
+				abAppend(ab, "~", 1);
+				padding--;
+			}
+			while (padding--)
+				abAppend(ab, " ", 1);
+			abAppend(ab, welcome, welcomelen);
+		}
+		else
+			abAppend(ab, "~", 1);
+		abAppend(ab, "\x1b[K", 3);
+		if (y < E.screenrows -1)
+			abAppend(ab, "\r\n", 2);
 		y++;
 	}
-	write(STDOUT_FILENO, "voidshell~ ", 12);
+/*	while (y < E.screenrows)
+	{
+		write(STDOUT_FILENO, "~", 1);
+		if (y < E.screenrows - 1)
+			write(STDOUT_FILENO, "\r\n", 2);
+		y++;
+	}
+*/
 }
 
 void	editorRefreshScreen()
 {
-	write(STDOUT_FILENO, "\x1b[2J", 4);
+	char	buf[32];
+	struct	abuf ab = ABUF_INIT;
+
+	abAppend(&ab, "\x1b[?25l", 6);
+//	abAppend(&ab, "\x1b[2J", 4);
+	abAppend(&ab, "\x1b[H", 3);
+	editorDrawRows(&ab);
+	snprintf(buf, sizeof(buf), "\x1b[%d;%dH", E.cy + 1, E.cx + 1);
+	abAppend(&ab, buf, strlen(buf));
+//	abAppend(&ab, "\x1b[H", 3);
+	abAppend(&ab, "\x1b[?25h", 6);
+	write(STDOUT_FILENO, ab.b, ab.len);
+	abFree(&ab);
+/*	write(STDOUT_FILENO, "\x1b[2J", 4);
 	write(STDOUT_FILENO, "\x1b[H", 3);
 	editorDrawRows();
 	write(STDOUT_FILENO, "\x1b[h", 3);
+*/
 }
 
 /*** INPUT ***/
+
+void	editorMoveCursor(char key)
+{
+	if (key == 'a')
+		E.cx--;
+	else if (key == 'd')
+		E.cx++;
+	else if (key == 'w')
+		E.cy--;
+	else if (key == 's')
+		E.cy++;
+}
+
 
 void	editorProcessKeypress()
 {
@@ -139,8 +242,12 @@ void	editorProcessKeypress()
 	c = editorReadKey();
 	if (c == CTRL_KEY('q'))
 	{
+		write(STDOUT_FILENO, "\x1b[2J", 4);
+		write(STDOUT_FILENO, "\x1b[H", 3);
 		exit(0);
 	}
+	else if (c == 'a' || c == 's' || c == 'd' || c == 'w')
+		editorMoveCursor(c);
 }
 
 
@@ -148,6 +255,8 @@ void	editorProcessKeypress()
 
 void	initEditor()
 {
+	E.cx = 0;
+	E.cy = 0;
 	if (getWindowSize(&E.screenrows, &E.screencols) == -1)
 		die ("getWindowSize");
 }
