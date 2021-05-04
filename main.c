@@ -1,16 +1,17 @@
 #include "includes/minishell.h"
 
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
 	int		i;
-
-	shell = init_shell();
+	(void)argc;
+	(void)**argv;
+	
+	shell = init_shell(envp);
 	i = 0;
 	while (shell.running)
 	{
 		i++;
-		ft_printf("Hola mundo");
 		if (i == 10)
 			shell.running = false;
 	}

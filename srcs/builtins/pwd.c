@@ -3,10 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/01 18:23:58 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/04 21:24:56 by alex             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/minishell.h"
+
+int ft_pwd()
+{
+    char	cwd[1024];
+
+    if (getcwd(cwd, sizeof(cwd)))
+        ft_printf("%s", cwd);
+	return (0);
+}

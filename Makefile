@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/01 18:30:47 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/04 21:35:00 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ FLAGS				=	-Wextra -Wall -Werror -g
 
 HEADER_DIR			=	includes/
 OBJ_DIR				=	obj/
+BUILTINS_DIR		=	builtins/
 SRC_DIR				=	srcs/
 BONUS_DIR			=	bonus/
 LIBFT_DIR			=	libft/
@@ -45,7 +46,9 @@ VER					=	$(shell lsb_release -sr)
 
 SRCS				=	init.c
 
-SOURCES				=	$(SRCS)
+BUILTINS			=	builtins/echo.c	builtins/pwd.c	builtins/env.c	builtins/cd.c
+
+SOURCES				=	$(SRCS) $(BUILTINS)
 
 # Bonus part
 
@@ -121,6 +124,7 @@ $(OBJ_DIR):
 			@make -C $(LIBFT_DIR)
 			@echo ${CUT}[${Y}$(OUTPUT)]${X} ${B}Creating: ${R}$(OBJ_DIR)${X}
 			@mkdir -p $(OBJ_DIR)
+			@mkdir -p $(OBJ_DIR)/$(BUILTINS_DIR)
 
 # Normal objects
 $(NAME): $(OBJ_DIR) $(OBJS)

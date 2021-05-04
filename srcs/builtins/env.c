@@ -6,7 +6,21 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/01 18:23:52 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/04 21:35:08 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/minishell.h"
+
+int ft_env(char **envp)
+{
+    int i;
+
+    i = 0;
+    while (envp[i] != 0)
+    {
+        ft_printf("%s\n", envp[i]);  
+        i++;
+    }
+	return (0);
+}
