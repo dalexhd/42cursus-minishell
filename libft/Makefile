@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 15:43:53 by aborboll          #+#    #+#              #
-#    Updated: 2021/04/24 18:43:36 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/05 20:42:06 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,7 +63,7 @@ FT_PRINTF			=	ft_printf/ft_printf.c	ft_printf/struct.c		ft_printf/check.c		ft_pr
 						ft_printf/do_address.c	ft_printf/do_hex.c		ft_printf/do_octal.c	ft_printf/misc.c		\
 						ft_printf/ft_vprintf.c	ft_printf/ft_vfprintf.c	ft_printf/ft_fprintf.c
 
-FT_ALERT			=	ft_alert/ft_error.c		ft_alert/ft_warn.c		ft_alert/ft_success.c
+FT_ALERT			=	ft_alert/ft_error.c		ft_alert/ft_warn.c		ft_alert/ft_success.c	ft_alert/ft_info.c
 
 FT_GET_NEXT_LINE	=	ft_get_next_line/get_next_line.c
 

@@ -6,21 +6,38 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/04 21:35:08 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/05 21:40:16 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int ft_env(char **envp)
+void	ft_env(t_shell shell)
 {
-    int i;
+	int		i;
 
-    i = 0;
-    while (envp[i] != 0)
-    {
-        ft_printf("%s\n", envp[i]);  
-        i++;
-    }
-	return (0);
+	i = 0;
+	while (shell.envp[i] != 0)
+	{
+		ft_printf("%s\n", shell.envp[i]);
+		i++;
+	}
+}
+
+/*
+* Get an environment variable
+*/
+char	*ft_getenv(t_shell shell, char *env)
+{
+	int		i;
+
+	i = 0;
+	while (shell.envp[i] != 0)
+	{
+		if (ft_strncmp(shell.envp[i], env, ft_strlen(env)) == 0)
+			return (ft_substr(shell.envp[i], ft_strlen(env) + 1,
+					ft_strlen(shell.envp[i])));
+		i++;
+	}
+	return (NULL);
 }

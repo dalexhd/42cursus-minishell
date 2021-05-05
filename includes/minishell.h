@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/04 21:35:03 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/05 21:41:34 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 ** Include necessary libraries.
 */
 # include <stdarg.h>
+# include <errno.h>
 
 /*
 ** Include internal values of the cub3d.
@@ -40,7 +41,14 @@ t_shell	init_shell(char **envp);
 ** Define builtins
 */
 int		ft_echo(char **args, size_t size);
-int		ft_pwd();
-int		ft_env(char **envp);
-int		ft_cd(char *dir, char **envp);
+char	*ft_pwd();
+void	ft_env(t_shell shell);
+void	ft_cd(t_shell shell, char *dir);
+void	ft_export(t_shell shell, char *env, char *value);
+void	ft_unset(t_shell shell, char *env);
+
+/*
+** Define builtins helpers
+*/
+char	*ft_getenv(t_shell shell, char *env);
 #endif

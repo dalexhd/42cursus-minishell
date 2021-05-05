@@ -3,20 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alex <alex@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/04 21:24:56 by alex             ###   ########.fr       */
+/*   Updated: 2021/05/05 21:26:44 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int ft_pwd()
+static	char	*ft_pwd_sec(char *path, size_t size)
 {
-    char	cwd[1024];
+	path = ft_calloc(size, 1);
+	if (getcwd(path, size) == NULL && errno == ERANGE)
+		return (ft_pwd_sec(realloc(path, size + PATH_MAX), size + PATH_MAX));
+	return (ft_strdup(path));
+}
 
-    if (getcwd(cwd, sizeof(cwd)))
-        ft_printf("%s", cwd);
-	return (0);
+/*
+* Get current path directory
+*/
+char	*ft_pwd(void)
+{
+	return (ft_pwd_sec(NULL, PATH_MAX));
 }

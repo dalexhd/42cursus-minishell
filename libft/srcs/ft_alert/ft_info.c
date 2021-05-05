@@ -1,29 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   ft_info.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/05 18:55:37 by aborboll         ###   ########.fr       */
+/*   Created: 2020/01/21 15:15:10 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/05 20:43:43 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/libft.h"
 
-int	ft_echo(char **args, size_t size)
+void	ft_info(char *s, ...)
 {
-	size_t	i;
+	va_list	args;
 
-	i = 0;
-	while (i < size)
-	{	
-		if (args[i + 1])
-			ft_printf("%s ", args[i]);
-		else
-			ft_printf("%s", args[i]);
-		i++;
-	}
-	return (0);
+	va_start(args, s);
+	ft_printf(C_CYAN"ℹ️  ");
+	ft_vprintf(s, &args);
+	ft_printf(C_X"\n");
+	va_end(args);
 }
