@@ -19,6 +19,14 @@
 
 /*** TERMINAL ***/
 
+enum editorKey
+{
+	ARROW_LEFT = 1000,
+	ARROW_RIGHT,
+	ARROW_UP,
+	ARROW_DOWN
+};
+
 struct	editorConfig
 {
 	int	cx;
@@ -62,17 +70,38 @@ void	enableRawMode()
 		die("tcsetattr");
 }
 
-char	editorReadKey()
+int	editorReadKey()
 {
 	int	nread;
 	char	c;
+	char	seq[3];
 
 	while ((nread = read(STDIN_FILENO, &c, 1)) != 1)
 	{
 		if (nread == -1 && errno != EAGAIN)
 			die("read");
 	}
-	return (c);
+	if (c == '\x1b')
+	{
+		if (read(STDIN_FILENO, &seq[0], 1) != 1)
+			return ('\x1b');
+		if (read(STDIN_FILENO, &seq[1], 1) != 1)
+			return ('\x1b');
+		if  (seq[0] == '[')
+		{
+			if (seq[1] == 'A')
+				return (ARROW_UP);
+			else if (seq[1] == 'B')
+				return (ARROW_DOWN);
+			else if (seq[1] == 'C')
+				return (ARROW_RIGHT);
+			else if (seq[1] == 'D')
+				return (ARROW_LEFT);
+		}
+		return ('\x1b');
+	}
+	else
+		return (c);
 }
 
 int	getCursorPosition(int *rows, int *cols)
@@ -222,22 +251,33 @@ void	editorRefreshScreen()
 
 /*** INPUT ***/
 
-void	editorMoveCursor(char key)
+void	editorMoveCursor(int key)
 {
-	if (key == 'a')
-		E.cx--;
-	else if (key == 'd')
-		E.cx++;
-	else if (key == 'w')
-		E.cy--;
-	else if (key == 's')
-		E.cy++;
+	if (key == ARROW_LEFT)
+	{
+		if (E.cx != 0)
+			E.cx--;
+	}
+	else if (key == ARROW_RIGHT)
+	{
+		if (E.cx != E.screencols -1)
+			E.cx++;
+	}
+	else if (key == ARROW_UP)
+	{
+		if (E.cy != 0)
+			E.cy--;
+	}
+	else if (key == ARROW_DOWN)
+	{
+		if (E.cy != E.screenrows - 1)
+			E.cy++;
+	}
 }
-
 
 void	editorProcessKeypress()
 {
-	char	c;
+	int	c;
 
 	c = editorReadKey();
 	if (c == CTRL_KEY('q'))
@@ -246,7 +286,7 @@ void	editorProcessKeypress()
 		write(STDOUT_FILENO, "\x1b[H", 3);
 		exit(0);
 	}
-	else if (c == 'a' || c == 's' || c == 'd' || c == 'w')
+	else if (c == ARROW_LEFT || c == ARROW_RIGHT || c == ARROW_DOWN || c == ARROW_UP)
 		editorMoveCursor(c);
 }
 
