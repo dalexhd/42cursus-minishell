@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/05 21:40:16 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/06 19:57:19 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_env(t_shell shell)
 */
 char	*ft_getenv(t_shell shell, char *env)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (shell.envp[i] != 0)

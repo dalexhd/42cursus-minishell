@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/05 21:29:53 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/06 20:47:02 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,13 @@
 
 void	ft_cd(t_shell shell, char *dir)
 {
-	ft_export(shell, "OLDPWD", ft_pwd());
+	char	*pwd;
+
+	pwd = ft_pwd();
+	ft_export(shell, "OLDPWD", pwd);
+	ft_strdel(&pwd);
 	chdir(dir);
-	ft_export(shell, "PWD", ft_pwd());
+	pwd = ft_pwd();
+	ft_export(shell, "PWD", pwd);
+	ft_strdel(&pwd);
 }

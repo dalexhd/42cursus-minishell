@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/05 21:34:13 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/10 19:29:53 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,8 +46,8 @@ VER					=	$(shell lsb_release -sr)
 
 SRCS				=	init.c
 
-BUILTINS			=	builtins/echo.c	builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
-						builtins/unset.c
+BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
+						builtins/unset.c	builtins/utils.c
 
 SOURCES				=	$(SRCS) $(BUILTINS)
 
@@ -198,6 +198,21 @@ testback:		## Make minishell test
 
 test:		## Make minishell test
 			cd ./minishell-tester && ./destroyer.sh --process 3
+
+leak:		## Run memory leak for valid cub file.
+			@if [ $(shell ./tools/memory_leak.sh $(OUTPUT) $(LEAKS_FLAGS) && cat valgrind_out | grep "definitely lost:" | cut -d : -f 2 | cut -d b  -f 1 | tr -d " " | tr -d ",") ]; then\
+				echo ${BOLD}${UND}${R}🚨 Memory leaks detected${X};\
+				if [ $(USER) = "runner" ]; then\
+					cat valgrind_out;\
+				else\
+					echo ${G};cat valgrind_out | grep -A2 "HEAP SUMMARY:" | cut -d = -f 5 | cut -c 2-;\
+					echo ${CYAN};cat valgrind_out | grep -A5 "LEAK SUMMARY:" | cut -d = -f 5 | cut -c 2-;\
+				fi;\
+				exit 1;\
+			else\
+				echo ☕ ${BOLD}${UND}${G}No memory leaks detected${X} ☕;\
+				echo ${CYAN};cat valgrind_out | grep -A4 "HEAP SUMMARY:" | cut -d = -f 5 | cut -c 2-;\
+			fi
 
 ##@ Help
 help:		## View all available commands.

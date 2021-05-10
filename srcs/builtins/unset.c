@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/05 21:54:42 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/06 19:55:28 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ft_unset(t_shell shell, char *env)
 	{
 		if (ft_strncmp(shell.envp[i], env, ft_strlen(env)) != 0)
 		{
-			shell.envp[u] = ft_strjoin(ft_strjoin(env, "="), ft_getenv(shell, env));
+			shell.envp[u] = shell.envp[i];
 			u++;
 		}
 		i++;

@@ -1,33 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/06 20:39:30 by aborboll         ###   ########.fr       */
+/*   Created: 2021/05/10 19:24:31 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/10 19:29:26 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-/*
-* Set an environment variable
-*/
-void	ft_export(t_shell shell, char *env, char *value)
+t_bool	ft_isbuiltin(char *builtin)
 {
-	int	i;
-
-	i = 0;
-	while (shell.envp[i] != 0)
-	{
-		if (ft_strncmp(shell.envp[i], env, ft_strlen(env)) == 0)
-		{
-			shell.envp[i] = ft_strjoin_free(ft_strjoin(env, "="), ft_strdup(value));
-			return ;
-		}
-		i++;
-	}
-	shell.envp[i] = ft_strjoin_free(ft_strjoin(env, "="), ft_strdup(value));
+	return (!ft_strcmp(builtin, "ls")
+		|| !ft_strcmp(builtin, "cd")
+		|| !ft_strcmp(builtin, "env")
+		|| !ft_strcmp(builtin, "exit")
+		|| !ft_strcmp(builtin, "export")
+		|| !ft_strcmp(builtin, "pwd")
+		|| !ft_strcmp(builtin, "unset")
+		|| !ft_strcmp(builtin, "unset"));
 }

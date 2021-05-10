@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/05 21:41:34 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/10 19:30:17 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,5 @@ void	ft_unset(t_shell shell, char *env);
 ** Define builtins helpers
 */
 char	*ft_getenv(t_shell shell, char *env);
+t_bool	ft_isbuiltin(char *builtin);
 #endif
