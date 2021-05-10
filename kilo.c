@@ -6,6 +6,9 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 #include <string.h>
+#include <curses.h>
+#include <termcap.h>
+#include <term.h>
 
 #define CTRL_KEY(k) ((k) & 0x1f)
 #define ABUF_INIT {NULL, 0}
@@ -81,6 +84,27 @@ int	editorReadKey()
 		if (nread == -1 && errno != EAGAIN)
 			die("read");
 	}
+
+	if (c == '\x1b')
+	{
+		if (read(STDIN_FILENO, &seq[0], 1) != 1)
+			return ('\x1b');
+		if (read(STDIN_FILENO, &seq[1], 1) != 1)
+			return ('\x1b');
+		if  (seq[0] == '[')
+		{
+			if (strcmp(seq, tgetstr("ku", 0)) == 0)
+				return (ARROW_UP);
+			else if (seq[1] == 'B')
+				return (ARROW_DOWN);
+			else if (seq[1] == 'C')
+				return (ARROW_RIGHT);
+			else if (seq[1] == 'D')
+				return (ARROW_LEFT);
+		}
+		return ('\x1b');
+	}
+	/*
 	if (c == '\x1b')
 	{
 		if (read(STDIN_FILENO, &seq[0], 1) != 1)
@@ -100,6 +124,7 @@ int	editorReadKey()
 		}
 		return ('\x1b');
 	}
+*/
 	else
 		return (c);
 }
@@ -197,7 +222,7 @@ void	editorDrawRows(struct abuf  *ab)
 	{
 		if (y == E.screenrows / 3)
 		{
-			welcomelen = snprintf(welcome, sizeof(welcome), "Hellraiser -- version %s", KILO_VERSION);
+			welcomelen = snprintf(welcome, sizeof(welcome), "Hellshell -- version %s", KILO_VERSION);
 			if (welcomelen > E.screencols)
 				welcomelen = E.screencols;
 			padding = (E.screencols - welcomelen) / 2;
@@ -305,6 +330,7 @@ int	main(void)
 {
 	enableRawMode();
 	initEditor();
+	tgetstr("ks", 0);
 	while (1)
 	{
 		editorRefreshScreen();
