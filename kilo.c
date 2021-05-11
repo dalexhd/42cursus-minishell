@@ -41,6 +41,39 @@ struct	editorConfig
 
 struct	editorConfig E;
 
+int		ft_putchar(int c)
+{
+	return (write(1, &c, 1));
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*chain;
+	size_t	i;
+	size_t	j;
+	size_t	len;
+
+	if (!s1 || !s2)
+		return (NULL);
+	len = (strlen((char*)s1) + strlen((char*)s2) + 1);
+	if (!(chain = (char*)malloc(len)))
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s1[i] != '\0')
+	{
+		chain[i] = s1[i];
+		i++;
+	}
+	while (s2[j] != '\0')
+	{
+		chain[i + j] = s2[j];
+		j++;
+	}
+	chain[i + j] = '\0';
+	return (chain);
+}
+
 void	die(const char *s)
 {
    	write(STDOUT_FILENO, "\x1b[2J", 4);
@@ -66,8 +99,8 @@ void	enableRawMode()
 	raw.c_oflag &= ~(OPOST);
 	raw.c_cflag |= (CS8);
 	raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-//	raw.c_cc[VMIN] = 0;
-//	raw.c_cc[VTIME] = 1;
+	raw.c_cc[VMIN] = 1;
+	raw.c_cc[VTIME] = 0;
 
 	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1)//discards remaining input	
 		die("tcsetattr");
@@ -76,34 +109,20 @@ void	enableRawMode()
 int	editorReadKey()
 {
 	int	nread;
-	char	c;
-	char	seq[3];
+	char	seq[4];
 
-	while ((nread = read(STDIN_FILENO, &c, 1)) != 1)
-	{
-		if (nread == -1 && errno != EAGAIN)
-			die("read");
-	}
-
-	if (c == '\x1b')
-	{
-		if (read(STDIN_FILENO, &seq[0], 1) != 1)
-			return ('\x1b');
-		if (read(STDIN_FILENO, &seq[1], 1) != 1)
-			return ('\x1b');
-		if  (seq[0] == '[')
-		{
-			if (strcmp(seq, tgetstr("ku", 0)) == 0)
-				return (ARROW_UP);
-			else if (seq[1] == 'B')
-				return (ARROW_DOWN);
-			else if (seq[1] == 'C')
-				return (ARROW_RIGHT);
-			else if (seq[1] == 'D')
-				return (ARROW_LEFT);
-		}
-		return ('\x1b');
-	}
+	bzero(&seq, 4);
+	nread = read(STDIN_FILENO, seq, 3);
+	if (nread == 1)
+		return (*seq);
+	if (strcmp(seq, tgetstr("ku", 0)) == 0)
+		return (ARROW_UP);
+	else if (strcmp(seq, tgetstr("kd", 0)) == 0)
+		return (ARROW_DOWN);
+	else if (strcmp(seq, tgetstr("kr", 0)) == 0)
+		return (ARROW_RIGHT);
+	else if (strcmp(seq, tgetstr("kl", 0)) == 0)
+		return (ARROW_LEFT);
 	/*
 	if (c == '\x1b')
 	{
@@ -125,8 +144,8 @@ int	editorReadKey()
 		return ('\x1b');
 	}
 */
-	else
-		return (c);
+	//else
+	//	return (c);
 }
 
 int	getCursorPosition(int *rows, int *cols)
@@ -330,7 +349,9 @@ int	main(void)
 {
 	enableRawMode();
 	initEditor();
-	tgetstr("ks", 0);
+
+	tgetent(NULL, getenv("TERM"));
+	tputs(tgetstr("ks", 0), 1, ft_putchar);
 	while (1)
 	{
 		editorRefreshScreen();
