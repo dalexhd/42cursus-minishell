@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 22:00:18 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/12 01:36:52 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,23 +58,29 @@ static void	exec(t_shell *shell, char **args)
 			ft_error("permission denied", 1);
 }
 
-void test_extbuiltin(t_shell *shell, t_slist *parsed_lst)
+/* void test_extbuiltin(t_shell *shell, t_slist *parsed_lst)
 {
 	pid_t pid;
 	int fd[2];
-	t_parsed *parsed;
 
-	parsed = parsed_lst->content;
-	pipe(fd);
+
+	if (parsed_lst->content->flags.has_stdout)
+		pipe(fd);
 	pid = fork();
 	if (pid == 0)
 	{
-		if (parsed->flags.has_stdout)
+		if (parsed_lst->content->flags.has_stdout)
+		{
+			parsed_lst->next->content->flags.has_stdin = true;
+			dup2(fd[1], STDOUT_FILENO);
+			close(fd[1]);
+		}
+		else if (parsed_lst->content->flags.has_stdin)
 		{
 			dup2(fd[1], STDOUT_FILENO);
 			close(fd[1]);
 		} 
-		exec(shell, parsed->args);
+		exec(shell, parsed_lst->content->args);
 	}
 	else if (pid < 0)
 		ft_error("failed to fork", 1);
@@ -83,14 +89,47 @@ void test_extbuiltin(t_shell *shell, t_slist *parsed_lst)
 		pid = fork();
 		if (pid == 0)
 		{
-			if (parsed->flags.has_stdout)
+			if (parsed_lst->content->flags.has_stdout)
 			{
 				dup2(fd[0], STDIN_FILENO);
 				close(fd[0]); 
 			}
-			parsed = parsed_lst->next->content;
-			exec(shell, parsed->args);
+			exec(shell, parsed_lst->next->content->args);
+			if (parsed_lst->next->content->flags.has_pipe)
+				test_extbuiltin(shell, parsed_lst->next);
 		}
+	}
+} */
+
+void test_extbuiltin(t_shell *shell, t_slist *parsed_lst, int fd[2])
+{
+	pid_t pid;
+
+	if (parsed_lst->content->flags.has_stdout)
+		pipe(fd);
+	pid = fork();
+	if (pid == 0)
+	{
+
+		if (parsed_lst->content->flags.has_stdout)
+		{
+			parsed_lst->next->content->flags.has_stdin = true;
+			dup2(fd[1], STDOUT_FILENO);
+			close(fd[1]);
+		}
+		else if (parsed_lst->content->flags.has_stdin)
+		{
+			dup2(fd[0], STDIN_FILENO);
+			close(fd[0]);
+		} 
+		exec(shell, parsed_lst->content->args);
+	}
+	else if (pid < 0)
+		ft_error("failed to fork", 1);
+	if (parsed_lst->next)
+	{
+		parsed_lst->next->content->flags.has_stdin = parsed_lst->content->flags.has_stdout;
+		test_extbuiltin(shell, parsed_lst->next, fd);
 	}
 }
 
@@ -200,14 +239,16 @@ void lsh_split_line(t_shell *shell, char *line)
 t_shell *init_shell(char *cmd, char **envp)
 {
 	t_shell *shell;
+	int		fd[2];
 
 	shell = malloc(sizeof(t_shell));
 	shell->running = true;
 	shell->envp = envp;
+	shell->parsed = NULL;
 	lsh_split_line(shell, cmd);
 	//ft_slstadd_back(&shell.parsed, ft_slstnew(lsh_split_line(ft_strdup("grep PATH"))));
 	//test_builtins(shell);
-	test_extbuiltin(shell, shell->parsed);
+	test_extbuiltin(shell, shell->parsed, fd);
 	//test_intextbuiltin(shell);
 	return (shell);
 }

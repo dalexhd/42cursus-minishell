@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/10 19:24:31 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/10 19:29:26 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/12 01:15:24 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 t_bool	ft_isbuiltin(char *builtin)
 {
-	return (!ft_strcmp(builtin, "ls")
-		|| !ft_strcmp(builtin, "cd")
+	return (!ft_strcmp(builtin, "cd")
 		|| !ft_strcmp(builtin, "env")
 		|| !ft_strcmp(builtin, "exit")
 		|| !ft_strcmp(builtin, "export")
