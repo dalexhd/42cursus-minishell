@@ -29,6 +29,6 @@ int	main(int argc, char **argv, char **envp)
 			shell.running = false;
 	}
 	ft_clear_memory(shell);
-	ft_success("Nice 🧡", 1);
+	//ft_success("Nice 🧡", 1);
 	return (0);
 }

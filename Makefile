@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/10 19:29:53 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/11 01:29:47 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ PID					=	.pid
 CC					=	@gcc
 SH					=	@bash
 RM					=	@/bin/rm -rf
-FLAGS				=	-Wextra -Wall -Werror -g
+FLAGS				=	-Wextra -Wall -Werror -g -fsanitize=address
 
 HEADER_DIR			=	includes/
 OBJ_DIR				=	obj/
