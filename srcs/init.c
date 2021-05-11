@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 02:32:40 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/11 22:00:18 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <sys/stat.h>
 
 #define LSH_TOK_BUFSIZE 64
-#define LSH_TOK_DELIM " \t\r\n\a"
+#define LSH_TOK_DELIM " \r\n\a'\\"
 
 t_bool file_exists(char *filename)
 {
@@ -25,7 +25,7 @@ t_bool file_exists(char *filename)
 	return (stat(filename, &buffer) == 0);
 }
 
-static char *builtin_bin_path(t_shell shell, char *builtin)
+static char *builtin_bin_path(t_shell *shell, char *builtin)
 {
 	char **folders;
 	int i;
@@ -43,29 +43,38 @@ static char *builtin_bin_path(t_shell shell, char *builtin)
 	return (NULL);
 }
 
-void test_extbuiltin(t_shell shell, char **args, char **args2)
+static void	exec(t_shell *shell, char **args)
+{
+	if (ft_isbuiltin(args[0]))
+	{
+		if (!ft_strcmp(args[0], "cd"))
+			ft_cd(shell, args[1]);
+		else if (!ft_strcmp(args[0], "env"))
+			ft_env(shell);
+		else if (!ft_strcmp(args[0], "pwd"))
+			ft_printf("%s\n", ft_pwd());
+	}
+	else if (execve(builtin_bin_path(shell, args[0]), args, shell->envp) == -1)
+			ft_error("permission denied", 1);
+}
+
+void test_extbuiltin(t_shell *shell, t_slist *parsed_lst)
 {
 	pid_t pid;
 	int fd[2];
+	t_parsed *parsed;
 
+	parsed = parsed_lst->content;
 	pipe(fd);
-	
 	pid = fork();
 	if (pid == 0)
 	{
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[1]);
-		if (ft_isbuiltin(args[0]))
+		if (parsed->flags.has_stdout)
 		{
-			if (!ft_strcmp(args[0], "cd"))
-				ft_cd(shell, args[1]);
-			else if (!ft_strcmp(args[0], "env"))
-				ft_env(shell);
-			else if (!ft_strcmp(args[0], "pwd"))
-				ft_printf("%s\n", ft_pwd());
-		}
-		else if (execve(builtin_bin_path(shell, args[0]), args, shell.envp) == -1)
-				ft_error("permission denied", 1);
+			dup2(fd[1], STDOUT_FILENO);
+			close(fd[1]);
+		} 
+		exec(shell, parsed->args);
 	}
 	else if (pid < 0)
 		ft_error("failed to fork", 1);
@@ -74,15 +83,18 @@ void test_extbuiltin(t_shell shell, char **args, char **args2)
 		pid = fork();
 		if (pid == 0)
 		{
-			dup2(fd[0], STDIN_FILENO);
-			close(fd[0]);
-			if (execve(builtin_bin_path(shell, args2[0]), args2, shell.envp) == -1)
-				ft_error("permission denied", 1);
+			if (parsed->flags.has_stdout)
+			{
+				dup2(fd[0], STDIN_FILENO);
+				close(fd[0]); 
+			}
+			parsed = parsed_lst->next->content;
+			exec(shell, parsed->args);
 		}
 	}
 }
 
-void test_intextbuiltin(t_shell shell)
+void test_intextbuiltin(t_shell *shell)
 {
 	pid_t pid;
 	int fd[2];
@@ -106,13 +118,13 @@ void test_intextbuiltin(t_shell shell)
 		{
 			dup2(fd[0], STDIN_FILENO);
 			close(fd[0]);
-			if (execve("/usr/bin/grep", grepArgs, shell.envp) == -1)
+			if (execve("/usr/bin/grep", grepArgs, shell->envp) == -1)
 				ft_error("permission denied", 1);
 		}
 	}
 }
 
-void test_builtins(t_shell shell)
+void test_builtins(t_shell *shell)
 {
 	/* 	char	*array[] = {
 		"hello world"
@@ -133,24 +145,39 @@ void test_builtins(t_shell shell)
 	ft_printf("HOME env value=%s\n", ft_getenv(shell, "HOME"));
 }
 
-char **lsh_split_line(char *line)
+t_bool	has_pipe(t_parsed *parsed, char *token)
 {
-	int bufsize = LSH_TOK_BUFSIZE, position = 0;
-	char **tokens = malloc(bufsize * sizeof(char *));
-	char *token;
+	if (ft_strcmp("|", token) == 0)
+	{
+		(*parsed).flags.has_pipe = true;
+		(*parsed).flags.has_stdout = true;
+		return (true);
+	}
+	return (false);
+}
+
+void lsh_split_line(t_shell *shell, char *line)
+{
+	int			bufsize = LSH_TOK_BUFSIZE, position = 0;
+	char		**tokens = malloc(bufsize * sizeof(char *));
+	char 		*token;
+	t_parsed	*parsed;
 
 	if (!tokens)
 	{
 		fprintf(stderr, "lsh: allocation error\n");
 		exit(EXIT_FAILURE);
 	}
-
+	parsed = (t_parsed *)malloc(sizeof(t_parsed));
+	parsed->flags.has_pipe = false;
+	parsed->line = ft_strdup(line);
+	parsed->flags.has_stdin = false;
+	parsed->flags.has_stdout = false;
 	token = strtok(line, LSH_TOK_DELIM);
-	while (token != NULL)
+	while (token != NULL && !has_pipe(parsed, token))
 	{
 		tokens[position] = token;
 		position++;
-
 		if (position >= bufsize)
 		{
 			bufsize += LSH_TOK_BUFSIZE;
@@ -161,23 +188,26 @@ char **lsh_split_line(char *line)
 				exit(EXIT_FAILURE);
 			}
 		}
-
 		token = strtok(NULL, LSH_TOK_DELIM);
 	}
 	tokens[position] = NULL;
-	return tokens;
+	parsed->args = tokens;
+	ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
+	if (parsed->flags.has_pipe)
+		lsh_split_line(shell, ft_substr(parsed->line, token - line + 1, ft_strlen(parsed->line)));
 }
 
-t_shell init_shell(char **envp)
+t_shell *init_shell(char *cmd, char **envp)
 {
-	t_shell shell;
-	int i;
+	t_shell *shell;
 
-	i = 0;
-	shell.running = true;
-	shell.envp = envp;
+	shell = malloc(sizeof(t_shell));
+	shell->running = true;
+	shell->envp = envp;
+	lsh_split_line(shell, cmd);
+	//ft_slstadd_back(&shell.parsed, ft_slstnew(lsh_split_line(ft_strdup("grep PATH"))));
 	//test_builtins(shell);
-	test_extbuiltin(shell, lsh_split_line(ft_strdup("env")), lsh_split_line(ft_strdup("grep PWD")));
+	test_extbuiltin(shell, shell->parsed);
 	//test_intextbuiltin(shell);
 	return (shell);
 }

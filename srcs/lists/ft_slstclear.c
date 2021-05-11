@@ -1,26 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   ft_slstclear.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 21:08:22 by aborboll         ###   ########.fr       */
+/*   Created: 2019/11/16 15:49:43 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/11 21:14:20 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-void	ft_cd(t_shell *shell, char *dir)
+void	ft_slstclear(t_slist **lst, void (*del)(t_parsed *))
 {
-	char	*pwd;
+	t_slist	*next;
+	t_slist	*new;
 
-	pwd = ft_pwd();
-	ft_export(shell, "OLDPWD", pwd);
-	ft_strdel(&pwd);
-	chdir(dir);
-	pwd = ft_pwd();
-	ft_export(shell, "PWD", pwd);
-	ft_strdel(&pwd);
+	new = *lst;
+	if (new)
+	{
+		while (new)
+		{
+			next = new->next;
+			del(new->content);
+			free(new);
+			new = next;
+		}
+		*lst = NULL;
+	}
 }

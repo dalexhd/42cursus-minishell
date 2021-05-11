@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   ft_slstnew.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 21:08:22 by aborboll         ###   ########.fr       */
+/*   Created: 2019/11/16 16:36:06 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/11 21:15:36 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-void	ft_cd(t_shell *shell, char *dir)
+t_slist	*ft_slstnew(t_parsed *content)
 {
-	char	*pwd;
+	t_slist	*elem;
 
-	pwd = ft_pwd();
-	ft_export(shell, "OLDPWD", pwd);
-	ft_strdel(&pwd);
-	chdir(dir);
-	pwd = ft_pwd();
-	ft_export(shell, "PWD", pwd);
-	ft_strdel(&pwd);
+	elem = (t_slist *)malloc(sizeof(t_slist));
+	if (elem == NULL)
+		return (NULL);
+	elem->content = content;
+	elem->next = NULL;
+	return (elem);
 }

@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   ft_slstlast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 21:08:22 by aborboll         ###   ########.fr       */
+/*   Created: 2019/11/16 16:44:54 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/11 17:29:36 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-void	ft_cd(t_shell *shell, char *dir)
+t_slist	*ft_slstlast(t_slist *lst)
 {
-	char	*pwd;
-
-	pwd = ft_pwd();
-	ft_export(shell, "OLDPWD", pwd);
-	ft_strdel(&pwd);
-	chdir(dir);
-	pwd = ft_pwd();
-	ft_export(shell, "PWD", pwd);
-	ft_strdel(&pwd);
+	if (!lst)
+		return (0);
+	while (lst->next)
+		lst = lst->next;
+	return (lst);
 }

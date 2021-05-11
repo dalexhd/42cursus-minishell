@@ -1,26 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   ft_slstadd_front.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 21:08:22 by aborboll         ###   ########.fr       */
+/*   Created: 2019/11/16 16:41:29 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/11 17:28:56 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-void	ft_cd(t_shell *shell, char *dir)
+void	ft_slstadd_front(t_slist **alst, t_slist *new)
 {
-	char	*pwd;
-
-	pwd = ft_pwd();
-	ft_export(shell, "OLDPWD", pwd);
-	ft_strdel(&pwd);
-	chdir(dir);
-	pwd = ft_pwd();
-	ft_export(shell, "PWD", pwd);
-	ft_strdel(&pwd);
+	if (alst)
+		new->next = *alst;
+	*alst = new;
 }
