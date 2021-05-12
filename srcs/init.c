@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/12 01:36:52 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/12 19:57:59 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ static void	exec(t_shell *shell, char **args)
 	}
 } */
 
-void test_extbuiltin(t_shell *shell, t_slist *parsed_lst, int fd[2])
+/* void test_extbuiltin(t_shell *shell, t_slist *parsed_lst, int fd[2])
 {
 	pid_t pid;
 
@@ -110,7 +110,6 @@ void test_extbuiltin(t_shell *shell, t_slist *parsed_lst, int fd[2])
 	pid = fork();
 	if (pid == 0)
 	{
-
 		if (parsed_lst->content->flags.has_stdout)
 		{
 			parsed_lst->next->content->flags.has_stdin = true;
@@ -131,7 +130,7 @@ void test_extbuiltin(t_shell *shell, t_slist *parsed_lst, int fd[2])
 		parsed_lst->next->content->flags.has_stdin = parsed_lst->content->flags.has_stdout;
 		test_extbuiltin(shell, parsed_lst->next, fd);
 	}
-}
+} */
 
 void test_intextbuiltin(t_shell *shell)
 {
@@ -188,8 +187,8 @@ t_bool	has_pipe(t_parsed *parsed, char *token)
 {
 	if (ft_strcmp("|", token) == 0)
 	{
-		(*parsed).flags.has_pipe = true;
-		(*parsed).flags.has_stdout = true;
+		parsed->flags.has_pipe = true;
+		parsed->flags.has_stdout = true;
 		return (true);
 	}
 	return (false);
@@ -233,22 +232,100 @@ void lsh_split_line(t_shell *shell, char *line)
 	parsed->args = tokens;
 	ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
 	if (parsed->flags.has_pipe)
-		lsh_split_line(shell, ft_substr(parsed->line, token - line + 1, ft_strlen(parsed->line)));
+		lsh_split_line(shell, ft_strtrim(ft_substr(parsed->line, token - line + 1, ft_strlen(parsed->line)), " "));
+}
+
+static void	fill_data(t_slist *list)
+{
+	while (list->content)
+	{
+		if (list->prev && list->prev->content->flags.has_stdout)
+			list->content->flags.has_stdin = true;
+		if (list->next && list->next->content->flags.has_stdin)
+			list->content->flags.has_stdout = true;
+		if (list->next)
+			fill_data(list->next);
+		break ;
+	}
+}
+
+struct command
+{
+  const char **argv;
+};
+
+int
+spawn_proc (int in, int out, t_slist *list, char **envp)
+{
+  pid_t pid;
+
+  if ((pid = fork ()) == 0)
+    {
+      if (in != 0)
+        {
+          dup2 (in, 0);
+          close (in);
+        }
+
+      if (out != 1)
+        {
+          dup2 (out, 1);
+          close (out);
+        }
+		return execve(list->content->args[0], list->content->args, envp);
+    }
+
+  return pid;
+}
+
+static void	test(t_shell *shell)
+{
+	size_t	i;
+	t_slist *list;
+	int in, fd [2];
+	
+	list = shell->parsed;
+	i = 0;
+	while (i < shell->pipe_count - 1)
+	{
+
+		pipe(fd);
+
+		/* f [1] is the write end of the pipe, we carry `in` from the prev iteration.  */
+		spawn_proc(in, fd [1], list, shell->envp);
+		/* No need for the write end of the pipe, the child will write here.  */
+		close (fd [1]);
+		/* Keep the read end of the pipe, the next child will read from there.  */
+		in = fd [0];
+		list = list->next;
+		i++;
+	}
+		/* Last stage of the pipeline - set stdin be the read end of the previous pipe
+		and output to the original file descriptor 1. */  
+	if (in != 0)
+		dup2 (in, 0);
+	/* Execute the last stage with the current process. */
+	t_slist *parsed = ft_slstlast(shell->parsed);
+	execve(parsed->content->args[0], parsed->content->args, shell->envp);
 }
 
 t_shell *init_shell(char *cmd, char **envp)
 {
 	t_shell *shell;
-	int		fd[2];
+	//int		fd[2];
 
 	shell = malloc(sizeof(t_shell));
 	shell->running = true;
 	shell->envp = envp;
 	shell->parsed = NULL;
 	lsh_split_line(shell, cmd);
+	shell->pipe_count = ft_slstsize(shell->parsed);
+	fill_data(shell->parsed);
 	//ft_slstadd_back(&shell.parsed, ft_slstnew(lsh_split_line(ft_strdup("grep PATH"))));
 	//test_builtins(shell);
-	test_extbuiltin(shell, shell->parsed, fd);
+		//test(shell);
+			execve(shell->parsed->content->args[0], shell->parsed->content->args, shell->envp);
+	//test_extbuiltin(shell, shell->parsed, fd);
 	//test_intextbuiltin(shell);
 	return (shell);
 }

@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/22 20:45:27 by aborboll          #+#    #+#             */
-/*   Updated: 2021/04/24 18:28:18 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/12 19:28:59 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_list
 {
 	void			*content;
 	struct s_list	*next;
+	struct s_list	*prev;
 }				t_list;
 
 int				ft_atoi(const char *str);

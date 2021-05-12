@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 16:46:21 by aborboll          #+#    #+#             */
-/*   Updated: 2020/08/28 17:08:59 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/12 19:28:53 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	ft_lstadd_back(t_list **alst, t_list *new)
 			while (lst->next)
 				lst = lst->next;
 			lst->next = new;
+			new->prev = lst;
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 21:12:46 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/12 19:27:00 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,9 @@ typedef struct s_shell
 {
 	t_bool	running;
 	char	**envp;
+	size_t	pipe_count;
 	t_slist	*parsed;
+	t_list	*history;
 }				t_shell;
 
 t_shell *init_shell(char *cmd, char **envp);

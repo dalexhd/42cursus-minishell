@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 16:36:06 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 21:15:36 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/12 19:12:16 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,6 @@ t_slist	*ft_slstnew(t_parsed *content)
 		return (NULL);
 	elem->content = content;
 	elem->next = NULL;
+	elem->prev = NULL;
 	return (elem);
 }
