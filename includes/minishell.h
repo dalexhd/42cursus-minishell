@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/12 19:27:00 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/13 15:38:09 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 */
 # include <stdarg.h>
 # include <errno.h>
+# include <sys/stat.h>
 
 /*
 ** Include internal values of the cub3d.
@@ -33,6 +34,8 @@
 typedef struct s_shell
 {
 	t_bool	running;
+	t_bool	should_wait;
+	int		elapsed;
 	char	**envp;
 	size_t	pipe_count;
 	t_slist	*parsed;
@@ -40,6 +43,7 @@ typedef struct s_shell
 }				t_shell;
 
 t_shell *init_shell(char *cmd, char **envp);
+void	exec_shell(t_shell *shell, char *cmd);
 
 /*
 ** Define builtins
@@ -55,5 +59,11 @@ void	ft_unset(t_shell *shell, char *env);
 ** Define builtins helpers
 */
 char	*ft_getenv(t_shell *shell, char *env);
+
+/*
+** Define utils
+*/
 t_bool	ft_isbuiltin(char *builtin);
+t_bool	file_exists(char *filename);
+char	*builtin_bin_path(t_shell *shell, char *builtin);
 #endif

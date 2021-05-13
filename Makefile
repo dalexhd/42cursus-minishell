@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/12 18:49:36 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/13 10:39:29 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ HEADER_DIR			=	includes/
 OBJ_DIR				=	obj/
 BUILTINS_DIR		=	builtins/
 LISTS_DIR			=	lists/
+UTILS_DIR			=	utils/
 SRC_DIR				=	srcs/
 BONUS_DIR			=	bonus/
 LIBFT_DIR			=	libft/
@@ -48,12 +49,14 @@ VER					=	$(shell lsb_release -sr)
 SRCS				=	init.c
 
 BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
-						builtins/unset.c	builtins/utils.c
+						builtins/unset.c
+
+UTILS				=	utils/builtins.c	utils/file.c
 
 LISTS				=	lists/ft_slstadd_back.c		lists/ft_slstadd_front.c	lists/ft_slstclear.c	lists/ft_slstdelone.c	lists/ft_slstiter.c \
 						lists/ft_slstlast.c			lists/ft_slstnew.c			lists/ft_slstsize.c
 
-SOURCES				=	$(SRCS) $(BUILTINS) $(LISTS)
+SOURCES				=	$(SRCS) $(BUILTINS) $(UTILS) $(LISTS)
 
 # Bonus part
 
@@ -130,6 +133,7 @@ $(OBJ_DIR):
 			@echo ${CUT}[${Y}$(OUTPUT)]${X} ${B}Creating: ${R}$(OBJ_DIR)${X}
 			@mkdir -p $(OBJ_DIR)
 			@mkdir -p $(OBJ_DIR)/$(BUILTINS_DIR)
+			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)
 
 # Normal objects

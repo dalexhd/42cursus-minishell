@@ -1,260 +1,174 @@
-#include "includes/minishell.h"
-
-/***************************************************************************//**
-  @file         main.c
-  @author       Stephen Brennan
-  @date         Thursday,  8 January 2015
-  @brief        LSH (Libstephen SHell)
-*******************************************************************************/
-
-#include <sys/wait.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include <sys/types.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <ctype.h>
+#include <stdlib.h>
 
-/*
-  Function Declarations for builtin shell commands:
- */
-int lsh_cd(char **args);
+#define MAX_LINE 1024 // The maximum length command
 
-/*
-  List of builtin commands, followed by their corresponding functions.
- */
-char *builtin_str[] = {
-  "cd",
-  "help",
-  "exit"
-};
-
-int (*builtin_func[]) (char **) = {
-  &lsh_cd,
-  &lsh_help,
-  &lsh_exit
-};
-
-int lsh_num_builtins() {
-  return sizeof(builtin_str) / sizeof(char *);
-}
-
-/*
-  Builtin function implementations.
-*/
+int should_run = 1;  // flag to determine when to exit program
+int should_wait = 1; // flag to determine if process should run in the background
 
 /**
-   @brief Bultin command: change directory.
-   @param args List of args.  args[0] is "cd".  args[1] is the directory.
-   @return Always returns 1, to continue executing.
+ * Redirects stdin from a file.
+ *
+ * @param fileName the file to redirect from
  */
-int lsh_cd(char **args)
+void redirectIn(char *fileName)
 {
-  if (args[1] == NULL) {
-    fprintf(stderr, "lsh: expected argument to \"cd\"\n");
-  } else {
-    if (chdir(args[1]) != 0) {
-      perror("lsh");
+    int in = open(fileName, O_RDONLY);
+    dup2(in, 0);
+    close(in);
+}
+
+/**
+ * Redirects stdout to a file.
+ *
+ * @param fileName the file to redirect to
+ */
+void redirectOut(char *fileName)
+{
+    int out = open(fileName, O_WRONLY | O_TRUNC | O_CREAT, 0600);
+    dup2(out, 1);
+    close(out);
+}
+
+/**
+ * Runs a command.
+ *
+ * @param *args[] the args to run
+ */
+void run(char *args[])
+{
+    pid_t pid;
+    if (strcmp(args[0], "exit") != 0)
+        {
+            pid = fork();
+            if (pid < 0) {
+                fprintf(stderr, "Fork Failed");
+            }
+            else if ( pid == 0) { /* child process */
+                execvp(args[0], args);
+            }
+            else { /* parent process */
+                if (should_wait) {
+                    waitpid(pid, NULL, 0);
+                } else {
+                    should_wait = 0;
+                }
+            }
+            redirectIn("/dev/tty");
+            redirectOut("/dev/tty");
+        }
+    else {
+        should_run = 0;
     }
-  }
-  return 1;
 }
 
 /**
-   @brief Builtin command: print help.
-   @param args List of args.  Not examined.
-   @return Always returns 1, to continue executing.
+ * Creates a pipe.
+ *
+ * @param args [description]
  */
-int lsh_help()
+void createPipe(char *args[])
 {
-  int i;
-  printf("Stephen Brennan's LSH\n");
-  printf("Type program names and arguments, and hit enter.\n");
-  printf("The following are built in:\n");
+    int fd[2];
+    printf("args = %s\n", *args);
 
-  for (i = 0; i < lsh_num_builtins(); i++) {
-    printf("  %s\n", builtin_str[i]);
-  }
+    pipe(fd);
 
-  printf("Use the man command for information on other programs.\n");
-  return 1;
+    dup2(fd[1], 1);
+    close(fd[1]);
+
+
+    run(args);
+
+    dup2(fd[0], 0);
+    close(fd[0]);
 }
 
 /**
-   @brief Builtin command: exit.
-   @param args List of args.  Not examined.
-   @return Always returns 0, to terminate execution.
+ * Creates a tokenized form of the input with spaces to separate words.
+ *
+ * @param  *input the input string
+ * @return tokenized the tokenized stirng
  */
-int lsh_exit()
+char * tokenize(char *input)
 {
-  return 0;
-}
+    int i;
+    int j = 0;
+    char *tokenized = (char *)malloc((MAX_LINE * 2) * sizeof(char));
 
-/**
-  @brief Launch a program and wait for it to terminate.
-  @param args Null terminated list of arguments (including program).
-  @return Always returns 1, to continue execution.
- */
-int lsh_launch(char **args)
-{
-  pid_t pid, wpid;
-  int status;
-
-  pid = fork();
-  if (pid == 0) {
-    // Child process
-    if (execvp(args[0], args) == -1) {
-      perror("lsh");
+    // add spaces around special characters
+    for (i = 0; i < strlen(input); i++) {
+        if (input[i] != '>' && input[i] != '<' && input[i] != '|') {
+            tokenized[j++] = input[i];
+        } else {
+            tokenized[j++] = ' ';
+            tokenized[j++] = input[i];
+            tokenized[j++] = ' ';
+        }
     }
-    exit(EXIT_FAILURE);
-  } else if (pid < 0) {
-    // Error forking
-    perror("lsh");
-  } else {
-    // Parent process
-    do {
-      wpid = waitpid(pid, &status, WUNTRACED);
-    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-  }
+    tokenized[j++] = '\0';
 
-  return 1;
+    // add null to the end
+    char *end;
+    end = tokenized + strlen(tokenized) - 1;
+    end--;
+    *(end + 1) = '\0';
+
+    return tokenized;
 }
 
 /**
-   @brief Execute shell built-in or launch program.
-   @param args Null terminated list of arguments.
-   @return 1 if the shell should continue running, 0 if it should terminate
- */
-int lsh_execute(char **args)
-{
-  int i;
-
-  if (args[0] == NULL) {
-    // An empty command was entered.
-    return 1;
-  }
-
-  for (i = 0; i < lsh_num_builtins(); i++) {
-    if (strcmp(args[0], builtin_str[i]) == 0) {
-      return (*builtin_func[i])(args);
-    }
-  }
-
-  return lsh_launch(args);
-}
-
-#define LSH_RL_BUFSIZE 1024
-/**
-   @brief Read a line of input from stdin.
-   @return The line from stdin.
- */
-char *lsh_read_line(void)
-{
-  int bufsize = LSH_RL_BUFSIZE;
-  int position = 0;
-  char *buffer = malloc(sizeof(char) * bufsize);
-  int c;
-
-  if (!buffer) {
-    fprintf(stderr, "lsh: allocation error\n");
-    exit(EXIT_FAILURE);
-  }
-
-  while (1) {
-    // Read a character
-    c = getchar();
-
-    // If we hit EOF, replace it with a null character and return.
-    if (c == EOF || c == '\n') {
-      buffer[position] = '\0';
-      return buffer;
-    } else {
-      buffer[position] = c;
-    }
-    position++;
-
-    // If we have exceeded the buffer, reallocate.
-    if (position >= bufsize) {
-      bufsize += LSH_RL_BUFSIZE;
-      buffer = realloc(buffer, bufsize);
-      if (!buffer) {
-        fprintf(stderr, "lsh: allocation error\n");
-        exit(EXIT_FAILURE);
-      }
-    }
-  }
-}
-
-#define LSH_TOK_BUFSIZE 64
-#define LSH_TOK_DELIM " \t\r\n\a"
-/**
-   @brief Split a line into tokens (very naively).
-   @param line The line.
-   @return Null-terminated array of tokens.
- */
-char **lsh_split_line(char *line)
-{
-  int bufsize = LSH_TOK_BUFSIZE, position = 0;
-  char **tokens = malloc(bufsize * sizeof(char*));
-  char *token;
-
-  if (!tokens) {
-    fprintf(stderr, "lsh: allocation error\n");
-    exit(EXIT_FAILURE);
-  }
-
-  token = strtok(line, LSH_TOK_DELIM);
-  while (token != NULL) {
-    tokens[position] = token;
-    position++;
-
-    if (position >= bufsize) {
-      bufsize += LSH_TOK_BUFSIZE;
-      tokens = realloc(tokens, bufsize * sizeof(char*));
-      if (!tokens) {
-        fprintf(stderr, "lsh: allocation error\n");
-        exit(EXIT_FAILURE);
-      }
-    }
-
-    token = strtok(NULL, LSH_TOK_DELIM);
-  }
-  tokens[position] = NULL;
-  return tokens;
-}
-
-/**
-   @brief Loop getting input and executing it.
- */
-void lsh_loop(void)
-{
-  char *line;
-  char **args;
-  int status;
-
-  do {
-    printf("> ");
-    line = lsh_read_line();
-    args = lsh_split_line(line);
-    status = lsh_execute(args);
-
-    free(line);
-    free(args);
-  } while (status);
-}
-
-/**
-   @brief Main entry point.
-   @param argc Argument count.
-   @param argv Argument vector.
-   @return status code
+ * Runs a basic shell.
+ *
+ * @return 0 upon completion
  */
 int main(void)
 {
-  // Load config files, if any.
+    char *args[MAX_LINE]; // command line arguments
 
-  // Run command loop.
-  lsh_loop();
+    while (should_run) {
+        printf("MillerShell$ ");
+        fflush(stdout);
 
-  // Perform any shutdown/cleanup.
+        char input[MAX_LINE];
+        fgets(input, MAX_LINE, stdin);
 
-  return EXIT_SUCCESS;
+        char *tokens;
+        tokens = tokenize(input);
+
+        if (tokens[strlen(tokens) - 1] == '&') {
+            should_wait = 0;
+            tokens[strlen(tokens) - 1] = '\0';
+        }
+
+        char *arg = strtok(tokens, " ");
+        int i = 0;
+        while (arg) {
+            if (*arg == '<') {
+                redirectIn(strtok(NULL, " "));
+            } else if (*arg == '>') {
+                redirectOut(strtok(NULL, " "));
+            } else if (*arg == '|') {
+                args[i] = NULL;
+                createPipe(args);
+                i = 0;
+            } else {
+                args[i] = arg;
+                i++;
+            }
+            arg = strtok(NULL, " ");
+        }
+        args[i] = NULL;
+
+        run(args);
+    }
+    return 0;
 }

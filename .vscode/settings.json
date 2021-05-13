@@ -11,8 +11,14 @@
 		"string_view": "c",
 		"unordered_map": "c",
 		"utility": "c",
-		"vector": "c"
+		"vector": "c",
+		"string.h": "c"
 	},
 	"42header.email": "aborboll@student.42.fr",
-	"42header.username": "aborboll""markdown.links.openLocation
+	"42header.username": "aborboll",
+	"editor.tabSize": 4,
+	"editor.insertSpaces": false,
+	"editor.renderWhitespace": "all",
+	"files.trimTrailingWhitespace": true,
+	"files.insertFinalNewline": true,
 }
