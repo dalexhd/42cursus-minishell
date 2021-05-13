@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/13 16:42:44 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/13 21:04:14 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,31 +17,33 @@
 #define LSH_TOK_BUFSIZE 64
 #define LSH_TOK_DELIM " \r\n\a\t'\\"
 
-static void exec(t_shell *shell, char **args)
+static	void	exec(t_shell *shell, t_parsed *parsed)
 {
-	if (ft_isbuiltin(args[0]))
+	if (ft_isbuiltin(parsed->args[0]))
 	{
-		if (!ft_strcmp(args[0], "cd"))
-			ft_cd(shell, args[1]);
-		else if (!ft_strcmp(args[0], "env"))
+		if (!ft_strcmp(parsed->args[0], "cd"))
+			ft_cd(shell, parsed->args[1]);
+		else if (!ft_strcmp(parsed->args[0], "export"))
+			ft_export(shell, "hola", "mundo");
+		else if (!ft_strcmp(parsed->args[0], "env"))
 			ft_env(shell);
-		else if (!ft_strcmp(args[0], "pwd"))
+		else if (!ft_strcmp(parsed->args[0], "pwd"))
 			ft_printf("%s\n", ft_pwd());
-		else if (!ft_strcmp(args[0], "exit"))
-			ft_exit();
-		exit(0);
+		else if (!ft_strcmp(parsed->args[0], "exit"))
+			ft_exit(shell);
+		if (parsed->flags.has_stdin)
+			exit(0);
 	}
-	else if (execve(builtin_bin_path(shell, args[0]), args, shell->envp) == -1)
-		ft_error("%s: command not found", 1, args[0]);
+	else if (execve(builtin_bin_path(shell, parsed->args[0]), parsed->args, shell->envp) == -1)
+		ft_error("%s: command not found", 1, parsed->args[0]);
 }
 
-void test_builtins(t_shell *shell)
+void	test_builtins(t_shell *shell)
 {
 	/* 	char	*array[] = {
 		"hello world"
 	};
 	ft_echo(array, sizeof(array) / sizeof(char *)); */
-
 	ft_printf("\n");
 	ft_printf("Current directory: %s\n", ft_pwd());
 	ft_printf("PWD env value=%s\n", ft_getenv(shell, "PWD"));
@@ -56,7 +58,7 @@ void test_builtins(t_shell *shell)
 	ft_printf("HOME env value=%s\n", ft_getenv(shell, "HOME"));
 }
 
-t_bool has_pipe(t_parsed *parsed, char *token)
+t_bool	has_pipe(t_parsed *parsed, char *token)
 {
 	if (ft_strcmp("|", token) == 0)
 	{
@@ -66,14 +68,14 @@ t_bool has_pipe(t_parsed *parsed, char *token)
 	return (false);
 }
 
-t_bool valid_token(char *token)
+t_bool	valid_token(char *token)
 {
 	if (!ft_strevery(token, ft_isascii))
 		ft_error("You entered a non ascii character at %s", 1, token);
 	return (true);
 }
 
-void lsh_split_line(t_shell *shell, char *line)
+void	lsh_split_line(t_shell *shell, char *line)
 {
 	int bufsize = LSH_TOK_BUFSIZE, position = 0;
 	char **tokens = malloc(bufsize * sizeof(char *));
@@ -141,41 +143,54 @@ void redirectOut(char *fileName)
 	close(out);
 }
 
-static void run(t_shell *shell, t_parsed *parsed)
+static void run(t_shell *shell, t_slist *list)
 {
 	pid_t pid;
 
-	pid = fork();
-	if (pid < 0)
+	if (ft_strcmp(list->content->args[0], "exit") != 0)
 	{
-		ft_error("Fork Failed", 0);
-	}
-	else if (pid == 0)
-	{ /* child process */
-		exec(shell, parsed->args);
-	}
-	else
-	{ /* parent process */
-		if (shell->should_wait)
+		if (ft_strcmp(list->content->args[0], "cd") == 0)
 		{
-			waitpid(pid, NULL, 0);
+			exec(shell, list->content);
 		}
 		else
 		{
-			shell->should_wait = false;
+			pid = fork();
+			if (pid < 0)
+			{
+				ft_error("Fork Failed", 0);
+			}
+			else if (pid == 0) /* child process */
+				exec(shell, list->content);
+			else
+			{ /* parent process */
+				if (!list->next && shell->should_wait)
+				{
+					for (size_t i = 0; i < shell->pipe_count + 1; i++)
+					{
+						waitpid(-1, NULL, 0);
+					}
+				}
+				else
+					shell->should_wait = false;
+			}
 		}
+		redirectIn("/dev/tty");
+		redirectOut("/dev/tty");
 	}
-	redirectIn("/dev/tty");
-	redirectOut("/dev/tty");
+	else
+	{
+		shell->running = false;
+	}
 }
 
-static void createPipe(t_shell *shell, t_parsed *parsed)
+static void createPipe(t_shell *shell, t_slist *list)
 {
 	int fd[2];
 	pipe(fd);
 	dup2(fd[1], 1);
 	close(fd[1]);
-	run(shell, parsed);
+	run(shell, list);
 	dup2(fd[0], 0);
 	close(fd[0]);
 }
@@ -190,13 +205,13 @@ static void test(t_shell *shell)
 	while (list->content)
 	{
 		if (list->content->flags.has_stdout)
-			createPipe(shell, list->content);
+			createPipe(shell, list);
 		if (!list->next)
 			break;
 		list = list->next;
 		i++;
 	}
-	run(shell, list->content);
+	run(shell, list);
 }
 
 t_shell *init_shell(char *cmd, char **envp)
@@ -209,20 +224,19 @@ t_shell *init_shell(char *cmd, char **envp)
 	shell->should_wait = true;
 	shell->envp = envp;
 	shell->parsed = NULL;
-	shell->elapsed = NULL;
+	shell->first = true;
 	return (shell);
 }
 
 void exec_shell(t_shell *shell, char *cmd)
 {
-
+	shell->first = false;
 	lsh_split_line(shell, cmd);
 	shell->pipe_count = ft_slstsize(shell->parsed);
 	fill_data(shell->parsed);
 	//ft_slstadd_back(&shell.parsed, ft_slstnew(lsh_split_line(ft_strdup("grep PATH"))));
 	//test_builtins(shell);
 	test(shell);
-
 	//test_extbuiltin(shell, shell->parsed, fd);
 	//test_intextbuiltin(shell);
 }

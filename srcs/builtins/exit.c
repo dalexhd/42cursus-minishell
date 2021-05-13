@@ -6,13 +6,13 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/13 16:35:59 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/13 20:00:28 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_exit(void)
+void	ft_exit(t_shell *shell)
 {
-	ft_success("exit", 1);
+	exit(0);
 }

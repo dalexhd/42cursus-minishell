@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/13 16:41:14 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/13 19:53:05 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <stdarg.h>
 # include <errno.h>
 # include <sys/stat.h>
-
+# include <signal.h>
 /*
 ** Include internal values of the cub3d.
 */
@@ -35,9 +35,10 @@ typedef struct s_shell
 {
 	t_bool	running;
 	t_bool	should_wait;
-	int		elapsed;
 	char	**envp;
 	size_t	pipe_count;
+	size_t	pid;
+	t_bool	first;
 	t_slist	*parsed;
 	t_list	*history;
 }				t_shell;
@@ -54,7 +55,7 @@ void	ft_env(t_shell *shell);
 void	ft_cd(t_shell *shell, char *dir);
 void	ft_export(t_shell *shell, char *env, char *value);
 void	ft_unset(t_shell *shell, char *env);
-void	ft_exit(void);
+void	ft_exit(t_shell *shell);
 
 /*
 ** Define builtins helpers
