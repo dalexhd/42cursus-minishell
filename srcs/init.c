@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/13 15:47:57 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/13 16:42:44 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,12 @@ static void exec(t_shell *shell, char **args)
 			ft_env(shell);
 		else if (!ft_strcmp(args[0], "pwd"))
 			ft_printf("%s\n", ft_pwd());
+		else if (!ft_strcmp(args[0], "exit"))
+			ft_exit();
+		exit(0);
 	}
 	else if (execve(builtin_bin_path(shell, args[0]), args, shell->envp) == -1)
-		ft_error("minishell: %s: command not found", 0, args[0]);
+		ft_error("%s: command not found", 1, args[0]);
 }
 
 void test_builtins(t_shell *shell)
@@ -142,33 +145,28 @@ static void run(t_shell *shell, t_parsed *parsed)
 {
 	pid_t pid;
 
-	if (ft_strcmp(parsed->args[0], "exit") != 0)
+	pid = fork();
+	if (pid < 0)
 	{
-		pid = fork();
-		if (pid < 0)
-		{
-			ft_error("Fork Failed", 0);
-		}
-		else if (pid == 0)
-		{ /* child process */
-			exec(shell, parsed->args);
-		}
-		else
-		{ /* parent process */
-			if (shell->should_wait)
-			{
-				waitpid(pid, NULL, 0);
-			}
-			else
-			{
-				shell->should_wait = false;
-			}
-		}
-		redirectIn("/dev/tty");
-		redirectOut("/dev/tty");
+		ft_error("Fork Failed", 0);
+	}
+	else if (pid == 0)
+	{ /* child process */
+		exec(shell, parsed->args);
 	}
 	else
-		shell->running = 0;
+	{ /* parent process */
+		if (shell->should_wait)
+		{
+			waitpid(pid, NULL, 0);
+		}
+		else
+		{
+			shell->should_wait = false;
+		}
+	}
+	redirectIn("/dev/tty");
+	redirectOut("/dev/tty");
 }
 
 static void createPipe(t_shell *shell, t_parsed *parsed)
@@ -217,7 +215,6 @@ t_shell *init_shell(char *cmd, char **envp)
 
 void exec_shell(t_shell *shell, char *cmd)
 {
-
 
 	lsh_split_line(shell, cmd);
 	shell->pipe_count = ft_slstsize(shell->parsed);

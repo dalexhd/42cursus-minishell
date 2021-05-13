@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/13 10:39:29 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/13 16:33:15 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,7 @@ VER					=	$(shell lsb_release -sr)
 SRCS				=	init.c
 
 BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
-						builtins/unset.c
+						builtins/unset.c	builtins/exit.c
 
 UTILS				=	utils/builtins.c	utils/file.c
 

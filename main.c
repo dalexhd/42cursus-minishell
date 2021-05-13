@@ -16,28 +16,6 @@ void ft_clear_memory(t_shell *shell)
 	}
 }
 
-char *getCurrentDir(char *path)
-{
-	char *token;
-	char *directory;
-	size_t length;
-
-	token = ft_strrchr(path, '/');
-
-	if (token == NULL)
-	{
-		printf("Error"); /* You decide here */
-		exit(1);
-	}
-
-	length = ft_strlen(token);
-	directory = malloc(length);
-	ft_memcpy(directory, token + 1, length);
-
-	return directory;
-}
-
-
 int timediff(clock_t t1, clock_t t2)
 {
 	long elapsed;
@@ -60,7 +38,6 @@ int main(int argc, char **argv, char **envp)
 		else
 			ft_printf(C_CYAN "Wellcome to our minishell 😋" C_GREEN "❯ " C_X, shell->elapsed);
 		fflush(stdout);
-
 		clock_t t1, t2;
 		shell->elapsed = 0;
 		t1 = clock();
@@ -71,6 +48,6 @@ int main(int argc, char **argv, char **envp)
 		shell->elapsed = timediff(t1, t2);
 	}
 	ft_clear_memory(shell);
-	//ft_success("Nice 🧡", 1);
+	ft_success("Nice 🧡", 1);
 	return (0);
 }

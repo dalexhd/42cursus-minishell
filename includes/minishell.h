@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/13 15:38:09 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/13 16:41:14 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	ft_env(t_shell *shell);
 void	ft_cd(t_shell *shell, char *dir);
 void	ft_export(t_shell *shell, char *env, char *value);
 void	ft_unset(t_shell *shell, char *env);
+void	ft_exit(void);
 
 /*
 ** Define builtins helpers
@@ -66,4 +67,5 @@ char	*ft_getenv(t_shell *shell, char *env);
 t_bool	ft_isbuiltin(char *builtin);
 t_bool	file_exists(char *filename);
 char	*builtin_bin_path(t_shell *shell, char *builtin);
+char	*getCurrentDir(char *path);
 #endif
