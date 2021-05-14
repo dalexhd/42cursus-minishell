@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/13 19:09:17 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/14 16:59:14 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,19 @@
 */
 
 # include "minishell.h"
+
+typedef struct s_redirect
+{
+	t_bool	out;
+	t_bool	in;
+}				t_redirect;
+
 typedef struct s_flags
 {
-	t_bool	has_stdin;
-	t_bool	has_stdout;
-	t_bool	has_pipe;
+	t_bool		has_stdin;
+	t_bool		has_stdout;
+	t_bool		has_pipe;
+	t_redirect	redirect;
 }				t_flags;
 
 typedef struct s_parsed

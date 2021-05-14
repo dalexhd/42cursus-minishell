@@ -1,11 +1,9 @@
 #include "includes/minishell.h"
 #include <stdio.h>
-#include <time.h>
 
-
-void ft_clear_memory(t_shell *shell)
+void	ft_clear_memory(t_shell *shell)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (shell->envp[i] != 0)
@@ -16,15 +14,7 @@ void ft_clear_memory(t_shell *shell)
 	}
 }
 
-int timediff(clock_t t1, clock_t t2)
-{
-	long elapsed;
-	elapsed =  ((double)t2 - t1) / CLOCKS_PER_SEC * 1000;
-	return elapsed;
-}
-
-
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_shell *shell;
 	char *line;

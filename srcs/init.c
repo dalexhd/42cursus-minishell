@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/14 16:12:43 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/14 17:30:17 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 
 #define LSH_TOK_BUFSIZE 64
 #define LSH_TOK_DELIM " \r\n\a\t'\\"
+
+//FIXME: Pipe handling cat /dev/urandom https://github.com/Sisteem/21sh/issues/12
 
 static	void	exec(t_shell *shell, t_parsed *parsed)
 {
@@ -34,31 +36,21 @@ static	void	exec(t_shell *shell, t_parsed *parsed)
 		ft_error("%s: command not found", 1, parsed->args[0]);
 }
 
-void	test_builtins(t_shell *shell)
-{
-	/* 	char	*array[] = {
-		"hello world"
-	};
-	ft_echo(array, sizeof(array) / sizeof(char *)); */
-	ft_printf("\n");
-	ft_printf("Current directory: %s\n", ft_pwd());
-	ft_printf("PWD env value=%s\n", ft_getenv(shell, "PWD"));
-	ft_printf("OLDPWD env value=%s\n", ft_getenv(shell, "OLDPWD"));
-	ft_info("Lets move directory ../", false);
-	ft_cd(shell, "../");
-	ft_printf("Current directory: %s\n", ft_pwd());
-	ft_printf("PWD env value=%s\n", ft_getenv(shell, "PWD"));
-	ft_printf("OLDPWD env value=%s\n", ft_getenv(shell, "OLDPWD"));
-	ft_info("Lets unset HOME env variable", false);
-	ft_unset(shell, "HOME");
-	ft_printf("HOME env value=%s\n", ft_getenv(shell, "HOME"));
-}
-
 t_bool	has_pipe(t_parsed *parsed, char *token)
 {
 	if (ft_strcmp("|", token) == 0)
 	{
 		parsed->flags.has_stdout = true;
+		return (true);
+	}
+	if (ft_strcmp(">", token) == 0)
+	{
+		parsed->flags.redirect.out = true;
+		return (true);
+	}
+	if (ft_strcmp("<", token) == 0)
+	{
+		parsed->flags.redirect.in = true;
 		return (true);
 	}
 	return (false);
@@ -80,6 +72,8 @@ void	lsh_split_line(t_shell *shell, char *line)
 	parsed->line = ft_strdup(line);
 	parsed->flags.has_stdin = false;
 	parsed->flags.has_stdout = false;
+	parsed->flags.redirect.in = false;
+	parsed->flags.redirect.out = false;
 	token = strtok(line, LSH_TOK_DELIM);
 	while (token != NULL && !has_pipe(parsed, token))
 	{
@@ -156,9 +150,7 @@ static void run(t_shell *shell)
 				else
 				{ /* parent process */
 					for (size_t i = 0; i < shell->pipe_count + 1; i++)
-					{
 						waitpid(-1, NULL, 0);
-					}
 					close(pipes[1]);
 					input = pipes[0];
 					list = list->next;
