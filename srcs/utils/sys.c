@@ -1,18 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   sys.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/13 20:00:28 by aborboll         ###   ########.fr       */
+/*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/13 18:10:46 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_exit(t_shell *shell)
+char	*getCurrentDir(char *path)
 {
-	exit(0);
+	char *token;
+	char *directory;
+	size_t length;
+
+	token = ft_strrchr(path, '/');
+
+	if (token == NULL)
+		ft_error("Error getting dir", 1); /* You decide here */
+	length = ft_strlen(token);
+	directory = malloc(length);
+	ft_memcpy(directory, token + 1, length);
+	return directory;
 }

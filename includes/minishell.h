@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/13 19:53:05 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/14 14:11:59 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,12 @@
 # include "internal.h"
 # include "lists.h"
 
+/*
+** Here we define or unique global variable. We need it,
+** so the signal hander works...
+*/
+volatile t_bool running;
+
 typedef struct s_shell
 {
 	t_bool	running;
@@ -43,8 +49,9 @@ typedef struct s_shell
 	t_list	*history;
 }				t_shell;
 
-t_shell *init_shell(char *cmd, char **envp);
+t_shell *init_shell(char **envp);
 void	exec_shell(t_shell *shell, char *cmd);
+void	signal_handler(void);
 
 /*
 ** Define builtins
@@ -55,7 +62,6 @@ void	ft_env(t_shell *shell);
 void	ft_cd(t_shell *shell, char *dir);
 void	ft_export(t_shell *shell, char *env, char *value);
 void	ft_unset(t_shell *shell, char *env);
-void	ft_exit(t_shell *shell);
 
 /*
 ** Define builtins helpers

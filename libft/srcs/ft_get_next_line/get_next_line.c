@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 08:08:19 by aborboll          #+#    #+#             */
-/*   Updated: 2021/04/25 15:31:39 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/14 12:27:24 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	get_next_line(int fd, char **line)
 
 	buff = malloc((sizeof(char) * BUFF_SIZE) + 1);
 	if (fd < 0 || line == NULL || BUFF_SIZE < 1
-		|| buff)
+		|| !buff)
 		return (-1);
 	ret = read(fd, buff, BUFF_SIZE);
 	while (ret > 0)

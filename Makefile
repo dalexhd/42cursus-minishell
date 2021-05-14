@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/13 16:33:15 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/14 14:11:06 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,9 +49,9 @@ VER					=	$(shell lsb_release -sr)
 SRCS				=	init.c
 
 BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
-						builtins/unset.c	builtins/exit.c
+						builtins/unset.c
 
-UTILS				=	utils/builtins.c	utils/file.c
+UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c
 
 LISTS				=	lists/ft_slstadd_back.c		lists/ft_slstadd_front.c	lists/ft_slstclear.c	lists/ft_slstdelone.c	lists/ft_slstiter.c \
 						lists/ft_slstlast.c			lists/ft_slstnew.c			lists/ft_slstsize.c
@@ -223,6 +223,9 @@ leak:		## Run memory leak for valid cub file.
 				echo ${CYAN};cat valgrind_out | grep -A4 "HEAP SUMMARY:" | cut -d = -f 5 | cut -c 2-;\
 			fi
 
+##@ Helpers
+kill:		## Kill all minishells
+			@pkill -f $(OUTPUT)
 ##@ Help
 help:		## View all available commands.
 			$(shell $(TARGETS_EXE))

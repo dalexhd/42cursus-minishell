@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/13 21:04:14 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/14 15:28:42 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,6 @@ static	void	exec(t_shell *shell, t_parsed *parsed)
 			ft_env(shell);
 		else if (!ft_strcmp(parsed->args[0], "pwd"))
 			ft_printf("%s\n", ft_pwd());
-		else if (!ft_strcmp(parsed->args[0], "exit"))
-			ft_exit(shell);
-		if (parsed->flags.has_stdin)
-			exit(0);
 	}
 	else if (execve(builtin_bin_path(shell, parsed->args[0]), parsed->args, shell->envp) == -1)
 		ft_error("%s: command not found", 1, parsed->args[0]);
@@ -68,13 +64,6 @@ t_bool	has_pipe(t_parsed *parsed, char *token)
 	return (false);
 }
 
-t_bool	valid_token(char *token)
-{
-	if (!ft_strevery(token, ft_isascii))
-		ft_error("You entered a non ascii character at %s", 1, token);
-	return (true);
-}
-
 void	lsh_split_line(t_shell *shell, char *line)
 {
 	int bufsize = LSH_TOK_BUFSIZE, position = 0;
@@ -92,7 +81,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 	parsed->flags.has_stdin = false;
 	parsed->flags.has_stdout = false;
 	token = strtok(line, LSH_TOK_DELIM);
-	while (token != NULL && valid_token(token) && !has_pipe(parsed, token))
+	while (token != NULL && !has_pipe(parsed, token))
 	{
 		tokens[position] = token;
 		position++;
@@ -129,98 +118,66 @@ static void fill_data(t_slist *list)
 	}
 }
 
-void redirectIn(char *fileName)
-{
-	int in = open(fileName, O_RDONLY);
-	dup2(in, 0);
-	close(in);
-}
-
-void redirectOut(char *fileName)
-{
-	int out = open(fileName, O_WRONLY | O_TRUNC | O_CREAT, 0600);
-	dup2(out, 1);
-	close(out);
-}
-
-static void run(t_shell *shell, t_slist *list)
+static void run(t_shell *shell)
 {
 	pid_t pid;
+	t_slist *list;
+	int pipes[2];
+	int	input;
 
-	if (ft_strcmp(list->content->args[0], "exit") != 0)
+	input = 0;
+	list = shell->parsed;
+	while (list)
 	{
-		if (ft_strcmp(list->content->args[0], "cd") == 0)
+		if (ft_strcmp(list->content->args[0], "exit") != 0)
 		{
-			exec(shell, list->content);
-		}
-		else
-		{
-			pid = fork();
-			if (pid < 0)
+			if (ft_strcmp(list->content->args[0], "cd") == 0)
 			{
-				ft_error("Fork Failed", 0);
-			}
-			else if (pid == 0) /* child process */
 				exec(shell, list->content);
+			}
 			else
-			{ /* parent process */
-				if (!list->next && shell->should_wait)
+			{
+				pipe(pipes);
+				pid = fork();
+				if (pid < 0)
 				{
+					ft_error("Fork Failed", 0);
+				}
+				else if (pid == 0) /* child process */
+				{
+					dup2(input, STDIN_FILENO);
+					if (list->next)
+						dup2(pipes[1], STDOUT_FILENO);
+					close(pipes[0]);
+					exec(shell, list->content);
+					exit(0);
+				}
+				else
+				{ /* parent process */
 					for (size_t i = 0; i < shell->pipe_count + 1; i++)
 					{
 						waitpid(-1, NULL, 0);
 					}
+					close(pipes[1]);
+					input = pipes[0];
+					list = list->next;
 				}
-				else
-					shell->should_wait = false;
 			}
 		}
-		redirectIn("/dev/tty");
-		redirectOut("/dev/tty");
-	}
-	else
-	{
-		shell->running = false;
+		else
+		{
+			running = false;
+			break ;
+		}
 	}
 }
 
-static void createPipe(t_shell *shell, t_slist *list)
-{
-	int fd[2];
-	pipe(fd);
-	dup2(fd[1], 1);
-	close(fd[1]);
-	run(shell, list);
-	dup2(fd[0], 0);
-	close(fd[0]);
-}
-
-static void test(t_shell *shell)
-{
-	size_t i;
-	t_slist *list;
-
-	i = 0;
-	list = shell->parsed;
-	while (list->content)
-	{
-		if (list->content->flags.has_stdout)
-			createPipe(shell, list);
-		if (!list->next)
-			break;
-		list = list->next;
-		i++;
-	}
-	run(shell, list);
-}
-
-t_shell *init_shell(char *cmd, char **envp)
+t_shell *init_shell(char **envp)
 {
 	t_shell *shell;
-	//int		fd[2];
 
 	shell = malloc(sizeof(t_shell));
-	shell->running = true;
+	running = true;
 	shell->should_wait = true;
 	shell->envp = envp;
 	shell->parsed = NULL;
@@ -236,7 +193,7 @@ void exec_shell(t_shell *shell, char *cmd)
 	fill_data(shell->parsed);
 	//ft_slstadd_back(&shell.parsed, ft_slstnew(lsh_split_line(ft_strdup("grep PATH"))));
 	//test_builtins(shell);
-	test(shell);
+	run(shell);
 	//test_extbuiltin(shell, shell->parsed, fd);
 	//test_intextbuiltin(shell);
 }

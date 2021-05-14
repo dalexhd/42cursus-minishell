@@ -27,27 +27,22 @@ int timediff(clock_t t1, clock_t t2)
 int main(int argc, char **argv, char **envp)
 {
 	t_shell *shell;
+	char *line;
 
 	(void)argc;
 	(void)**argv;
-	shell = init_shell(argv[1], envp);
-	while (shell->running)
+	shell = init_shell(envp);
+	signal_handler();
+	while (running)
 	{
-		if (shell->elapsed)
-			ft_printf(C_GREEN "%s "C_X"(%ims)" C_GREEN "❯ " C_X, getCurrentDir(ft_pwd()), shell->elapsed);
+		if (shell->first)
+			ft_fprintf(STDOUT_FILENO, C_CYAN "Wellcome to our minishell 😋" C_GREEN "❯ " C_X);
 		else
-			ft_printf(C_CYAN "Wellcome to our minishell 😋" C_GREEN "❯ " C_X, shell->elapsed);
-		fflush(stdout);
-		clock_t t1, t2;
-		shell->elapsed = 0;
-		t1 = clock();
-		char input[1024];
-		fgets(input, 1024, stdin);
-		exec_shell(shell, input);
-		t2 = clock();
-		shell->elapsed = timediff(t1, t2);
+			ft_fprintf(STDOUT_FILENO, C_GREEN "%s "C_GREEN "❯ " C_X, getCurrentDir(ft_pwd()));
+		get_next_line(0, &line);
+		exec_shell(shell, line);
+		free(line);
 	}
 	ft_clear_memory(shell);
-	ft_success("Nice 🧡", 1);
 	return (0);
 }
