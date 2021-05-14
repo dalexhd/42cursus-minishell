@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/14 15:28:42 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/14 16:12:43 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ static void run(t_shell *shell)
 			if (ft_strcmp(list->content->args[0], "cd") == 0)
 			{
 				exec(shell, list->content);
+				list = list->next;
 			}
 			else
 			{
@@ -191,11 +192,5 @@ void exec_shell(t_shell *shell, char *cmd)
 	lsh_split_line(shell, cmd);
 	shell->pipe_count = ft_slstsize(shell->parsed);
 	fill_data(shell->parsed);
-	//ft_slstadd_back(&shell.parsed, ft_slstnew(lsh_split_line(ft_strdup("grep PATH"))));
-	//test_builtins(shell);
 	run(shell);
-	//test_extbuiltin(shell, shell->parsed, fd);
-	//test_intextbuiltin(shell);
 }
-
-//ft_lineexec("export HOLA=adios && env | grep HOLA");
