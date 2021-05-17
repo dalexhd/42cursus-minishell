@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/14 14:11:59 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/17 14:50:11 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 ** Here we define or unique global variable. We need it,
 ** so the signal hander works...
 */
-volatile t_bool running;
+volatile t_bool	running;
 
 typedef struct s_shell
 {
@@ -75,4 +75,5 @@ t_bool	ft_isbuiltin(char *builtin);
 t_bool	file_exists(char *filename);
 char	*builtin_bin_path(t_shell *shell, char *builtin);
 char	*getCurrentDir(char *path);
+void	exec(t_shell *shell, t_parsed *parsed);
 #endif

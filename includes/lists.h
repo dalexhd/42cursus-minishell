@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/14 16:59:14 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/17 14:50:37 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_parsed
 {
 	char	**args;
 	char	*line;
+	pid_t	pid;
 	t_flags	flags;
 }				t_parsed;
 

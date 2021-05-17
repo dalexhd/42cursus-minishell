@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/14 17:30:17 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/17 17:28:31 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,23 +18,6 @@
 #define LSH_TOK_DELIM " \r\n\a\t'\\"
 
 //FIXME: Pipe handling cat /dev/urandom https://github.com/Sisteem/21sh/issues/12
-
-static	void	exec(t_shell *shell, t_parsed *parsed)
-{
-	if (ft_isbuiltin(parsed->args[0]))
-	{
-		if (!ft_strcmp(parsed->args[0], "cd"))
-			ft_cd(shell, parsed->args[1]);
-		else if (!ft_strcmp(parsed->args[0], "export"))
-			ft_export(shell, "hola", "mundo");
-		else if (!ft_strcmp(parsed->args[0], "env"))
-			ft_env(shell);
-		else if (!ft_strcmp(parsed->args[0], "pwd"))
-			ft_printf("%s\n", ft_pwd());
-	}
-	else if (execve(builtin_bin_path(shell, parsed->args[0]), parsed->args, shell->envp) == -1)
-		ft_error("%s: command not found", 1, parsed->args[0]);
-}
 
 t_bool	has_pipe(t_parsed *parsed, char *token)
 {
@@ -121,46 +104,44 @@ static void run(t_shell *shell)
 
 	input = 0;
 	list = shell->parsed;
+
 	while (list)
 	{
-		if (ft_strcmp(list->content->args[0], "exit") != 0)
-		{
-			if (ft_strcmp(list->content->args[0], "cd") == 0)
-			{
-				exec(shell, list->content);
-				list = list->next;
-			}
-			else
-			{
-				pipe(pipes);
-				pid = fork();
-				if (pid < 0)
-				{
-					ft_error("Fork Failed", 0);
-				}
-				else if (pid == 0) /* child process */
-				{
-					dup2(input, STDIN_FILENO);
-					if (list->next)
-						dup2(pipes[1], STDOUT_FILENO);
-					close(pipes[0]);
-					exec(shell, list->content);
-					exit(0);
-				}
-				else
-				{ /* parent process */
-					for (size_t i = 0; i < shell->pipe_count + 1; i++)
-						waitpid(-1, NULL, 0);
-					close(pipes[1]);
-					input = pipes[0];
-					list = list->next;
-				}
-			}
-		}
-		else
+		if (ft_strcmp(list->content->args[0], "exit") == 0)
 		{
 			running = false;
 			break ;
+		}
+		else if (ft_strcmp(list->content->args[0], "cd") == 0)
+		{
+				exec(shell, list->content);
+				list = list->next;
+		}
+		else
+		{
+			pipe(pipes);
+			pid = fork();
+			if (pid < 0)
+			{
+				ft_error("Fork Failed", 0);
+			}
+			else if (pid == 0) /* child process */
+			{
+				dup2(input, STDIN_FILENO);
+				if (list->next)
+					dup2(pipes[1], STDOUT_FILENO);
+				close(pipes[0]);
+				list->content->pid = pid;
+				exec(shell, list->content);
+				exit(0);
+			}
+			else /* parent process */
+			{
+				close(pipes[1]);
+				list->content->pid = pid;
+				input = pipes[0];
+				list = list->next;
+			}
 		}
 	}
 }
@@ -178,11 +159,28 @@ t_shell *init_shell(char **envp)
 	return (shell);
 }
 
+static	void	*terminate(t_shell *shell)
+{
+	t_slist *list;
+
+	list = shell->parsed;
+	while (list)
+	{
+		waitpid(list->content->pid, NULL, 0);
+		list = list->next;
+	}
+	list = shell->parsed;
+}
+
 void exec_shell(t_shell *shell, char *cmd)
 {
+	int				exit_status;
+
+	shell->parsed = NULL;
 	shell->first = false;
 	lsh_split_line(shell, cmd);
 	shell->pipe_count = ft_slstsize(shell->parsed);
 	fill_data(shell->parsed);
 	run(shell);
+	terminate(shell);
 }
