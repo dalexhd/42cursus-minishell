@@ -16,14 +16,69 @@
 //getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
 //tgetnum, tgetstr, tgoto, tputs
 
+typedef struct s_list
+{
+	void			*content;
+	struct s_list	*next;
+	struct s_list	*prev;
+}				t_list;
+
 typedef struct s_config
 {
 	char			*term_name;
-	char			text[2048];
+	char			line[2048];
+	t_list			*text;
 	int				pos;
+	int				cursor;
 	struct termios	termios_raw;
 	struct termios	termios_new;
 }				t_config;
+
+void	ft_lstadd_front(t_list **alst, t_list *new)
+{
+	if (*alst)
+	{
+		new->next = *alst;
+		(*alst)->prev = new;
+	}
+	*alst = new;
+}
+
+t_list	*ft_lstnew(void *content)
+{
+	t_list	*elem;
+
+	elem = (t_list *)malloc(sizeof(t_list));
+	if (elem == NULL)
+		return (NULL);
+	elem->content = content;
+	elem->next = NULL;
+	elem->prev = NULL;
+	return (elem);
+}
+
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+{
+	size_t			i;
+	size_t			size;
+	unsigned char	*source;
+
+	if (!dst)
+		return (dstsize);
+	size = strlen(src);
+	i = 0;
+	source = (unsigned char *)src;
+	if (dstsize > 0)
+	{
+		while (src[i] != '\0' && i < dstsize - 1)
+		{
+			dst[i] = src[i];
+			i++;
+		}
+		dst[i] = '\0';
+	}
+	return (size);
+}
 
 void	ft_putstr_fd(char *s, int fd)
 {
@@ -60,6 +115,8 @@ void	end_tc(t_config *e)
 
 void	init_tc(t_config *e)
 {
+	bzero(e, sizeof(t_config));
+	e->cursor  = 12;
 	e->term_name = getenv("TERM");
 	tgetent(NULL, e->term_name);
 	if (tcgetattr(STDIN_FILENO, &e->termios_raw) == -1)
@@ -76,44 +133,93 @@ void	init_tc(t_config *e)
 
 void	eraser(t_config *e)
 {
-	tputs(tgetstr("le", NULL), 1, ft_putchar);
-	tputs(tgetstr("dc", NULL), 1, ft_putchar);
+	if (e->cursor > 12)
+	{
+		tputs(tgetstr("le", NULL), 1, ft_putchar);
+		tputs(tgetstr("dc", NULL), 1, ft_putchar);
+		e->cursor--;
+		e->line[--e->pos] = 0;
+	}
+}
+
+void	uplore(t_config *e)
+{
+//	write(STDOUT_FILENO, "historial arriba", 17);
+	if (!e->text)
+		return ;
+	tputs(tgetstr("cr", NULL), 1, ft_putchar);
+	tputs(tgetstr("dl", NULL), 1, ft_putchar);
+	ft_putstr_fd("hellshell$ ", 1);
+	ft_putstr_fd(e->text->content, 1);
+	strlcpy(e->line, e->text->content, strlen(e->text->content));
+	e->cursor = 12 + strlen(e->text->content);
+	if (e->text->next)
+		e->text = e->text->next;
+}
+
+void	downlore(t_config *e)
+{
+	if (!e->text)
+		return ;
+	if (e->text->prev)
+	{
+		tputs(tgetstr("cr", NULL), 1, ft_putchar);
+		tputs(tgetstr("dl", NULL), 1, ft_putchar);
+//		write(STDOUT_FILENO, "hellshell$  ", 11);
+		ft_putstr_fd("hellshell$ ", 1);
+		ft_putstr_fd(e->text->prev->content, 1);
+		strlcpy(e->line, e->text->content, strlen(e->text->content));
+		e->cursor = 12 + strlen(e->text->prev->content);
+		e->text = e->text->prev;
+	}
+}
+
+void	sandman(t_config *e)
+{
+//	write(STDOUT_FILENO, "\nlinea-0: ", 10);
+//	ft_putstr_fd(e->line, 1);
+	if (*e->line)
+		ft_lstadd_front(&e->text, ft_lstnew(strdup(e->line)));
+	bzero(&e->line, 2048);
+	e->pos = 0;
+	write(STDOUT_FILENO, "\nhellshell$ ", 13);
+	e->cursor = 11;
+	
 }
 
 void	tear(t_config *e, char c)
 {
-//	write(STDOUT_FILENO, &c, 1);
-	e->text[e->pos] = c;
-//	e->text[e->pos] = 0;
-	write(STDOUT_FILENO, &e->text[e->pos], 1);
-//	ft_putstr_fd(e->text, 1);
-//	write(STDOUT_FILENO, "\n", 1);
+	write(STDOUT_FILENO, &c, 1);
+	e->line[e->pos++] = c;
+	e->line[e->pos] = 0;
+	e->cursor++;
 }
 
 void	loureed(t_config *e)
 {
-	char	buf[5];
+	char	buf[4];
 
 	e->pos = 0;
-	while (read(STDIN_FILENO, &buf, 5) > 0)
+	bzero(&buf, 4);
+	while (read(STDIN_FILENO, &buf, 4) > 0)
 	{
-		if (buf[0] == 'D' - 64)
+		if (buf[0] == 'D' - 64)//es un puto exit
 			end_tc(e);
 		else if (buf[0] == 127)
 			eraser(e);
-//		else if (buf[0] == '\\' - 64)
-//			end_tc(e);
-		else if (buf[0] == 'C' - 64)
+		else if (buf[0] == '\\' - 64)//limpia la linea
+			end_tc(e);
+		else if (buf[0] == 'C' - 64)//es como un enter perro sin historial
 			tputs(tgetstr("cl", NULL), 1, ft_putchar);
 		else if (!strcmp(buf, tgetstr("ku", NULL)))
-			write(STDOUT_FILENO, "historial arriba\n", 17);
+			uplore(e);
 		else if (!strcmp(buf, tgetstr("kd", NULL)))
-			write(STDOUT_FILENO, "historial abajo\n", 16);
+			downlore(e);
 		else if (buf[0] == 'M' - 64)
-			write(STDOUT_FILENO, "\n", 1);
+			sandman(e);
 		else if (buf[0] > 31 && buf[0] < 127 && buf[1] == 0)
 			tear(e, buf[0]);
-		bzero(&buf, 5);
+		bzero(&buf, 4);
 	}
 }
 
@@ -122,8 +228,32 @@ int	main(int arc, char **arv, char **env)
 	t_config	e;
 
 	init_tc(&e);
-//	write(STDOUT_FILENO, "hellshell$ ", 12);
+	write(STDOUT_FILENO, "hellshell$ ", 12);
 	loureed(&e);
 	end_tc(&e);
 	return (0);
 }
+
+/*
+void	sandman(t_config *e)
+{
+	write(STDOUT_FILENO, "\nlinea-0: ", 10);
+	ft_putstr_fd(e->text[0], 1);
+	write(STDOUT_FILENO, "\nlinea-1: ", 10);
+	ft_putstr_fd(e->text[1], 1);
+	bzero(e->text[1], 2048);
+	ft_strlcpy(e->text[1], e->text[0], 2048);
+	bzero(e->text[0], 2048);
+	write(STDOUT_FILENO, "\n", 1);
+	e->pos = 0;
+}
+void	tear(t_config *e, char c)
+{
+	write(STDOUT_FILENO, &c, 1);
+	e->text[0][e->pos++] = c;
+	e->text[0][e->pos] = 0;
+//	write(STDOUT_FILENO, &e->text[e->pos], 1);
+//	ft_putstr_fd(e->text, 1);
+//	write(STDOUT_FILENO, "\n", 1);
+}
+*/
