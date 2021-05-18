@@ -1,0 +1,26 @@
+{
+	"files.associations": {
+		"minishell.h": "c",
+		"__hash_table": "c",
+		"__split_buffer": "c",
+		"array": "c",
+		"bitset": "c",
+		"initializer_list": "c",
+		"iterator": "c",
+		"string": "c",
+		"string_view": "c",
+		"unordered_map": "c",
+		"utility": "c",
+		"vector": "c",
+		"string.h": "c",
+		"memory": "c"
+	},
+	"42header.email": "aborboll@student.42.fr",
+	"42header.username": "aborboll",
+	"editor.tabSize": 4,
+	"editor.insertSpaces": false,
+	"editor.renderWhitespace": "all",
+	"files.trimTrailingWhitespace": true,
+	"files.insertFinalNewline": true,
+	"42norminette.showErrors": "one"
+}
