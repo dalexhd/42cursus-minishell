@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/19 02:11:53 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/19 23:46:16 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 
 #define LSH_TOK_BUFSIZE 64
 #define LSH_TOK_DELIM " \r\n\a\t'\\"
-
-//FIXME: Pipe handling cat /dev/urandom https://github.com/Sisteem/21sh/issues/12
 
 t_bool	has_pipe(t_parsed *parsed, char *token)
 {
@@ -81,6 +79,79 @@ void	lsh_split_line(t_shell *shell, char *line)
 		lsh_split_line(shell, ft_strtrim(ft_substr(parsed->line, token - line + 1, ft_strlen(parsed->line)), " "));
 }
 
+t_pipes	*locate_pipes(char *line)
+{
+	t_pipes	*pipes;
+	size_t	i;
+	t_bool	open_quote;
+	t_bool	open_dquote;
+
+	i = 0;
+	open_quote = false;
+	open_dquote = false;
+	pipes = (t_pipes *)malloc(sizeof(t_pipes));
+	pipes->count = 0;
+	pipes->pos = NULL;
+	while (line[i])
+	{
+		char a = line[i];
+		if (line[i] == '"')
+			open_quote = !open_quote;
+		if (line[i] == '\'')
+			open_dquote = !open_dquote;
+		if (!open_quote && !open_dquote && line[i] == '|')
+		{
+			pipes->count++;
+			ft_lstadd_back(&pipes->pos, ft_lstnew(i));
+		}
+		i++;
+	}
+	return (pipes);
+}
+
+void	lsh_split_line2(t_shell *shell, char *line)
+{
+	t_pipes	*pipes;
+	t_list	*list;
+	size_t	i;
+	size_t	j;
+	size_t	u;
+	t_list	*tokens;
+
+	i = 0;
+	i = 0;
+	u = ft_strlen(line);
+	pipes = locate_pipes(line);
+	list = pipes->pos;
+	ft_lstadd_back(&tokens, ft_lstnew(ft_substr(line, 0, list->content)));
+	while (i < pipes->count)
+	{
+		j = 0;
+		if (list->prev)
+		{
+			j = list->content - list->prev->content;
+			if (!list->next)
+				j = u;
+		}
+		else if (list->next)
+			j = list->next->content - list->content;
+		else
+		{
+			j = u;
+		}
+		ft_lstadd_back(&tokens, ft_lstnew(ft_substr(line, list->content, j)));
+		list = list->next;
+		i++;
+	}
+	i = 0;
+	while (tokens)
+	{
+		ft_printf("Token[%i] => %s\n", i, tokens->content);
+		tokens = tokens->next;
+		i++;
+	}
+}
+
 static void fill_data(t_slist *list)
 {
 	while (list->content)
@@ -118,7 +189,7 @@ static	void	run(t_shell *shell)
 	{
 		if (ft_strcmp(list->content->args[0], "exit") == 0)
 		{
-			running = false;
+			g_running = false;
 			break ;
 		}
 		else if (ft_strcmp(list->content->args[0], "cd") == 0)
@@ -250,7 +321,7 @@ t_shell *init_shell(char **envp)
 	t_shell *shell;
 
 	shell = malloc(sizeof(t_shell));
-	running = true;
+	g_running = true;
 	shell->should_wait = true;
 	shell->envp = envp;
 	shell->parsed = NULL;
@@ -277,9 +348,11 @@ void exec_shell(t_shell *shell, char *cmd)
 
 	shell->parsed = NULL;
 	shell->first = false;
-	lsh_split_line(shell, cmd);
-	shell->pipe_count = ft_slstsize(shell->parsed);
+	lsh_split_line2(shell, cmd);
+/* 	shell->pipe_count = ft_slstsize(shell->parsed);
 	fill_data(shell->parsed);
 	run(shell);
-	terminate(shell);
+	terminate(shell); */
 }
+
+//ls | ls | "a" | "abaaa" | "aaaaaaa"aaasdasd | sdadaaaawqdwqdqw

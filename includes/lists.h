@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/17 14:50:37 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/19 20:02:10 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,12 @@ typedef struct s_parsed
 	pid_t	pid;
 	t_flags	flags;
 }				t_parsed;
+
+typedef struct s_pipes
+{
+	size_t	count;
+	t_list	*pos;
+}				t_pipes;
 
 typedef struct s_slist
 {

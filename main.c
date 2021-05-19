@@ -23,7 +23,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)**argv;
 	shell = init_shell(envp);
 	signal_handler();
-	while (running)
+	while (g_running)
 	{
 		if (shell->first)
 			ft_fprintf(STDOUT_FILENO, C_CYAN "Wellcome to our minishell 😋" C_GREEN "❯ " C_X);

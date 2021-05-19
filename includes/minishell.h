@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/19 01:48:58 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/19 18:09:05 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,11 @@
 ** Here we define or unique global variable. We need it,
 ** so the signal hander works...
 */
-volatile t_bool	running;
+volatile t_bool	g_running;
 
 typedef struct s_shell
 {
-	t_bool	running;
+	t_bool	g_running;
 	t_bool	should_wait;
 	char	**envp;
 	size_t	pipe_count;
