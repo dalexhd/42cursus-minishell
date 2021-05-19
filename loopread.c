@@ -27,12 +27,24 @@ typedef struct s_config
 {
 	char			*term_name;
 	char			line[2048];
+	char			aux[2048];
 	t_list			*text;
 	int				pos;
 	int				cursor;
 	struct termios	termios_raw;
 	struct termios	termios_new;
 }				t_config;
+
+t_list	*ft_lstfirst(t_list *lst)
+{
+	if (!lst)
+		return (0);
+	while (lst->prev != 0)
+	{
+		lst = lst->prev;
+	}
+	return (lst);
+}
 
 void	ft_lstadd_front(t_list **alst, t_list *new)
 {
@@ -106,6 +118,33 @@ void	die(char *msg)
 	exit (1);
 }
 
+void	ctld(t_config *e)
+{
+	if (!*e->line)
+	{
+		write(STDOUT_FILENO, "exit\n", 5);
+		exit(0);
+	}
+}
+
+void	ctlc(t_config *e)
+{
+	bzero(&e->line, 2048);
+	e->pos = 0;
+	write(STDOUT_FILENO, "\nhellshell$ ", 13);
+	e->cursor = 11;
+}
+
+void	ctlb(t_config *e)
+{
+	bzero(&e->line, 2048);
+	e->pos = 0;
+	tputs(tgetstr("cr", NULL), 1, ft_putchar);
+	tputs(tgetstr("dl", NULL), 1, ft_putchar);
+	write(STDOUT_FILENO, "hellshell$ ", 11);
+	e->cursor = 11;
+}
+
 void	end_tc(t_config *e)
 {
 	write(STDOUT_FILENO, "end tc\n", 7);
@@ -131,31 +170,49 @@ void	init_tc(t_config *e)
 	tputs(tgetstr("ks", NULL), 1, ft_putchar);
 }
 
+void	edition(t_config *e)
+{
+	strcpy(e->aux, e->line);
+}
+
 void	eraser(t_config *e)
 {
-	if (e->cursor > 12)
+	if (e->cursor > 11)
 	{
 		tputs(tgetstr("le", NULL), 1, ft_putchar);
 		tputs(tgetstr("dc", NULL), 1, ft_putchar);
 		e->cursor--;
 		e->line[--e->pos] = 0;
+		edition(e);
 	}
 }
 
 void	uplore(t_config *e)
 {
 //	write(STDOUT_FILENO, "historial arriba", 17);
+//	if (*e->line)
+//		strcpy(e->aux, e->line);
 	if (!e->text)
 		return ;
 	tputs(tgetstr("cr", NULL), 1, ft_putchar);
 	tputs(tgetstr("dl", NULL), 1, ft_putchar);
+//	printf("\n AUX %s", e->aux);
 	ft_putstr_fd("hellshell$ ", 1);
+	strcpy(e->line, e->text->content);
+//	strlcpy(e->line, e->text->content, strlen(e->text->content));
 	ft_putstr_fd(e->text->content, 1);
-	strlcpy(e->line, e->text->content, strlen(e->text->content));
-	e->cursor = 12 + strlen(e->text->content);
+	e->pos = strlen(e->text->content);
+	e->cursor = 11 + e->pos;
+//	e->cursor = 11 + strlen(e->text->content);
 	if (e->text->next)
 		e->text = e->text->next;
 }
+
+//cargar historial en line /////
+//guardar line en aux/////
+//mostrar aux al volver al inicio de historial/////
+//comprobar que la instrucion no se repite
+//apuntar a principio al pulsar enter/////
 
 void	downlore(t_config *e)
 {
@@ -167,10 +224,22 @@ void	downlore(t_config *e)
 		tputs(tgetstr("dl", NULL), 1, ft_putchar);
 //		write(STDOUT_FILENO, "hellshell$  ", 11);
 		ft_putstr_fd("hellshell$ ", 1);
+		strcpy(e->line, e->text->prev->content);
 		ft_putstr_fd(e->text->prev->content, 1);
-		strlcpy(e->line, e->text->content, strlen(e->text->content));
-		e->cursor = 12 + strlen(e->text->prev->content);
+//		strlcpy(e->line, e->text->content, strlen(e->text->content));
+		e->pos = strlen(e->text->prev->content);
+		e->cursor = 11 + e->pos;
 		e->text = e->text->prev;
+	}
+	else
+	{
+		tputs(tgetstr("cr", NULL), 1, ft_putchar);
+		tputs(tgetstr("dl", NULL), 1, ft_putchar);
+		ft_putstr_fd("hellshell$ ", 1);
+		strcpy(e->line, e->aux);
+		ft_putstr_fd(e->line, 1);
+		e->pos = strlen(e->line);
+		e->cursor = 11 + e->pos;
 	}
 }
 
@@ -178,11 +247,23 @@ void	sandman(t_config *e)
 {
 //	write(STDOUT_FILENO, "\nlinea-0: ", 10);
 //	ft_putstr_fd(e->line, 1);
+//	printf("\n line %p\n",  e->line);
 	if (*e->line)
-		ft_lstadd_front(&e->text, ft_lstnew(strdup(e->line)));
+	{
+		e->line[e->pos] = 0;
+		e->text = ft_lstfirst(e->text);
+//		printf("\n line %p\n",  e->line);
+//		printf("\n text %p\n",  e->text->content);
+		if  (!e->text)
+			ft_lstadd_front(&e->text, ft_lstnew(strdup(e->line)));
+		else
+			if (strncmp(e->text->content, e->line, strlen(e->text->content)) != 0)
+				ft_lstadd_front(&e->text, ft_lstnew(strdup(e->line)));
+	}
 	bzero(&e->line, 2048);
+	bzero(&e->aux, 2048);
 	e->pos = 0;
-	write(STDOUT_FILENO, "\nhellshell$ ", 13);
+	write(STDOUT_FILENO, "\nhellshell$ ", 12);
 	e->cursor = 11;
 	
 }
@@ -193,6 +274,7 @@ void	tear(t_config *e, char c)
 	e->line[e->pos++] = c;
 	e->line[e->pos] = 0;
 	e->cursor++;
+	edition(e);
 }
 
 void	loureed(t_config *e)
@@ -203,14 +285,17 @@ void	loureed(t_config *e)
 	bzero(&buf, 4);
 	while (read(STDIN_FILENO, &buf, 4) > 0)
 	{
-		if (buf[0] == 'D' - 64)//es un puto exit
-			end_tc(e);
+		if (buf[0] == 'D' - 64)
+			ctld(e);
+//			end_tc(e);
 		else if (buf[0] == 127)
 			eraser(e);
-		else if (buf[0] == '\\' - 64)//limpia la linea
-			end_tc(e);
-		else if (buf[0] == 'C' - 64)//es como un enter perro sin historial
-			tputs(tgetstr("cl", NULL), 1, ft_putchar);
+		else if (buf[0] == '\\' - 64)
+			ctlb(e);
+//			end_tc(e);
+		else if (buf[0] == 'C' - 64)
+			ctlc(e);
+//			tputs(tgetstr("cl", NULL), 1, ft_putchar);
 		else if (!strcmp(buf, tgetstr("ku", NULL)))
 			uplore(e);
 		else if (!strcmp(buf, tgetstr("kd", NULL)))
@@ -228,7 +313,7 @@ int	main(int arc, char **arv, char **env)
 	t_config	e;
 
 	init_tc(&e);
-	write(STDOUT_FILENO, "hellshell$ ", 12);
+	write(STDOUT_FILENO, "hellshell$ ", 11);
 	loureed(&e);
 	end_tc(&e);
 	return (0);
