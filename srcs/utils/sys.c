@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/17 17:20:01 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/19 02:13:43 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,17 @@ void	exec(t_shell *shell, t_parsed *parsed)
 	{
 		if (!ft_strcmp(arg, "cd"))
 			ft_cd(shell, parsed->args[1]);
-		else if (!ft_strcmp(arg, "export"))
-			ft_export(shell, "hola", "mundo");
-		else if (!ft_strcmp(arg, "env"))
-			ft_env(shell);
-		else if (!ft_strcmp(arg, "pwd"))
-			ft_printf("%s\n", ft_pwd());
+		else
+		{
+			if (!ft_strcmp(arg, "export"))
+				ft_export(shell, "hola", "mundo");
+			else if (!ft_strcmp(arg, "env"))
+				ft_env(shell);
+			else if (!ft_strcmp(arg, "pwd"))
+				ft_printf("%s\n", ft_pwd());
+			exit(0);
+		}
+
 	}
 	else if (execve(builtin_bin_path(shell, arg),
 			parsed->args, shell->envp) == -1)

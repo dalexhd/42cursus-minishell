@@ -30,7 +30,8 @@ int	main(int argc, char **argv, char **envp)
 		else
 			ft_fprintf(STDOUT_FILENO, C_GREEN "%s "C_GREEN "❯ " C_X, getCurrentDir(ft_pwd()));
 		get_next_line(0, &line);
-		exec_shell(shell, line);
+		if (line[0] != '\0')
+			exec_shell(shell, line);
 		free(line);
 	}
 	ft_clear_memory(shell);

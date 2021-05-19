@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/17 17:28:31 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/19 02:11:53 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,16 +95,25 @@ static void fill_data(t_slist *list)
 	}
 }
 
-static void run(t_shell *shell)
+static	void	run(t_shell *shell)
 {
-	pid_t pid;
-	t_slist *list;
-	int pipes[2];
-	int	input;
+	pid_t	pid;
+	pid_t	*pids;
+	t_slist	*list;
+	int		**pipes;
+	int input, i;
 
 	input = 0;
 	list = shell->parsed;
-
+	pids = malloc(ft_slstsize(shell->parsed) * sizeof(int) + 1);
+	pipes = (int **) malloc ((ft_slstsize(shell->parsed) - 1) * sizeof(int *));
+	for(int i = 0; i < ft_slstsize(shell->parsed) - 1; i++)
+	{
+			pipes[i] = (int *) malloc (2 * sizeof(int));
+			if(pipe(pipes[i]) < 0)
+				ft_error("Fallo al crear el pipe %s/n", 1, strerror(errno));
+	}
+	i = 0;
 	while (list)
 	{
 		if (ft_strcmp(list->content->args[0], "exit") == 0)
@@ -114,36 +123,126 @@ static void run(t_shell *shell)
 		}
 		else if (ft_strcmp(list->content->args[0], "cd") == 0)
 		{
-				exec(shell, list->content);
-				list = list->next;
+			exec(shell, list->content);
+		}
+		else if (ft_slstsize(shell->parsed) == 1) //If there is only a single command
+		{
+			pid = fork();
+			if(pid < 0)
+				ft_error("Fallo el fork() %s\n", 1, strerror(errno));
+			else if (pid == 0) // Hijo
+			{
+				if (list->content->flags.has_stdin)
+				{
+					dup2(input, STDIN_FILENO);
+					if (list->content->flags.has_stdout)
+						dup2(input, STDOUT_FILENO);
+					else
+						exec(shell, list->content);
+				}
+				else if (list->content->flags.has_stdout)
+				{
+					dup2(input, STDOUT_FILENO);
+					exec(shell, list->content);
+				}
+				else
+					exec(shell, list->content);
+			}
+			else
+				waitpid(pid, NULL, 0); // Wait for the children
 		}
 		else
 		{
-			pipe(pipes);
 			pid = fork();
-			if (pid < 0)
+			if(pid < 0)
+				ft_error("Fallo el fork() %s\n", 1, strerror(errno));
+			else if (pid == 0) // Children
 			{
-				ft_error("Fork Failed", 0);
-			}
-			else if (pid == 0) /* child process */
-			{
-				dup2(input, STDIN_FILENO);
-				if (list->next)
-					dup2(pipes[1], STDOUT_FILENO);
-				close(pipes[0]);
-				list->content->pid = pid;
+				if (i == 0)
+				{
+					if (list->content->flags.has_stdin)
+						dup2(input, STDIN_FILENO);
+					for(int j = 1; j < ft_slstsize(shell->parsed) - 1; j++)
+					{
+						close(pipes[j][1]);
+						close(pipes[j][0]);
+					}
+					close(pipes[0][0]);
+					dup2(pipes[0][1], 1);
+				}
+				if (i > 0 && i < ft_slstsize(shell->parsed) - 1)
+				{
+					if (i == 1 && ft_slstsize(shell->parsed) != 3)
+					{
+						for(int j = i + 1; j < ft_slstsize(shell->parsed) - 1; j++)
+						{
+							close(pipes[j][1]);
+							close(pipes[j][0]);
+						}
+					}
+					if (i == ft_slstsize(shell->parsed) - 2 && ft_slstsize(shell->parsed) != 3)
+					{
+						for(int j = 0; j < i - 1; j++)
+						{
+							close(pipes[j][1]);
+							close(pipes[j][0]);
+						}
+					}
+					if (i != 1 && i != ft_slstsize(shell->parsed) -2  && ft_slstsize(shell->parsed) != 3)
+					{
+						for(int j = 0; j < i - 1; j++)
+						{
+							close(pipes[j][1]);
+							close(pipes[j][0]);
+						}
+						for(int j = i + 1; j < ft_slstsize(shell->parsed) - 1; j++)
+						{
+							close(pipes[j][1]);
+							close(pipes[j][0]);
+						}
+					}
+					close(pipes[i - 1][1]);
+					dup2(pipes[i - 1][0], 0);
+					close(pipes[i][0]);
+					dup2(pipes[i][1], 1);
+				}
+				if (i == ft_slstsize(shell->parsed) - 1)
+				{
+					if (list->content->flags.has_stdout)
+						dup2(input, STDOUT_FILENO);
+					for(int j = 0; j < ft_slstsize(shell->parsed) - 2; j++)
+					{
+						close(pipes[j][1]);
+						close(pipes[j][0]);
+					}
+					close(pipes[i - 1][1]);
+					dup2(pipes[i - 1][0], 0);
+				}
 				exec(shell, list->content);
-				exit(0);
 			}
-			else /* parent process */
+			else // Parent
 			{
-				close(pipes[1]);
-				list->content->pid = pid;
-				input = pipes[0];
-				list = list->next;
+				pids[i] = pid; // We save the PID of the children
 			}
 		}
+		list = list->next;
+		i++;
 	}
+	for(int k = 0; k < ft_slstsize(shell->parsed) - 1; k++)
+	{
+		close(pipes[k][1]);
+		close(pipes[k][0]);
+	}
+	for(int k = 0; k < ft_slstsize(shell->parsed); k++)
+	{
+		waitpid(pids[k], NULL, 0);
+	}
+	for(int i = 0; i < ft_slstsize(shell->parsed) - 1; i++)
+	{
+		free(pipes[i]);
+	}
+	free(pipes);
+	free(pids);
 }
 
 t_shell *init_shell(char **envp)
