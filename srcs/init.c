@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/20 02:33:09 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/20 19:39:18 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,6 @@ t_pipes	*locate_pipes(char *line)
 	pipes->pos = NULL;
 	while (line[i])
 	{
-		char a = line[i];
 		if (line[i] == '"')
 			open_quote = !open_quote;
 		if (line[i] == '\'')
@@ -102,95 +101,11 @@ t_pipes	*locate_pipes(char *line)
 		if (!open_quote && !open_dquote && line[i] == '|')
 		{
 			pipes->count++;
-			ft_lstadd_back(&pipes->pos, ft_lstnew(i));
+			ft_lstadd_back(&pipes->pos, ft_lstnew((void *)i));
 		}
 		i++;
 	}
 	return (pipes);
-}
-
-static	t_bool	validate_quotes(char *cmd)
-{
-	size_t	i;
-	size_t	quotes;
-
-	i = 0;
-	quotes = 0;
-	while (cmd[i])
-	{
-		if (cmd[i] == '"')
-			quotes++;
-		i++;
-	}
-	return (quotes % 2 == 0);
-}
-
-static	void	parse_dollar(t_shell *shell, char *cmd, size_t *i, char *line)
-{
-	char	*env;
-	char	*tmp;
-
-	tmp = ft_strnew(1);
-	while (cmd[*i] && !ft_isspace(cmd[*i]))
-	{
-		if (cmd[*i] != '$')
-			ft_strncat(tmp, &cmd[*i], 1);
-		(*i)++;
-	}
-	(*i)--;
-	env = ft_getenv(shell, tmp);
-	if (env)
-		ft_strcat(line, env);
-}
-
-static	void	parse_tilde(t_shell *shell, char *cmd, size_t *i, char *line)
-{
-	char	*env;
-	char	*tmp;
-
-	tmp = ft_strnew(1);
-
-	env = ft_getenv(shell, "HOME");
-	if (env)
-		ft_strcat(tmp, env);
-	while (cmd[*i] && !ft_isspace(cmd[*i]))
-	{
-		if (cmd[*i] != '~')
-			ft_strncat(tmp, &cmd[*i], 1);
-		(*i)++;
-	}
-	(*i)--;
-	ft_strcat(line, tmp);
-}
-
-static	char	*clean_str(t_shell *shell, char *cmd)
-{
-	size_t	i;
-	t_bool	valid_quotes;
-	char	*line;
-
-	line = ft_strnew(ft_strlen(cmd));
-	valid_quotes = validate_quotes(cmd);
-	i = 0;
-	while (cmd[i])
-	{
-		if (cmd[i] == '\\' && cmd[i + 1] != '\\' && valid_quotes) // If current char is '\\' and next char isn´t '\\'
-		{
-			ft_strncat(line, &cmd[i], 1);
-		}
-		else if (cmd[i] == '$' && (i == 0 || cmd[i - 1] != '\\'))
-		{
-			parse_dollar(shell, cmd, &i, line);
-		}
-		else if (cmd[i] == '~' && (i == 0 || cmd[i - 1] != '\\'))
-		{
-			parse_tilde(shell, cmd, &i, line);
-		} else {
-			ft_strncat(line, &cmd[i], 1);
-		}
-		i++;
-	}
-	return (line);
 }
 
 void	lsh_split_line2(t_shell *shell, char *line)
@@ -212,22 +127,22 @@ void	lsh_split_line2(t_shell *shell, char *line)
 	if (pipes->count == 0)
 		ft_lstadd_back(&tokens, ft_lstnew(line));
 	else
-		ft_lstadd_back(&tokens, ft_lstnew(ft_substr(line, 0, list->content)));
+		ft_lstadd_back(&tokens, ft_lstnew(ft_substr(line, 0, (size_t)list->content)));
 	while (i < pipes->count)
 	{
 		j = 0;
-		k = list->content + 1;
+		k = (size_t)list->content + 1;
 		if (list->prev)
 		{
-			j = list->content;
+			j = (size_t)list->content;
 			if (!list->next)
 				j = u;
 			else if (list->next)
-				j = list->next->content;
+				j = (size_t)list->next->content;
 		}
 		else if (list->next)
 		{
-			j = list->next->content;
+			j = (size_t)list->next->content;
 		}
 		else
 			j = u;
@@ -237,20 +152,28 @@ void	lsh_split_line2(t_shell *shell, char *line)
 		// Note the + 1 here, to have a null terminated substring
 		char *substr = (char *)ft_calloc(1, end - start + 1);
 		ft_memcpy(substr, start, end - start);
-		ft_lstadd_back(&tokens, ft_lstnew(clean_str(shell, ft_strtrim(substr, " "))));
+		ft_lstadd_back(&tokens, ft_lstnew(ft_strtrim(substr, " ")));
 		list = list->next;
 		i++;
 	}
 	i = 0;
 	while (tokens)
 	{
-		ft_printf("Token[%i] => %s\n", i, tokens->content);
+		ft_printf("\nToken[%i] => %s", i, tokens->content);
+		char **parts = ft_split(tokens->content, ' ');
+		size_t	u;
+		u = 0;
+		while (parts[u])
+		{
+			ft_printf("\n\tArg[%i] => %s", i, parts[u]);
+			u++;
+		}
 		tokens = tokens->next;
 		i++;
 	}
 }
 
-static void fill_data(t_slist *list)
+/* static void fill_data(t_slist *list)
 {
 	while (list->content)
 	{
@@ -262,9 +185,9 @@ static void fill_data(t_slist *list)
 			fill_data(list->next);
 		break;
 	}
-}
+} */
 
-static	void	run(t_shell *shell)
+/* static	void	run(t_shell *shell)
 {
 	pid_t	pid;
 	pid_t	*pids;
@@ -412,7 +335,8 @@ static	void	run(t_shell *shell)
 	}
 	free(pipes);
 	free(pids);
-}
+} */
+
 
 t_shell *init_shell(char **envp)
 {
@@ -424,10 +348,11 @@ t_shell *init_shell(char **envp)
 	shell->envp = envp;
 	shell->parsed = NULL;
 	shell->first = true;
+	init_tc(shell);
 	return (shell);
 }
 
-static	void	*terminate(t_shell *shell)
+/* static	void	*terminate(t_shell *shell)
 {
 	t_slist *list;
 
@@ -438,12 +363,10 @@ static	void	*terminate(t_shell *shell)
 		list = list->next;
 	}
 	list = shell->parsed;
-}
+} */
 
 void exec_shell(t_shell *shell, char *cmd)
 {
-	int				exit_status;
-
 	shell->parsed = NULL;
 	shell->first = false;
 	lsh_split_line2(shell, cmd);

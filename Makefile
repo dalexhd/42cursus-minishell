@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/19 18:29:25 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/20 18:53:01 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,7 @@ SRCS				=	init.c
 BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
 						builtins/unset.c
 
-UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/sys.c
+UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/sys.c		utils/termcaps.c
 
 LISTS				=	lists/ft_slstadd_back.c		lists/ft_slstadd_front.c	lists/ft_slstclear.c	lists/ft_slstdelone.c	lists/ft_slstiter.c \
 						lists/ft_slstlast.c			lists/ft_slstnew.c			lists/ft_slstsize.c
@@ -147,7 +147,7 @@ $(OBJS):
 			@printf '${CUT}[${Y}$(OUTPUT)]${X} ${B}Compiling: ${X}'
 			@make $(OFILE)
 			@echo ${B}Crafting: ${R}$(OUTPUT)${X}
-			$(CC) main.c $(OBJS) $(LIBFT_DIR)libft.a -I $(HEADER_DIR) $(FLAGS) -o $(OUTPUT)
+			$(CC) main.c $(OBJS) $(LIBFT_DIR)libft.a -ltermcap -I $(HEADER_DIR) $(FLAGS) -o $(OUTPUT)
 			@echo
 
 $(OFILE):

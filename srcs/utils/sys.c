@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/19 02:13:43 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/20 18:56:14 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	exec(t_shell *shell, t_parsed *parsed)
 				ft_printf("%s\n", ft_pwd());
 			exit(0);
 		}
-
 	}
 	else if (execve(builtin_bin_path(shell, arg),
 			parsed->args, shell->envp) == -1)

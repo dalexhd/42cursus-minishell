@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 15:43:53 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/05 20:42:06 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/20 17:37:38 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,8 @@ STR					= 	ft_strcat.c				ft_strncat.c			ft_strstr.c				ft_strchr.c				\
 						ft_strtrim.c			ft_substr.c				ft_tolower.c			ft_toupper.c			\
 						ft_strjoin_free.c		ft_strto.c				ft_putchar.c			ft_putstr.c				\
 						ft_strevery.c			ft_putchar_fd.c			ft_strendswith.c		ft_countchars.c			\
-						ft_putnbr_fd.c			ft_putstr_fd.c			ft_putendl_fd.c			ft_countnumbers.c
+						ft_putnbr_fd.c			ft_putstr_fd.c			ft_putendl_fd.c			ft_countnumbers.c		\
+						ft_iputchar.c
 
 UTILS				=	ft_isalnum.c			ft_isalpha.c			ft_isascii.c			ft_isdigit.c			\
 						ft_isspace.c			ft_isprint.c			ft_numlen.c				ft_max.c				\
@@ -56,7 +57,7 @@ CONVERT				=	ft_atoi.c				ft_itoa.c				ft_itoa_long.c			ft_itoa_llong.c			\
 
 BONUS				=	ft_lstnew_bonus.c		ft_lstadd_front_bonus.c	ft_lstsize_bonus.c		ft_lstlast_bonus.c		\
 						ft_lstadd_back_bonus.c	ft_lstdelone_bonus.c	ft_lstclear_bonus.c		ft_lstiter_bonus.c		\
-						ft_lstmap_bonus.c
+						ft_lstmap_bonus.c		ft_lstfirst_bonus.c
 
 FT_PRINTF			=	ft_printf/ft_printf.c	ft_printf/struct.c		ft_printf/check.c		ft_printf/do.c			\
 						ft_printf/do_numbers.c	ft_printf/debug.c		ft_printf/is.c			ft_printf/do_strings.c	\

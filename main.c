@@ -1,39 +1,23 @@
 #include "includes/minishell.h"
-#include <stdio.h>
 
-void	ft_clear_memory(t_shell *shell)
-{
-	int	i;
-
-	i = 0;
-	while (shell->envp[i] != 0)
-	{
-		//ft_printf("%s\n", shell.envp[i]);
-		//free(shell.envp[i]);
-		i++;
-	}
-}
+//printf, malloc, free, write, open, read, close,
+//fork, wait, waitpid, wait3, wait4, signal, kill,
+//exit, getcwd, chdir, stat, lstat, fstat, execve,
+//dup, dup2, pipe, opendir, readdir, closedir,
+//strerror, errno, isatty, ttyname, ttyslot, ioctl,
+//getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
+//tgetnum, tgetstr, tgoto, tputs
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_shell *shell;
-	char *line;
+	t_shell	*shell;
 
 	(void)argc;
 	(void)**argv;
 	shell = init_shell(envp);
-	signal_handler();
+	ft_printshell(shell);
 	while (g_running)
-	{
-		if (shell->first)
-			ft_fprintf(STDOUT_FILENO, C_CYAN "Wellcome to our minishell 😋" C_GREEN "❯ " C_X);
-		else
-			ft_fprintf(STDOUT_FILENO, C_GREEN "%s "C_GREEN "❯ " C_X, getCurrentDir(ft_pwd()));
-		get_next_line(0, &line);
-		if (line[0] != '\0')
-			exec_shell(shell, line);
-		free(line);
-	}
-	ft_clear_memory(shell);
+		loureed(shell);
+	end_tc(shell);
 	return (0);
 }

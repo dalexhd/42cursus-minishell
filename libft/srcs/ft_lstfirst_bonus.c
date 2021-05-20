@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_success.c                                       :+:      :+:    :+:   */
+/*   ft_lstfirst_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/01/21 15:15:10 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/20 18:35:39 by aborboll         ###   ########.fr       */
+/*   Created: 2021/05/20 16:35:49 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/20 16:37:21 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/libft.h"
+#include "../includes/libft.h"
 
-void	ft_success(char *s, t_bool force, ...)
+t_list	*ft_lstfirst(t_list *lst)
 {
-	va_list	args;
-
-	va_start(args, force);
-	ft_fprintf(STDOUT_FILENO, s, &args);
-	va_end(args);
-	if (force)
-		exit(EXIT_FAILURE);
+	if (!lst)
+		return (0);
+	while (lst->prev != 0)
+	{
+		lst = lst->prev;
+	}
+	return (lst);
 }

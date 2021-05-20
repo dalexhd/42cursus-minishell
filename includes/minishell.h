@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/19 18:09:05 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/20 18:58:41 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@
 # include <errno.h>
 # include <sys/stat.h>
 # include <signal.h>
+# include <term.h>
+# include <termios.h>
+# include <termcap.h>
 /*
 ** Include internal values of the cub3d.
 */
@@ -37,19 +40,31 @@
 */
 volatile t_bool	g_running;
 
+typedef struct s_term
+{
+	char			*term_name;
+	char			line[BUFF_SIZE];
+	char			aux[BUFF_SIZE];
+	t_list			*history;
+	int				pos;
+	int				cursor;
+	struct termios	termios_raw;
+	struct termios	termios_new;
+	t_bool			new_line;
+}				t_term;
+
 typedef struct s_shell
 {
-	t_bool	g_running;
 	t_bool	should_wait;
 	char	**envp;
 	size_t	pipe_count;
 	size_t	pid;
 	t_bool	first;
 	t_slist	*parsed;
-	t_list	*history;
+	t_term	term;
 }				t_shell;
 
-t_shell *init_shell(char **envp);
+t_shell	*init_shell(char **envp);
 void	exec_shell(t_shell *shell, char *cmd);
 void	signal_handler(void);
 
@@ -76,4 +91,12 @@ t_bool	file_exists(char *filename);
 char	*builtin_bin_path(t_shell *shell, char *builtin);
 char	*getCurrentDir(char *path);
 void	exec(t_shell *shell, t_parsed *parsed);
+
+/*
+** Define termcaps utils
+*/
+void	init_tc(t_shell *shell);
+void	end_tc(t_shell *shell);
+void	loureed(t_shell *shell);
+void	ft_printshell(t_shell *shell);
 #endif

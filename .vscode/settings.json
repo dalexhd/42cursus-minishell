@@ -13,7 +13,12 @@
 		"utility": "c",
 		"vector": "c",
 		"string.h": "c",
-		"memory": "c"
+		"memory": "c",
+		"errno.h": "c",
+		"curses.h": "c",
+		"termcap.h": "c",
+		"termios.h": "c",
+		"__locale": "c"
 	},
 	"42header.email": "aborboll@student.42.fr",
 	"42header.username": "aborboll",

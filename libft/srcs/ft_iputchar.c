@@ -1,24 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_success.c                                       :+:      :+:    :+:   */
+/*   ft_iputchar.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/01/21 15:15:10 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/20 18:35:39 by aborboll         ###   ########.fr       */
+/*   Created: 2021/05/20 17:37:11 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/20 17:41:17 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/libft.h"
+#include "../includes/libft.h"
 
-void	ft_success(char *s, t_bool force, ...)
+int	ft_iputchar(int c)
 {
-	va_list	args;
-
-	va_start(args, force);
-	ft_fprintf(STDOUT_FILENO, s, &args);
-	va_end(args);
-	if (force)
-		exit(EXIT_FAILURE);
+	return (write(1, &c, 1));
 }
