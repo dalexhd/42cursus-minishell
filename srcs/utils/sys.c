@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/20 18:56:14 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/20 20:47:59 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,5 @@ void	exec(t_shell *shell, t_parsed *parsed)
 	}
 	else if (execve(builtin_bin_path(shell, arg),
 			parsed->args, shell->envp) == -1)
-		ft_error("%s: command not found", 1, arg);
+		ft_error("%s: command not found\n", 1, arg);
 }

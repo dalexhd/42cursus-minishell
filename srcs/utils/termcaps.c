@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 18:48:04 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/20 19:44:37 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/20 20:47:38 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,7 @@ static	void	ctlb(t_shell *shell)
 
 void	end_tc(t_shell *shell)
 {
-	write(STDOUT_FILENO, "end tc\n", 7);
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_raw);
-	exit(1);
 }
 
 static	void	eraser(t_shell *shell)
@@ -146,12 +144,15 @@ static	void	sandman(t_shell *shell)
 			if (ft_strlen(shell->term.line) > 0 && ft_strcmp(shell->term.history->content, shell->term.line) != 0)
 				ft_lstadd_front(&shell->term.history, ft_lstnew(ft_strdup(shell->term.line)));
 	}
+	ft_putchar_fd('\n', STDOUT_FILENO);
+	exec_shell(shell, shell->term.line);
 	ft_bzero(&shell->term.line, BUFF_SIZE);
 	ft_bzero(&shell->term.aux, BUFF_SIZE);
 	shell->term.pos = 0;
-	exec_shell(shell, shell->term.history->content);
-	ft_putchar_fd('\n', STDOUT_FILENO);
-	ft_printshell(shell);
+	if (g_running)
+	{
+		ft_printshell(shell);
+	}
 	shell->term.cursor = 11;
 
 }
@@ -162,7 +163,7 @@ void	loureed(t_shell *shell)
 
 	shell->term.pos = 0;
 	ft_bzero(&buf, 4);
-	while (read(STDIN_FILENO, &buf, 4) > 0)
+	while (g_running && read(STDIN_FILENO, &buf, 4) > 0)
 	{
 		if (buf[0] == 'D' - 64)
 			ctld(shell);
@@ -172,9 +173,9 @@ void	loureed(t_shell *shell)
 			ctlb(shell);
 		else if (buf[0] == 'C' - 64)
 			ctlc(shell);
-		else if (!ft_strcmp(buf, tgetstr("ku", NULL)))
+		else if (tgetstr("ku", NULL) && !ft_strcmp(buf, tgetstr("ku", NULL)))
 			history_up(shell);
-		else if (!ft_strcmp(buf, tgetstr("kd", NULL)))
+		else if (tgetstr("kd", NULL) && !ft_strcmp(buf, tgetstr("kd", NULL)))
 			history_down(shell);
 		else if (buf[0] == 'M' - 64)
 			sandman(shell);

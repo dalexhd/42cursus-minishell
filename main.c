@@ -16,8 +16,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)**argv;
 	shell = init_shell(envp);
 	ft_printshell(shell);
-	while (g_running)
-		loureed(shell);
+	loureed(shell);
 	end_tc(shell);
 	return (0);
 }

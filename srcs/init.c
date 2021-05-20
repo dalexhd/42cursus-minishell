@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/20 19:39:18 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/20 20:41:40 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,15 +159,17 @@ void	lsh_split_line2(t_shell *shell, char *line)
 	i = 0;
 	while (tokens)
 	{
-		ft_printf("\nToken[%i] => %s", i, tokens->content);
+		//ft_printf("\nToken[%i] => %s\n", i, tokens->content);
 		char **parts = ft_split(tokens->content, ' ');
-		size_t	u;
-		u = 0;
-		while (parts[u])
-		{
-			ft_printf("\n\tArg[%i] => %s", i, parts[u]);
-			u++;
-		}
+		t_parsed *parsed;
+		parsed = (t_parsed *)malloc(sizeof(t_parsed));
+		parsed->line = ft_strdup(line);
+		parsed->flags.has_stdin = tokens->prev != NULL;
+		parsed->flags.has_stdout = tokens->next != NULL;
+		parsed->flags.redirect.in = false;
+		parsed->flags.redirect.out = false;
+		parsed->args = parts;
+		ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
 		tokens = tokens->next;
 		i++;
 	}
@@ -187,7 +189,7 @@ void	lsh_split_line2(t_shell *shell, char *line)
 	}
 } */
 
-/* static	void	run(t_shell *shell)
+static	void	run(t_shell *shell)
 {
 	pid_t	pid;
 	pid_t	*pids;
@@ -208,6 +210,8 @@ void	lsh_split_line2(t_shell *shell, char *line)
 	i = 0;
 	while (list)
 	{
+		if (!list->content->args[0])
+			break ;
 		if (ft_strcmp(list->content->args[0], "exit") == 0)
 		{
 			g_running = false;
@@ -335,7 +339,7 @@ void	lsh_split_line2(t_shell *shell, char *line)
 	}
 	free(pipes);
 	free(pids);
-} */
+}
 
 
 t_shell *init_shell(char **envp)
@@ -371,9 +375,10 @@ void exec_shell(t_shell *shell, char *cmd)
 	shell->first = false;
 	lsh_split_line2(shell, cmd);
 /* 	shell->pipe_count = ft_slstsize(shell->parsed);
-	fill_data(shell->parsed);
+	fill_data(shell->parsed);*/
 	run(shell);
-	terminate(shell); */
+	//ft_printf("%i\n", g_running);
+	//terminate(shell);
 }
 
 //ls | cat -e | "aaaaaaa" | "abaaasssssss" | "aaaaaaa"aaasdasd | sdadaaaawqdwqdqw

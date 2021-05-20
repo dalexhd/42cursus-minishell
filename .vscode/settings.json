@@ -18,7 +18,8 @@
 		"curses.h": "c",
 		"termcap.h": "c",
 		"termios.h": "c",
-		"__locale": "c"
+		"__locale": "c",
+		"exception": "c"
 	},
 	"42header.email": "aborboll@student.42.fr",
 	"42header.username": "aborboll",
