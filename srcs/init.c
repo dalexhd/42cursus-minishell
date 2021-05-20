@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/19 23:46:16 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/20 02:33:09 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,90 @@ t_pipes	*locate_pipes(char *line)
 	return (pipes);
 }
 
+static	t_bool	validate_quotes(char *cmd)
+{
+	size_t	i;
+	size_t	quotes;
+
+	i = 0;
+	quotes = 0;
+	while (cmd[i])
+	{
+		if (cmd[i] == '"')
+			quotes++;
+		i++;
+	}
+	return (quotes % 2 == 0);
+}
+
+static	void	parse_dollar(t_shell *shell, char *cmd, size_t *i, char *line)
+{
+	char	*env;
+	char	*tmp;
+
+	tmp = ft_strnew(1);
+	while (cmd[*i] && !ft_isspace(cmd[*i]))
+	{
+		if (cmd[*i] != '$')
+			ft_strncat(tmp, &cmd[*i], 1);
+		(*i)++;
+	}
+	(*i)--;
+	env = ft_getenv(shell, tmp);
+	if (env)
+		ft_strcat(line, env);
+}
+
+static	void	parse_tilde(t_shell *shell, char *cmd, size_t *i, char *line)
+{
+	char	*env;
+	char	*tmp;
+
+	tmp = ft_strnew(1);
+
+	env = ft_getenv(shell, "HOME");
+	if (env)
+		ft_strcat(tmp, env);
+	while (cmd[*i] && !ft_isspace(cmd[*i]))
+	{
+		if (cmd[*i] != '~')
+			ft_strncat(tmp, &cmd[*i], 1);
+		(*i)++;
+	}
+	(*i)--;
+	ft_strcat(line, tmp);
+}
+
+static	char	*clean_str(t_shell *shell, char *cmd)
+{
+	size_t	i;
+	t_bool	valid_quotes;
+	char	*line;
+
+	line = ft_strnew(ft_strlen(cmd));
+	valid_quotes = validate_quotes(cmd);
+	i = 0;
+	while (cmd[i])
+	{
+		if (cmd[i] == '\\' && cmd[i + 1] != '\\' && valid_quotes) // If current char is '\\' and next char isn´t '\\'
+		{
+			ft_strncat(line, &cmd[i], 1);
+		}
+		else if (cmd[i] == '$' && (i == 0 || cmd[i - 1] != '\\'))
+		{
+			parse_dollar(shell, cmd, &i, line);
+		}
+		else if (cmd[i] == '~' && (i == 0 || cmd[i - 1] != '\\'))
+		{
+			parse_tilde(shell, cmd, &i, line);
+		} else {
+			ft_strncat(line, &cmd[i], 1);
+		}
+		i++;
+	}
+	return (line);
+}
+
 void	lsh_split_line2(t_shell *shell, char *line)
 {
 	t_pipes	*pipes;
@@ -116,6 +200,7 @@ void	lsh_split_line2(t_shell *shell, char *line)
 	size_t	i;
 	size_t	j;
 	size_t	u;
+	size_t	k;
 	t_list	*tokens;
 
 	i = 0;
@@ -123,23 +208,36 @@ void	lsh_split_line2(t_shell *shell, char *line)
 	u = ft_strlen(line);
 	pipes = locate_pipes(line);
 	list = pipes->pos;
-	ft_lstadd_back(&tokens, ft_lstnew(ft_substr(line, 0, list->content)));
+	tokens = NULL;
+	if (pipes->count == 0)
+		ft_lstadd_back(&tokens, ft_lstnew(line));
+	else
+		ft_lstadd_back(&tokens, ft_lstnew(ft_substr(line, 0, list->content)));
 	while (i < pipes->count)
 	{
 		j = 0;
+		k = list->content + 1;
 		if (list->prev)
 		{
-			j = list->content - list->prev->content;
+			j = list->content;
 			if (!list->next)
 				j = u;
+			else if (list->next)
+				j = list->next->content;
 		}
 		else if (list->next)
-			j = list->next->content - list->content;
-		else
 		{
-			j = u;
+			j = list->next->content;
 		}
-		ft_lstadd_back(&tokens, ft_lstnew(ft_substr(line, list->content, j)));
+		else
+			j = u;
+
+		char *start = &line[(size_t)k];
+		char *end = &line[(size_t)j];
+		// Note the + 1 here, to have a null terminated substring
+		char *substr = (char *)ft_calloc(1, end - start + 1);
+		ft_memcpy(substr, start, end - start);
+		ft_lstadd_back(&tokens, ft_lstnew(clean_str(shell, ft_strtrim(substr, " "))));
 		list = list->next;
 		i++;
 	}
@@ -355,4 +453,5 @@ void exec_shell(t_shell *shell, char *cmd)
 	terminate(shell); */
 }
 
-//ls | ls | "a" | "abaaa" | "aaaaaaa"aaasdasd | sdadaaaawqdwqdqw
+//ls | cat -e | "aaaaaaa" | "abaaasssssss" | "aaaaaaa"aaasdasd | sdadaaaawqdwqdqw
+//ls | ls | "aaaab" | "abaaasssssss"
