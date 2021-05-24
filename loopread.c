@@ -19,6 +19,7 @@
 typedef struct s_list
 {
 	void			*content;
+	void			*cop;
 	struct s_list	*next;
 	struct s_list	*prev;
 }				t_list;
@@ -64,6 +65,7 @@ t_list	*ft_lstnew(void *content)
 	if (elem == NULL)
 		return (NULL);
 	elem->content = content;
+	elem->cop = content;
 	elem->next = NULL;
 	elem->prev = NULL;
 	return (elem);
@@ -155,7 +157,7 @@ void	end_tc(t_config *e)
 void	init_tc(t_config *e)
 {
 	bzero(e, sizeof(t_config));
-	e->cursor  = 12;
+	e->cursor  = 11;
 	e->term_name = getenv("TERM");
 	tgetent(NULL, e->term_name);
 	if (tcgetattr(STDIN_FILENO, &e->termios_raw) == -1)
@@ -189,21 +191,15 @@ void	eraser(t_config *e)
 
 void	uplore(t_config *e)
 {
-//	write(STDOUT_FILENO, "historial arriba", 17);
-//	if (*e->line)
-//		strcpy(e->aux, e->line);
 	if (!e->text)
 		return ;
 	tputs(tgetstr("cr", NULL), 1, ft_putchar);
 	tputs(tgetstr("dl", NULL), 1, ft_putchar);
-//	printf("\n AUX %s", e->aux);
 	ft_putstr_fd("hellshell$ ", 1);
-	strcpy(e->line, e->text->content);
-//	strlcpy(e->line, e->text->content, strlen(e->text->content));
-	ft_putstr_fd(e->text->content, 1);
-	e->pos = strlen(e->text->content);
+	strcpy(e->line, e->text->cop);
+	ft_putstr_fd(e->text->cop, 1);
+	e->pos = strlen(e->text->cop);
 	e->cursor = 11 + e->pos;
-//	e->cursor = 11 + strlen(e->text->content);
 	if (e->text->next)
 		e->text = e->text->next;
 }
@@ -211,8 +207,10 @@ void	uplore(t_config *e)
 //cargar historial en line /////
 //guardar line en aux/////
 //mostrar aux al volver al inicio de historial/////
-//comprobar que la instrucion no se repite
+//comprobar que la instrucion no se repite/////
 //apuntar a principio al pulsar enter/////
+//la modificacion del historial se mantiene mientras navegas
+//
 
 void	downlore(t_config *e)
 {
@@ -222,12 +220,10 @@ void	downlore(t_config *e)
 	{
 		tputs(tgetstr("cr", NULL), 1, ft_putchar);
 		tputs(tgetstr("dl", NULL), 1, ft_putchar);
-//		write(STDOUT_FILENO, "hellshell$  ", 11);
 		ft_putstr_fd("hellshell$ ", 1);
-		strcpy(e->line, e->text->prev->content);
-		ft_putstr_fd(e->text->prev->content, 1);
-//		strlcpy(e->line, e->text->content, strlen(e->text->content));
-		e->pos = strlen(e->text->prev->content);
+		strcpy(e->line, e->text->prev->cop);
+		ft_putstr_fd(e->text->prev->cop, 1);
+		e->pos = strlen(e->text->prev->cop);
 		e->cursor = 11 + e->pos;
 		e->text = e->text->prev;
 	}
@@ -239,25 +235,21 @@ void	downlore(t_config *e)
 		strcpy(e->line, e->aux);
 		ft_putstr_fd(e->line, 1);
 		e->pos = strlen(e->line);
+//		e->pos = 0;
 		e->cursor = 11 + e->pos;
 	}
 }
 
 void	sandman(t_config *e)
 {
-//	write(STDOUT_FILENO, "\nlinea-0: ", 10);
-//	ft_putstr_fd(e->line, 1);
-//	printf("\n line %p\n",  e->line);
 	if (*e->line)
 	{
 		e->line[e->pos] = 0;
 		e->text = ft_lstfirst(e->text);
-//		printf("\n line %p\n",  e->line);
-//		printf("\n text %p\n",  e->text->content);
 		if  (!e->text)
 			ft_lstadd_front(&e->text, ft_lstnew(strdup(e->line)));
 		else
-			if (strncmp(e->text->content, e->line, strlen(e->text->content)) != 0)
+			if (strncmp(e->text->cop, e->line, strlen(e->text->cop)) != 0)
 				ft_lstadd_front(&e->text, ft_lstnew(strdup(e->line)));
 	}
 	bzero(&e->line, 2048);
@@ -287,15 +279,12 @@ void	loureed(t_config *e)
 	{
 		if (buf[0] == 'D' - 64)
 			ctld(e);
-//			end_tc(e);
 		else if (buf[0] == 127)
 			eraser(e);
 		else if (buf[0] == '\\' - 64)
 			ctlb(e);
-//			end_tc(e);
 		else if (buf[0] == 'C' - 64)
 			ctlc(e);
-//			tputs(tgetstr("cl", NULL), 1, ft_putchar);
 		else if (!strcmp(buf, tgetstr("ku", NULL)))
 			uplore(e);
 		else if (!strcmp(buf, tgetstr("kd", NULL)))
@@ -313,32 +302,8 @@ int	main(int arc, char **arv, char **env)
 	t_config	e;
 
 	init_tc(&e);
-	write(STDOUT_FILENO, "hellshell$ ", 11);
+	write(STDOUT_FILENO, "hellshell$ ", 12);
 	loureed(&e);
 	end_tc(&e);
 	return (0);
 }
-
-/*
-void	sandman(t_config *e)
-{
-	write(STDOUT_FILENO, "\nlinea-0: ", 10);
-	ft_putstr_fd(e->text[0], 1);
-	write(STDOUT_FILENO, "\nlinea-1: ", 10);
-	ft_putstr_fd(e->text[1], 1);
-	bzero(e->text[1], 2048);
-	ft_strlcpy(e->text[1], e->text[0], 2048);
-	bzero(e->text[0], 2048);
-	write(STDOUT_FILENO, "\n", 1);
-	e->pos = 0;
-}
-void	tear(t_config *e, char c)
-{
-	write(STDOUT_FILENO, &c, 1);
-	e->text[0][e->pos++] = c;
-	e->text[0][e->pos] = 0;
-//	write(STDOUT_FILENO, &e->text[e->pos], 1);
-//	ft_putstr_fd(e->text, 1);
-//	write(STDOUT_FILENO, "\n", 1);
-}
-*/
