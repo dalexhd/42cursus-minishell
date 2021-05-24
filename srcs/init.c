@@ -6,12 +6,16 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/24 14:56:28 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/24 20:49:37 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <stdio.h>
+#include <string.h>
+
+#define LSH_TOK_BUFSIZE 64
+#define LSH_TOK_DELIM " \r\n\a\t'\\"
 
 t_bool	has_pipe(t_parsed *parsed, char *token)
 {
@@ -62,27 +66,16 @@ t_pipes	*locate_pipes(char *line)
 	return (pipes);
 }
 
-void	lsh_split_line2(t_shell *shell, char *line)
+void	lsh_split_line(t_shell *shell, char *line)
 {
-	size_t	i;
-	t_list	*tokens;
+	t_list		*tokens;
+	t_parsed	*parsed;
+	char		**parts;
 
-	tokens = NULL;
-	char **pipeparts = ft_safesplit(line, '|', "\"'\\");
-	i = 0;
-	while (pipeparts[i] != NULL)
-	{
-		if (i > 0)
-			ft_memmove(pipeparts[i], pipeparts[i] + 1, ft_strlen(pipeparts[i]));
-		char *asda = ft_strtrim(pipeparts[i], " ");
-		ft_printf("%s\n", asda);
-		ft_lstadd_back(&tokens, ft_lstnew(asda));
-		i++;
-	}
+	tokens = ft_safesplitlist(line, '|', "\"'");
 	while (tokens)
 	{
-		t_parsed *parsed;
-		char **parts = ft_safesplit(tokens->content, ' ', "\"'");
+		parts = ft_safesplit(tokens->content, ' ', "\"'");
 		parsed = (t_parsed *)malloc(sizeof(t_parsed));
 		parsed->line = ft_strdup(line);
 		parsed->flags.has_stdin = tokens->prev != NULL;
@@ -94,6 +87,21 @@ void	lsh_split_line2(t_shell *shell, char *line)
 		tokens = tokens->next;
 	}
 }
+
+ static void fill_data(t_slist *list)
+{
+	while (list->content)
+	{
+		if (list->prev && list->prev->content->flags.has_stdout)
+			list->content->flags.has_stdin = true;
+		if (list->next && list->next->content->flags.has_stdin)
+			list->content->flags.has_stdout = true;
+		if (list->next)
+			fill_data(list->next);
+		break;
+	}
+}
+
 
 t_shell *init_shell(char **envp)
 {
@@ -126,13 +134,15 @@ void exec_shell(t_shell *shell, char *cmd)
 {
 	shell->parsed = NULL;
 	shell->first = false;
-	lsh_split_line2(shell, cmd);
-/* 	shell->pipe_count = ft_slstsize(shell->parsed);
-	fill_data(shell->parsed);*/
+	lsh_split_line(shell, cmd);
+ 	shell->pipe_count = ft_slstsize(shell->parsed);
+	fill_data(shell->parsed);
 	run(shell);
 	//ft_printf("%i\n", g_running);
 	//terminate(shell);
 }
 
-//ls | cat -e | "aaaaaaa" | "abaaasssssss" | "aaaaaaa"aaasdasd | sdadaaaawqdwqdqw
+//ls | cat -e | "aaa aaaa" | "abaaasssssss" | "aaaaaaa"aaasdasd | sdadaaaawqdwqdqw
 //ls | ls | "aaaab" | "abaaasssssss"
+
+//

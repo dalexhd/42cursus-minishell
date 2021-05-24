@@ -6,138 +6,70 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 10:05:54 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/24 16:55:23 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/24 20:48:06 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
+#include <string.h>
 
-static	t_bool	ft_aretagclosed(t_bool *open)
+t_list	*ft_safesplitlist(char *s, char c, char *set)
 {
-	int		i;
-	t_bool	closed;
+	int		size;
+	int		flags;
+	char	*start;
+	char	*pos;
+	t_list	*list;
 
-	i = 0;
-	closed = true;
-	while (open[i] != '\0')
+	flags = 0;
+	size = 0;
+	start = s;
+	list = NULL;
+	while (1)
 	{
-		if (open[i] == true)
+		pos = ft_strchr(set, *s);
+		if (pos && (!flags || flags & 1 << (pos - set)))
+			flags ^= 1 << (pos - set);
+		if (!*s || (*s == c && !flags))
 		{
-			closed = false;
+			if (size > 0)
+			{
+				const char *c = start;
+				char *start = &c[0];
+				char *end = &c[size];
+				char *substr = (char *)calloc(1, end - start + 1);
+				ft_memcpy(substr, start, end - start);
+				ft_lstadd_back(&list, ft_lstnew(substr));
+			}
+			start += size + 1;
+			size = 0;
+		}
+		else
+			size++;
+		if (!*s)
 			break ;
-		}
-		i++;
+		s++;
 	}
-	return (closed);
-}
-
-static	int	ft_safecountwords(char const *str, char c, char *set)
-{
-	int		count;
-	size_t	i;
-	int		u;
-	t_bool	*open;
-
-	open = (t_bool *)malloc(sizeof(t_bool) * (ft_strlen(set) + 1));
-	i = 0;
-	while (i < ft_strlen(set))
-	{
-		open[i] = false;
-		i++;
-	}
-	i = 0;
-	count = 0;
-	while (str[i])
-	{
-		u = 0;
-		while (set[u])
-		{
-			if (str[i] == set[u])
-				open[(int)(ft_strchr(set, set[u]) - set)]
-					= !open[(int)(ft_strchr(set, set[u]) - set)];
-			u++;
-		}
-		if (str[i] == c && ft_aretagclosed(open))
-			count++;
-		i++;
-	}
-	free(open);
-	return (count);
-}
-
-static	t_uint	*ft_safesplitswords(char const *str, char c, char *set, int size)
-{
-	t_uint	i;
-	int		u;
-	int		d;
-	t_uint	*count;
-	t_bool	*open;
-
-	open = (t_bool *)malloc(sizeof(t_bool) * (ft_strlen(set) + 1));
-	count = (t_uint *)malloc(sizeof(t_uint) * (size + 1));
-	i = 0;
-	while (i < ft_strlen(set))
-	{
-		open[i] = false;
-		i++;
-	}
-	i = 0;
-	d = 0;
-	while (str[i])
-	{
-		u = 0;
-		while (set[u])
-		{
-			if (str[i] == set[u])
-				open[(int)(ft_strchr(set, set[u]) - set)]
-					= !open[(int)(ft_strchr(set, set[u]) - set)];
-			u++;
-		}
-		if (str[i] == c && ft_aretagclosed(open))
-		{
-			count[d] = i;
-			d++;
-		}
-		i++;
-	}
-	free(open);
-	return (count);
+	return (list);
 }
 
 char	**ft_safesplit(char const *s, char c, char *set)
 {
-	t_uint	i;
-	t_uint	j;
-	int		a;
-	int		count;
-	t_uint	*splits;
-	char	**words;
+	int		size;
+	int		i;
+	char	**tokens;
+	t_list	*list;
 
-	count = ft_safecountwords(s, c, set);
-	words = (char **)malloc(sizeof(char *) * (count + 1));
-	splits = ft_safesplitswords(s, c, set, count);
-	if (s == NULL || !words)
-		return (NULL);
-	j = 0;
+	list = ft_safesplitlist(s, c, set);
+	size = ft_lstsize(list);
+	tokens = (char **)malloc(sizeof(char*) * (size + 1));
 	i = 0;
-	while (s[i] != '\0')
+	while (list)
 	{
-		a = 0;
-		while (splits[a])
-		{
-			if (i == splits[a])
-			{
-				words[j++] = ft_strtrim(ft_strncpy(ft_strnew(i), s, i), "\"'");
-				s = &s[i];
-				break ;
-			}
-			a++;
-		}
+		tokens[i] = ft_strtrim(list->content, "\"'");
+		list = list->next;
 		i++;
 	}
-	if (ft_strlen(s) > 1)
-		words[j++] = ft_strtrim(ft_strncpy(ft_strnew(i), s, i), " \"'");
-	words[j] = NULL;
-	free(splits);
-	return (words);
+	tokens[i] = NULL;
+	return (tokens);
 }

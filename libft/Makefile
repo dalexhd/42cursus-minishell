@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/06 15:43:53 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/24 10:37:24 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/24 20:12:06 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ OUTPUT				=	LIBFT
 CC					=	@gcc
 SH					=	@bash
 RM					=	@/bin/rm -rf
-FLAGS				=	-Wextra -Wall -Werror -g
+FLAGS				=	-Wextra -Wall -g
 
 HEADER				=	includes
 OBJ_DIR				=	obj/
