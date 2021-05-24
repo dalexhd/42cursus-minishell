@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/20 18:58:41 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/24 10:35:35 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # include <term.h>
 # include <termios.h>
 # include <termcap.h>
+# include <string.h>
+
 /*
 ** Include internal values of the cub3d.
 */
@@ -91,6 +93,7 @@ t_bool	file_exists(char *filename);
 char	*builtin_bin_path(t_shell *shell, char *builtin);
 char	*getCurrentDir(char *path);
 void	exec(t_shell *shell, t_parsed *parsed);
+void	run(t_shell *shell);
 
 /*
 ** Define termcaps utils

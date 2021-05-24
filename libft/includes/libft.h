@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/22 20:45:27 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/20 17:41:09 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/24 10:37:43 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,4 +129,5 @@ t_bool			ft_strendswith(const char *haystack, const char *needle);
 size_t			ft_countchars(char const *str, char c);
 t_llong			ft_atoll(const char *str);
 size_t			ft_countnumbers(char const *str);
+char			**ft_safesplit(char const *s, char c, char *set);
 #endif

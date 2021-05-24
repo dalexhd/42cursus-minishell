@@ -27,8 +27,8 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	line[2048];
 	char	c;
-	int	i;
-	int	bwr;
+	int		i;
+	int		bwr;
 
 	//modo canonico y termcaps
 	while (1)
