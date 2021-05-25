@@ -15,57 +15,56 @@
 //strerror, errno, isatty, ttyname, ttyslot, ioctl,
 //getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
 //tgetnum, tgetstr, tgoto, tputs
-
-typedef struct s_list
+typedef struct s_hist
 {
-	void			*content;
-	void			*cop;
-	struct s_list	*next;
-	struct s_list	*prev;
-}				t_list;
+	void			*original;
+	void			*copy;
+	struct s_hist	*next;
+	struct s_hist	*prev;
+}				t_hist;
 
 typedef struct s_config
 {
 	char			*term_name;
 	char			line[2048];
-	char			aux[2048];
-	t_list			*text;
+//	char			aux[2048];
+	t_hist			*hist;
 	int				pos;
 	int				cursor;
 	struct termios	termios_raw;
 	struct termios	termios_new;
 }				t_config;
 
-t_list	*ft_lstfirst(t_list *lst)
+t_hist	*ft_hstfirst(t_hist *hst)
 {
-	if (!lst)
+	if (!hst)
 		return (0);
-	while (lst->prev != 0)
+	while (hst->prev != 0)
 	{
-		lst = lst->prev;
+		hst = hst->prev;
 	}
-	return (lst);
+	return (hst);
 }
 
-void	ft_lstadd_front(t_list **alst, t_list *new)
+void	ft_hstadd_front(t_hist **ahst, t_hist *new)
 {
-	if (*alst)
+	if (*ahst)
 	{
-		new->next = *alst;
-		(*alst)->prev = new;
+		new->next = *ahst;
+		(*ahst)->prev = new;
 	}
-	*alst = new;
+	*ahst = new;
 }
 
-t_list	*ft_lstnew(void *content)
+t_hist	*ft_hstnew(void *content)
 {
-	t_list	*elem;
+	t_hist	*elem;
 
-	elem = (t_list *)malloc(sizeof(t_list));
+	elem = (t_hist *)malloc(sizeof(t_hist));
 	if (elem == NULL)
 		return (NULL);
-	elem->content = content;
-	elem->cop = content;
+	elem->original = strdup(content);
+	elem->copy = strdup(content);
 	elem->next = NULL;
 	elem->prev = NULL;
 	return (elem);
@@ -133,7 +132,7 @@ void	ctlc(t_config *e)
 {
 	bzero(&e->line, 2048);
 	e->pos = 0;
-	write(STDOUT_FILENO, "\nhellshell$ ", 13);
+	write(STDOUT_FILENO, "\nhellshell$ ", 12);
 	e->cursor = 11;
 }
 
@@ -158,6 +157,8 @@ void	init_tc(t_config *e)
 {
 	bzero(e, sizeof(t_config));
 	e->cursor  = 11;
+//	bzero(e->line, 2048);
+	ft_hstadd_front(&e->hist, ft_hstnew(strdup("")));
 	e->term_name = getenv("TERM");
 	tgetent(NULL, e->term_name);
 	if (tcgetattr(STDIN_FILENO, &e->termios_raw) == -1)
@@ -172,11 +173,6 @@ void	init_tc(t_config *e)
 	tputs(tgetstr("ks", NULL), 1, ft_putchar);
 }
 
-void	edition(t_config *e)
-{
-	strcpy(e->aux, e->line);
-}
-
 void	eraser(t_config *e)
 {
 	if (e->cursor > 11)
@@ -185,79 +181,93 @@ void	eraser(t_config *e)
 		tputs(tgetstr("dc", NULL), 1, ft_putchar);
 		e->cursor--;
 		e->line[--e->pos] = 0;
-		edition(e);
 	}
 }
 
 void	uplore(t_config *e)
 {
-	if (!e->text)
-		return ;
-	tputs(tgetstr("cr", NULL), 1, ft_putchar);
-	tputs(tgetstr("dl", NULL), 1, ft_putchar);
-	ft_putstr_fd("hellshell$ ", 1);
-	strcpy(e->line, e->text->cop);
-	ft_putstr_fd(e->text->cop, 1);
-	e->pos = strlen(e->text->cop);
-	e->cursor = 11 + e->pos;
-	if (e->text->next)
-		e->text = e->text->next;
+//	if (!e->hist)
+//		return ;
+	if (e->hist->next)
+	{
+		tputs(tgetstr("cr", NULL), 1, ft_putchar);
+		tputs(tgetstr("dl", NULL), 1, ft_putchar);
+		ft_putstr_fd("hellshell$ ", 1);
+	//	e->line[e->pos] = 0;
+	//	printf("heces\n");
+		free(e->hist->copy);
+		e->hist->copy = strdup(e->line);
+//		strcpy(e->hist->copy, e->line);
+//	if (e->hist->next)
+//	{
+		e->hist = e->hist->next;
+		strcpy(e->line, e->hist->copy);
+		ft_putstr_fd(e->hist->copy, 1);
+		e->pos = strlen(e->hist->copy);
+		e->cursor = 11 + e->pos;
+	}
+//	if (e->hist->next)
+//		e->hist = e->hist->next;
 }
-
-//cargar historial en line /////
-//guardar line en aux/////
-//mostrar aux al volver al inicio de historial/////
-//comprobar que la instrucion no se repite/////
-//apuntar a principio al pulsar enter/////
-//la modificacion del historial se mantiene mientras navegas
-//
 
 void	downlore(t_config *e)
 {
-	if (!e->text)
+	if (!e->hist)
 		return ;
-	if (e->text->prev)
+	if (e->hist->prev)
 	{
 		tputs(tgetstr("cr", NULL), 1, ft_putchar);
 		tputs(tgetstr("dl", NULL), 1, ft_putchar);
 		ft_putstr_fd("hellshell$ ", 1);
-		strcpy(e->line, e->text->prev->cop);
-		ft_putstr_fd(e->text->prev->cop, 1);
-		e->pos = strlen(e->text->prev->cop);
+		free(e->hist->copy);
+		e->hist->copy = strdup(e->line);
+		e->hist = e->hist->prev;
+		strcpy(e->line, e->hist->copy);
+		ft_putstr_fd(e->line, 1);
+		e->pos = strlen(e->line);
 		e->cursor = 11 + e->pos;
-		e->text = e->text->prev;
 	}
-	else
+/*	else
 	{
 		tputs(tgetstr("cr", NULL), 1, ft_putchar);
 		tputs(tgetstr("dl", NULL), 1, ft_putchar);
 		ft_putstr_fd("hellshell$ ", 1);
-		strcpy(e->line, e->aux);
+//		strcpy(e->line, e->aux);
 		ft_putstr_fd(e->line, 1);
 		e->pos = strlen(e->line);
 //		e->pos = 0;
 		e->cursor = 11 + e->pos;
-	}
+	}*/
 }
 
 void	sandman(t_config *e)
 {
 	if (*e->line)
 	{
-		e->line[e->pos] = 0;
-		e->text = ft_lstfirst(e->text);
-		if  (!e->text)
-			ft_lstadd_front(&e->text, ft_lstnew(strdup(e->line)));
-		else
-			if (strncmp(e->text->cop, e->line, strlen(e->text->cop)) != 0)
-				ft_lstadd_front(&e->text, ft_lstnew(strdup(e->line)));
+//		printf("%d\n", e->pos);
+//		e->line[e->pos] = 0;
+//		free(e->hist->copy);
+		e->hist->copy = strdup(e->hist->original);
+//		strcpy(e->hist->copy, e->hist->original);
+		e->hist = ft_hstfirst(e->hist);
+		free(e->hist->original);
+		free(e->hist->copy);
+		e->hist->original = strdup(e->line);
+		e->hist->copy = strdup(e->line);
+//		if  (!e->hist)
+//			ft_hstadd_front(&e->hist, ft_hstnew(strdup(e->line)));
+//		else
+//			if (strncmp(e->hist->copy, e->line, strlen(e->hist->copy)) != 0)
+				ft_hstadd_front(&e->hist, ft_hstnew(strdup("")));
 	}
+	free(e->hist->copy);
+	e->hist->copy = strdup(e->hist->original);
 	bzero(&e->line, 2048);
-	bzero(&e->aux, 2048);
+	e->hist = ft_hstfirst(e->hist);
+//	ft_hstadd_front(&e->hist, ft_hstnew(strdup("")));
 	e->pos = 0;
 	write(STDOUT_FILENO, "\nhellshell$ ", 12);
 	e->cursor = 11;
-	
 }
 
 void	tear(t_config *e, char c)
@@ -266,7 +276,7 @@ void	tear(t_config *e, char c)
 	e->line[e->pos++] = c;
 	e->line[e->pos] = 0;
 	e->cursor++;
-	edition(e);
+//	edition(e);
 }
 
 void	loureed(t_config *e)
@@ -302,7 +312,7 @@ int	main(int arc, char **arv, char **env)
 	t_config	e;
 
 	init_tc(&e);
-	write(STDOUT_FILENO, "hellshell$ ", 12);
+	write(STDOUT_FILENO, "hellshell$ ", 11);
 	loureed(&e);
 	end_tc(&e);
 	return (0);
