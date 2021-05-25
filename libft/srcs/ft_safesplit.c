@@ -6,12 +6,11 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 10:05:54 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/24 20:48:06 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/24 23:20:48 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
-#include <string.h>
 
 t_list	*ft_safesplitlist(char *s, char c, char *set)
 {
@@ -33,14 +32,7 @@ t_list	*ft_safesplitlist(char *s, char c, char *set)
 		if (!*s || (*s == c && !flags))
 		{
 			if (size > 0)
-			{
-				const char *c = start;
-				char *start = &c[0];
-				char *end = &c[size];
-				char *substr = (char *)calloc(1, end - start + 1);
-				ft_memcpy(substr, start, end - start);
-				ft_lstadd_back(&list, ft_lstnew(substr));
-			}
+				ft_lstadd_back(&list, ft_lstnew(ft_strcut(start, 0, size)));
 			start += size + 1;
 			size = 0;
 		}
@@ -53,7 +45,7 @@ t_list	*ft_safesplitlist(char *s, char c, char *set)
 	return (list);
 }
 
-char	**ft_safesplit(char const *s, char c, char *set)
+char	**ft_safesplit(char *s, char c, char *set)
 {
 	int		size;
 	int		i;

@@ -1,1 +1,18 @@
-pwd | cata -e
+Makefile
+README.md
+author
+cases
+includes
+libft
+main.c
+minishell
+minishell.dSYM
+mortal_void
+obj
+read.c
+srcs
+test
+test.c
+tools
+[32;1maborboll [32;1m❯ [0ms
+s[32;1maborboll [32;1m❯ [0m

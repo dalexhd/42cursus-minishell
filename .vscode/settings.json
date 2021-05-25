@@ -26,7 +26,8 @@
 		"libft.h": "c",
 		"cstring": "c",
 		"__bit_reference": "c",
-		"ios": "c"
+		"ios": "c",
+		"algorithm": "c"
 	},
 	"42header.email": "aborboll@student.42.fr",
 	"42header.username": "aborboll",

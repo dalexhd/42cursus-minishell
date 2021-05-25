@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/19 20:02:10 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/25 02:43:40 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,15 @@
 
 # include "minishell.h"
 
+typedef struct s_srstatus
+{
+	t_bool	status;
+	char	*file;
+}				t_rstatus;
 typedef struct s_redirect
 {
-	t_bool	out;
-	t_bool	in;
+	t_rstatus	out;
+	t_rstatus	in;
 }				t_redirect;
 
 typedef struct s_flags

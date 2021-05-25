@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/24 10:03:11 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/25 00:23:11 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	run(t_shell *shell)
 	pid_t	*pids;
 	t_slist	*list;
 	int		**pipes;
-	int input, i;
+	int input, i, s;
 
 	input = 0;
 	list = shell->parsed;
@@ -56,6 +56,13 @@ void	run(t_shell *shell)
 				ft_error("Fallo al crear el pipe %s/n", 1, strerror(errno));
 	}
 	i = 0;
+	s = 0;
+/* 	if (list->content->flags.redirect.out.status)
+	{
+		s = open(list->content->flags.redirect.out.file,
+			O_CREAT|O_RDWR, 0666);
+		dup2(s, STDOUT_FILENO);
+	} */
 	while (list)
 	{
 		if (!list->content->args[0])
