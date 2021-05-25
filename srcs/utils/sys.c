@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/25 00:23:11 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/25 16:51:37 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 void	exec(t_shell *shell, t_parsed *parsed)
 {
 	char	*arg;
+	char	**args;
 
-	arg = parsed->args[0];
+	arg = (char *)parsed->args->content;
+	args = ft_safesplit(parsed->args);
 	if (ft_isbuiltin(arg))
 	{
 		if (!ft_strcmp(arg, "cd"))
-			ft_cd(shell, parsed->args[1]);
+			ft_cd(shell, parsed->args->next->content);
 		else
 		{
 			if (!ft_strcmp(arg, "export"))
@@ -32,8 +34,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 			exit(0);
 		}
 	}
-	else if (execve(builtin_bin_path(shell, arg),
-			parsed->args, shell->envp) == -1)
+	else if (execve(builtin_bin_path(shell, args[0]), args, shell->envp) == -1)
 		ft_error("%s: command not found\n", 1, arg);
 }
 
@@ -45,7 +46,6 @@ void	run(t_shell *shell)
 	int		**pipes;
 	int input, i, s;
 
-	input = 0;
 	list = shell->parsed;
 	pids = malloc(ft_slstsize(shell->parsed) * sizeof(int) + 1);
 	pipes = (int **) malloc ((ft_slstsize(shell->parsed) - 1) * sizeof(int *));
@@ -57,22 +57,15 @@ void	run(t_shell *shell)
 	}
 	i = 0;
 	s = 0;
-/* 	if (list->content->flags.redirect.out.status)
-	{
-		s = open(list->content->flags.redirect.out.file,
-			O_CREAT|O_RDWR, 0666);
-		dup2(s, STDOUT_FILENO);
-	} */
 	while (list)
 	{
-		if (!list->content->args[0])
-			break ;
-		if (ft_strcmp(list->content->args[0], "exit") == 0)
+		input = 0;
+		if (ft_strcmp(list->content->args->content, "exit") == 0)
 		{
 			g_running = false;
 			break ;
 		}
-		else if (ft_strcmp(list->content->args[0], "cd") == 0)
+		else if (ft_strcmp(list->content->args->content, "cd") == 0)
 		{
 			exec(shell, list->content);
 		}
@@ -83,16 +76,38 @@ void	run(t_shell *shell)
 				ft_error("Fallo el fork() %s\n", 1, strerror(errno));
 			else if (pid == 0) // Hijo
 			{
-				if (list->content->flags.has_stdin)
+				if (list->content->flags.redirect.in.status)
 				{
+					input = open(list->content->flags.redirect.in.file, O_RDONLY);
 					dup2(input, STDIN_FILENO);
-					if (list->content->flags.has_stdout)
+					if (list->content->flags.redirect.out.status)
+					{
+						input = open(list->content->flags.redirect.out.file,
+							O_TRUNC | O_WRONLY | O_CREAT, 0600);
 						dup2(input, STDOUT_FILENO);
+						exec(shell, list->content);
+					}
+					else if (list->content->flags.redirect.aout.status)
+					{
+						input = open(list->content->flags.redirect.aout.file,
+							O_WRONLY | O_APPEND, 0600);
+						dup2(input, STDOUT_FILENO);
+						exec(shell, list->content);
+					}
 					else
 						exec(shell, list->content);
 				}
-				else if (list->content->flags.has_stdout)
+				else if (list->content->flags.redirect.out.status)
 				{
+					input = open(list->content->flags.redirect.out.file,
+						O_TRUNC | O_WRONLY | O_CREAT, 0600);
+					dup2(input, STDOUT_FILENO);
+					exec(shell, list->content);
+				}
+				else if (list->content->flags.redirect.aout.status)
+				{
+					input = open(list->content->flags.redirect.aout.file,
+						O_WRONLY | O_APPEND, 0600);
 					dup2(input, STDOUT_FILENO);
 					exec(shell, list->content);
 				}
@@ -111,8 +126,11 @@ void	run(t_shell *shell)
 			{
 				if (i == 0)
 				{
-					if (list->content->flags.has_stdin)
+					if (list->content->flags.redirect.in.status)
+					{
+						input = open(list->content->flags.redirect.in.file, O_RDONLY);
 						dup2(input, STDIN_FILENO);
+					}
 					for(int j = 1; j < ft_slstsize(shell->parsed) - 1; j++)
 					{
 						close(pipes[j][1]);
@@ -159,8 +177,16 @@ void	run(t_shell *shell)
 				}
 				if (i == ft_slstsize(shell->parsed) - 1)
 				{
-					if (list->content->flags.has_stdout)
+					if (list->content->flags.redirect.out.status)
+					{
+						input = open(list->content->flags.redirect.out.file, O_TRUNC | O_WRONLY | O_CREAT, 0600);
 						dup2(input, STDOUT_FILENO);
+					}
+					else if (list->content->flags.redirect.aout.status)
+					{
+						input = open(list->content->flags.redirect.aout.file, O_WRONLY | O_APPEND);
+						dup2(input, STDOUT_FILENO);
+					}
 					for(int j = 0; j < ft_slstsize(shell->parsed) - 2; j++)
 					{
 						close(pipes[j][1]);

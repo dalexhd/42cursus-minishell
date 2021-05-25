@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/25 03:07:16 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/25 15:50:24 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,30 +16,51 @@ void	lsh_split_line(t_shell *shell, char *line)
 {
 	t_list		*tokens;
 	t_parsed	*parsed;
+	t_list		*args;
 	int			i;
 
 	tokens = ft_safesplitlist(line, '|', "\"'");
 	while (tokens)
 	{
 		parsed = (t_parsed *)malloc(sizeof(t_parsed));
-		parsed->args = ft_safesplit(tokens->content, ' ', "\"'");
+		parsed->args = NULL;
+		args = ft_safesplitlist(tokens->content, ' ', "\"'");
 		parsed->line = ft_strdup(line);
 		parsed->flags = (t_flags){
 			.has_stdin = !!tokens->prev, .has_stdout = !!tokens->next,
 			.redirect.in = (t_rstatus){.status = false, .file = NULL},
 			.redirect.out = (t_rstatus){.status = false, .file = NULL},
+			.redirect.aout = (t_rstatus){.status = false, .file = NULL},
 		};
 		i = 0;
-		while (parsed->args[i])
+		while (args)
 		{
-			if (parsed->args[i][0] == '>')
+			if (ft_strcmp(args->content, ">") == 0)
 			{
 				parsed->flags.redirect.out = (t_rstatus){.status = true,
-					.file = parsed->args[i + 1]};
-				parsed->args[i] = NULL;
-				parsed->args[i + 1] = NULL;
+					.file = args->next->content};
+				args->content = NULL;
+				args->next->content = NULL;
 				break ;
 			}
+			else if (ft_strcmp(args->content, "<") == 0)
+			{
+				parsed->flags.redirect.in = (t_rstatus){.status = true,
+					.file = args->next->content};
+				args->content = NULL;
+				args->next->content = NULL;
+				break ;
+			}
+			else if (ft_strcmp(args->content, ">>") == 0)
+			{
+				parsed->flags.redirect.aout = (t_rstatus){.status = true,
+					.file = args->next->content};
+				args->content = NULL;
+				args->next->content = NULL;
+				break ;
+			}
+			ft_lstadd_back(&parsed->args, ft_lstnew(args->content));
+			args = args->next;
 			i++;
 		}
 		ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));

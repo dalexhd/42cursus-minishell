@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/22 20:45:27 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/24 23:13:07 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/25 13:35:54 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,6 @@ size_t			ft_countchars(char const *str, char c);
 t_llong			ft_atoll(const char *str);
 size_t			ft_countnumbers(char const *str);
 t_list			*ft_safesplitlist(char *s, char c, char *set);
-char			**ft_safesplit(char *s, char c, char *set);
+char			**ft_safesplit(t_list *list);
 char			*ft_strcut(char *str, int from, int to);
 #endif
