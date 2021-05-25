@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/20 18:53:01 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/25 17:45:25 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,11 +67,8 @@ BONUS_SOURCES		=	$(B_SRCS)
 
 LEAKS_FLAGS			=	--tool=memcheck --leak-check=full --leak-resolution=high --show-leak-kinds=all --track-origins=yes
 
-ifndef MAP
-	LEAKS_EXE		=	./tools/memory_leak.sh ${OUTPUT} maps/map.cub ${LEAKS_FLAGS}
-else
-	LEAKS_EXE		=	./tools/memory_leak.sh ${OUTPUT} $(MAP) ${LEAKS_FLAGS}
-endif
+
+LEAKS_EXE			=	./tools/memory_leak.sh ${OUTPUT} ${LEAKS_FLAGS}
 NORME				=	$(addsuffix *.h,$(HEADER_DIR)) \
 						$(addprefix $(SRC_DIR),$(SOURCES)) \
 						$(addprefix $(BONUS_DIR),$(BONUS_SOURCES)) \

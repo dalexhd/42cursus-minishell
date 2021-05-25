@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/10 19:24:31 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/14 14:11:19 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/25 18:52:14 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_bool	ft_isbuiltin(char *builtin)
 		|| !ft_strcmp(builtin, "export")
 		|| !ft_strcmp(builtin, "pwd")
 		|| !ft_strcmp(builtin, "unset")
-		|| !ft_strcmp(builtin, "unset"));
+		|| !ft_strcmp(builtin, "echo"));
 }
 
 char	*builtin_bin_path(t_shell *shell, char *builtin)
