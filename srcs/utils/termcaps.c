@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 18:48:04 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 22:46:32 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 23:01:34 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ static	void	sandman(t_shell *shell)
 		exec_shell(shell, commands->content);
 		commands = commands->next;
 	}
+	tputs(tgetstr("ks", NULL), 1, ft_iputchar);
 	ft_bzero(&shell->term.line, 2048);
 	shell->term.history = ft_hlstfirst(shell->term.history);
 	shell->term.pos = 0;
