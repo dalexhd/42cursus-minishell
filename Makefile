@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/26 19:50:42 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/26 21:11:09 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ BUILTINS_DIR		=	builtins/
 LISTS_DIR			=	lists/
 SHELL_LISTS_DIR		=	shell/
 REDIRECTS_LISTS_DIR	=	redirects/
+HISTORY_LISTS_DIR	=	history/
 UTILS_DIR			=	utils/
 SRC_DIR				=	srcs/
 BONUS_DIR			=	bonus/
@@ -63,7 +64,11 @@ REDIRECTS_LISTS		=	lists/redirects/ft_rlstadd_back.c	lists/redirects/ft_rlstadd_
 						lists/redirects/ft_rlstdelone.c		lists/redirects/ft_rlstiter.c		lists/redirects/ft_rlstlast.c	\
 						lists/redirects/ft_rlstnew.c		lists/redirects/ft_rlstsize.c
 
-LISTS				=	$(SHELL_LISTS) $(REDIRECTS_LISTS)
+HISTORY_LISTS		=	lists/history/ft_hlstadd_back.c		lists/history/ft_hlstadd_front.c	lists/history/ft_hlstclear.c	\
+						lists/history/ft_hlstdelone.c		lists/history/ft_hlstfirst.c		lists/history/ft_hlstlast.c		\
+						lists/history/ft_hlstnew.c			lists/history/ft_hlstsize.c
+
+LISTS				=	$(SHELL_LISTS) $(REDIRECTS_LISTS) $(HISTORY_LISTS)
 
 SOURCES				=	$(SRCS) $(BUILTINS) $(UTILS) $(LISTS)
 
@@ -143,6 +148,7 @@ $(OBJ_DIR):
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(SHELL_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(REDIRECTS_LISTS_DIR)
+			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(HISTORY_LISTS_DIR)
 
 # Normal objects
 $(NAME): $(OBJ_DIR) $(OBJS)

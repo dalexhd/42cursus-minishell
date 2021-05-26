@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 18:48:04 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 19:45:43 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 21:36:51 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,6 @@
 static	void	die(char *msg)
 {
 	ft_error("%s\n", 1, msg);
-}
-
-static	void	tear(t_shell *shell, char c)
-{
-	write(STDOUT_FILENO, &c, 1);
-	shell->term.line[shell->term.pos++] = c;
-	shell->term.line[shell->term.pos] = 0;
-	shell->term.cursor++;
-	ft_strcpy(shell->term.aux, shell->term.line);
 }
 
 static	void	ctld(t_shell *shell)
@@ -50,7 +41,7 @@ void	ft_printshell(t_shell *shell)
 
 static	void	ctlc(t_shell *shell)
 {
-	ft_bzero(&shell->term.line, BUFF_SIZE);
+	ft_bzero(&shell->term.line, 2048);
 	shell->term.pos = 0;
 	shell->term.new_line = true;
 	ft_printshell(shell);
@@ -59,7 +50,7 @@ static	void	ctlc(t_shell *shell)
 
 static	void	ctlb(t_shell *shell)
 {
-	ft_bzero(&shell->term.line, BUFF_SIZE);
+	ft_bzero(&shell->term.line, 2048);
 	shell->term.pos = 0;
 	tputs(tgetstr("cr", NULL), 1, ft_iputchar);
 	tputs(tgetstr("dl", NULL), 1, ft_iputchar);
@@ -72,6 +63,25 @@ void	end_tc(t_shell *shell)
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_raw);
 }
 
+void	init_tc(t_shell *shell)
+{
+	ft_bzero(&shell->term, sizeof(t_term));
+	shell->term.cursor = 11;
+	ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup("")));
+	shell->term.term_name = getenv("TERM");
+	tgetent(NULL, shell->term.term_name);
+	if (tcgetattr(STDIN_FILENO, &shell->term.termios_raw) == -1)
+		die("tcgetattr");
+	shell->term.termios_new = shell->term.termios_raw;
+	shell->term.termios_new.c_iflag &= ~(BRKINT | ICRNL | IXON);
+	shell->term.termios_new.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+	shell->term.termios_new.c_cc[VMIN] = 1;
+	shell->term.termios_new.c_cc[VTIME] = 0;
+	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_new) == -1)
+		die("tcsetattr");
+	tputs(tgetstr("ks", NULL), 1, ft_iputchar);
+}
+
 static	void	eraser(t_shell *shell)
 {
 	if (shell->term.cursor > 11)
@@ -80,30 +90,25 @@ static	void	eraser(t_shell *shell)
 		tputs(tgetstr("dc", NULL), 1, ft_iputchar);
 		shell->term.cursor--;
 		shell->term.line[--shell->term.pos] = 0;
-		ft_strcpy(shell->term.aux, shell->term.line);
 	}
 }
 
 static	void	history_up(t_shell *shell) // History up
 {
-	if (!shell->term.history)
-		return ;
-	tputs(tgetstr("cr", NULL), 1, ft_iputchar);
-	tputs(tgetstr("dl", NULL), 1, ft_iputchar);
-	ft_printshell(shell);
-	ft_strcpy(shell->term.line, shell->term.history->content);
-	ft_putstr_fd(shell->term.history->content, 1);
-	shell->term.pos = ft_strlen(shell->term.history->content);
-	shell->term.cursor = 11 + shell->term.pos;
 	if (shell->term.history->next)
+	{
+		tputs(tgetstr("cr", NULL), 1, ft_iputchar);
+		tputs(tgetstr("dl", NULL), 1, ft_iputchar);
+		ft_printshell(shell);
+		free(shell->term.history->copy);
+		shell->term.history->copy = ft_strdup(shell->term.line);
 		shell->term.history = shell->term.history->next;
+		ft_strcpy(shell->term.line, shell->term.history->copy);
+		ft_putstr_fd(shell->term.history->copy, 1);
+		shell->term.pos = ft_strlen(shell->term.history->copy);
+		shell->term.cursor = 11 + shell->term.pos;
+	}
 }
-
-//cargar historial en line /////
-//guardar line en aux/////
-//mostrar aux al volver al inicio de historial/////
-//comprobar que la instrucion no se repite
-//apuntar a principio al pulsar enter/////
 
 static	void	history_down(t_shell *shell) // History down
 {
@@ -114,19 +119,11 @@ static	void	history_down(t_shell *shell) // History down
 		tputs(tgetstr("cr", NULL), 1, ft_iputchar);
 		tputs(tgetstr("dl", NULL), 1, ft_iputchar);
 		ft_printshell(shell);
-		ft_strcpy(shell->term.line, shell->term.history->prev->content);
-		ft_fprintf(STDOUT_FILENO, shell->term.history->prev->content);
-		shell->term.pos = ft_strlen(shell->term.history->prev->content);
-		shell->term.cursor = 11 + shell->term.pos;
+		free(shell->term.history->copy);
+		shell->term.history->copy = ft_strdup(shell->term.line);
 		shell->term.history = shell->term.history->prev;
-	}
-	else
-	{
-		tputs(tgetstr("cr", NULL), 1, ft_iputchar);
-		tputs(tgetstr("dl", NULL), 1, ft_iputchar);
-		ft_printshell(shell);
-		ft_strcpy(shell->term.line, shell->term.aux);
-		ft_fprintf(STDOUT_FILENO, shell->term.line);
+		ft_strcpy(shell->term.line, shell->term.history->copy);
+		ft_putstr_fd(shell->term.line, 1);
 		shell->term.pos = ft_strlen(shell->term.line);
 		shell->term.cursor = 11 + shell->term.pos;
 	}
@@ -138,14 +135,16 @@ static	void	sandman(t_shell *shell)
 
 	if (*shell->term.line)
 	{
-		shell->term.line[shell->term.pos] = 0;
-		shell->term.history = ft_lstfirst(shell->term.history);
-		if  (!shell->term.history)
-			ft_lstadd_front(&shell->term.history, ft_lstnew(ft_strdup(shell->term.line)));
-		else
-			if (ft_strlen(shell->term.line) > 0 && ft_strcmp(shell->term.history->content, shell->term.line) != 0)
-				ft_lstadd_front(&shell->term.history, ft_lstnew(ft_strdup(shell->term.line)));
+		shell->term.history->copy = ft_strdup(shell->term.history->original);
+		shell->term.history = ft_hlstfirst(shell->term.history);
+		free(shell->term.history->original);
+		free(shell->term.history->copy);
+		shell->term.history->original = ft_strdup(shell->term.line);
+		shell->term.history->copy = ft_strdup(shell->term.line);
+		ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup("")));
 	}
+	free(shell->term.history->copy);
+	shell->term.history->copy = ft_strdup(shell->term.history->original);
 	ft_putchar_fd('\n', STDOUT_FILENO);
 	commands = ft_safesplitlist(shell->term.line, ';', "\"'");
 	while (commands)
@@ -153,12 +152,20 @@ static	void	sandman(t_shell *shell)
 		exec_shell(shell, commands->content);
 		commands = commands->next;
 	}
-	ft_bzero(&shell->term.line, BUFF_SIZE);
-	ft_bzero(&shell->term.aux, BUFF_SIZE);
+	ft_bzero(&shell->term.line, 2048);
+	shell->term.history = ft_hlstfirst(shell->term.history);
 	shell->term.pos = 0;
 	if (g_running)
 		ft_printshell(shell);
 	shell->term.cursor = 11;
+}
+
+static	void	tear(t_shell *shell, char c)
+{
+	write(STDOUT_FILENO, &c, 1);
+	shell->term.line[shell->term.pos++] = c;
+	shell->term.line[shell->term.pos] = 0;
+	shell->term.cursor++;
 }
 
 void	loureed(t_shell *shell)
@@ -171,6 +178,10 @@ void	loureed(t_shell *shell)
 	{
 		if (buf[0] == 'D' - 64)
 			ctld(shell);
+		else if (buf[0] == 'J')
+			history_up(shell);
+		else if (buf[0] == 'M')
+			history_down(shell);
 		else if (buf[0] == 127)
 			eraser(shell);
 		else if (buf[0] == '\\' - 64)
@@ -187,22 +198,4 @@ void	loureed(t_shell *shell)
 			tear(shell, buf[0]);
 		ft_bzero(&buf, 4);
 	}
-}
-
-void	init_tc(t_shell *shell)
-{
-	ft_bzero(&shell->term, sizeof(t_term));
-	shell->term.cursor = 12;
-	shell->term.term_name = getenv("TERM");
-	tgetent(NULL, shell->term.term_name);
-	if (tcgetattr(STDIN_FILENO, &shell->term.termios_raw) == -1)
-		die("tcgetattr");
-	shell->term.termios_new = shell->term.termios_raw;
-	shell->term.termios_new.c_iflag &= ~(BRKINT | ICRNL | IXON);
-	shell->term.termios_new.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-	shell->term.termios_new.c_cc[VMIN] = 1;
-	shell->term.termios_new.c_cc[VTIME] = 0;
-	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_new) == -1)
-		die("tcsetattr");
-	tputs(tgetstr("ks", NULL), 1, ft_iputchar);
 }

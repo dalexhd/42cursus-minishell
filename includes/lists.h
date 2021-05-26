@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 19:07:56 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 21:26:49 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,14 @@ typedef struct s_pipes
 	t_list	*pos;
 }				t_pipes;
 
+typedef struct s_hist
+{
+	void			*original;
+	void			*copy;
+	struct s_hist	*next;
+	struct s_hist	*prev;
+}				t_hist;
+
 typedef struct s_slist
 {
 	t_parsed		*content;
@@ -91,5 +99,17 @@ void			ft_rlstadd_back(t_rlist **alst, t_rlist *new);
 void			ft_rlstdelone(t_rlist *lst, void (*del)(t_redirect *));
 void			ft_rlstclear(t_rlist **lst, void (*del)(t_redirect *));
 void			ft_rlstiter(t_rlist *lst, void (*f)(t_redirect *));
+
+/*
+** History lists
+*/
+void			ft_hlstadd_back(t_hist **alst, t_hist *new);
+void			ft_hlstadd_front(t_hist **alst, t_hist *new);
+void			ft_hlstclear(t_hist **lst, void (*del)(void*));
+void			ft_hlstdelone(t_hist *lst, void (*del)(void*));
+t_hist			*ft_hlstfirst(t_hist *hst);
+t_hist			*ft_hlstlast(t_hist *lst);
+t_hist			*ft_hlstnew(void *content);
+int				ft_hlstsize(t_hist *lst);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 19:51:21 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 21:27:34 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,8 @@ volatile t_bool	g_running;
 typedef struct s_term
 {
 	char			*term_name;
-	char			line[BUFF_SIZE];
-	char			aux[BUFF_SIZE];
-	t_list			*history;
+	char			line[2048];
+	t_hist			*history;
 	int				pos;
 	int				cursor;
 	struct termios	termios_raw;

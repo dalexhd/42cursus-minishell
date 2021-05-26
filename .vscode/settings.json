@@ -27,7 +27,8 @@
 		"cstring": "c",
 		"__bit_reference": "c",
 		"ios": "c",
-		"algorithm": "c"
+		"algorithm": "c",
+		"__string": "c"
 	},
 	"42header.email": "aborboll@student.42.fr",
 	"42header.username": "aborboll",
