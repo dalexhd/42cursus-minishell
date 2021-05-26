@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/24 10:35:35 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 19:51:21 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ typedef struct s_shell
 t_shell	*init_shell(char **envp);
 void	exec_shell(t_shell *shell, char *cmd);
 void	signal_handler(void);
+char	*parse_line(t_shell *shell, char *cmd);
 
 /*
 ** Define builtins

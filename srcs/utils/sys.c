@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 18:52:53 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 20:11:53 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static void	handle_redirect(t_slist	*list)
 		{
 			input = open(redirect->content->out.file, O_TRUNC | O_WRONLY | O_CREAT, 0600);
 			if (input < 0)
-				return ft_error("bash: %s: %s\n", true, list->content->flags.redirect.out.file, strerror(errno));
+				return ft_error("bash: %s: %s\n", true, redirect->content->out.file, strerror(errno));
 			dup2(input, STDOUT_FILENO);
 		}
 		else if (redirect->content->aout.status)

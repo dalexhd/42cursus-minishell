@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 19:07:43 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 20:12:59 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 				args->next->content = NULL;
 				ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
 			}
-			ft_lstadd_back(&parsed->args, ft_lstnew(args->content));
+			ft_lstadd_back(&parsed->args, ft_lstnew(parse_line(shell, args->content)));
 			args = args->next;
 			i++;
 		}
