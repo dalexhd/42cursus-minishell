@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_slstlast.c                                      :+:      :+:    :+:   */
+/*   ft_rlstiter.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/16 16:44:54 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 17:29:36 by aborboll         ###   ########.fr       */
+/*   Created: 2019/11/16 16:51:13 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/26 16:59:30 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../../includes/minishell.h"
 
-t_slist	*ft_slstlast(t_slist *lst)
+void	ft_rlstiter(t_rlist *lst, void (*f)(t_redirect *))
 {
-	if (!lst)
-		return (0);
-	while (lst->next)
+	while (lst)
+	{
+		f(lst->content);
 		lst = lst->next;
-	return (lst);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/25 15:50:24 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 19:07:43 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 	t_list		*tokens;
 	t_parsed	*parsed;
 	t_list		*args;
+	t_redirect	*redirect;
 	int			i;
 
 	tokens = ft_safesplitlist(line, '|', "\"'");
@@ -27,37 +28,39 @@ void	lsh_split_line(t_shell *shell, char *line)
 		args = ft_safesplitlist(tokens->content, ' ', "\"'");
 		parsed->line = ft_strdup(line);
 		parsed->flags = (t_flags){
-			.has_stdin = !!tokens->prev, .has_stdout = !!tokens->next,
-			.redirect.in = (t_rstatus){.status = false, .file = NULL},
-			.redirect.out = (t_rstatus){.status = false, .file = NULL},
-			.redirect.aout = (t_rstatus){.status = false, .file = NULL},
+			.has_stdin = !!tokens->prev, .has_stdout = !!tokens->next
 		};
+		parsed->redirects = NULL;
 		i = 0;
 		while (args)
 		{
-			if (ft_strcmp(args->content, ">") == 0)
+			redirect = (t_redirect *)malloc(sizeof(t_redirect));
+			redirect->in = (t_rstatus){.status = false, .file = NULL};
+			redirect->out = (t_rstatus){.status = false, .file = NULL};
+			redirect->aout = (t_rstatus){.status = false, .file = NULL};
+			if (args->content && ft_strcmp(args->content, ">") == 0)
 			{
-				parsed->flags.redirect.out = (t_rstatus){.status = true,
-					.file = args->next->content};
+				redirect->out = (t_rstatus){.status = true,
+					.file = ft_strdup(args->next->content)};
 				args->content = NULL;
 				args->next->content = NULL;
-				break ;
+				ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
 			}
-			else if (ft_strcmp(args->content, "<") == 0)
+ 			else if (args->content && ft_strcmp(args->content, "<") == 0)
 			{
-				parsed->flags.redirect.in = (t_rstatus){.status = true,
-					.file = args->next->content};
+				redirect->in = (t_rstatus){.status = true,
+					.file = ft_strdup(args->next->content)};
 				args->content = NULL;
 				args->next->content = NULL;
-				break ;
+				ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
 			}
-			else if (ft_strcmp(args->content, ">>") == 0)
+			else if (args->content && ft_strcmp(args->content, ">>") == 0)
 			{
-				parsed->flags.redirect.aout = (t_rstatus){.status = true,
-					.file = args->next->content};
+				redirect->aout = (t_rstatus){.status = true,
+					.file = ft_strdup(args->next->content)};
 				args->content = NULL;
 				args->next->content = NULL;
-				break ;
+				ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
 			}
 			ft_lstadd_back(&parsed->args, ft_lstnew(args->content));
 			args = args->next;

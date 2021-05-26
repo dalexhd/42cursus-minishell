@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_slstsize.c                                      :+:      :+:    :+:   */
+/*   ft_rlstsize.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 16:43:29 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 17:27:13 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 16:58:59 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../../includes/minishell.h"
 
-int	ft_slstsize(t_slist *lst)
+int	ft_rlstsize(t_rlist *lst)
 {
 	int	i;
 

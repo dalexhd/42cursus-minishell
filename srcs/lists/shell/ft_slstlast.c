@@ -1,32 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_slstclear.c                                     :+:      :+:    :+:   */
+/*   ft_slstlast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/16 15:49:43 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 21:14:20 by aborboll         ###   ########.fr       */
+/*   Created: 2019/11/16 16:44:54 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/26 16:59:47 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../../includes/minishell.h"
 
-void	ft_slstclear(t_slist **lst, void (*del)(t_parsed *))
+t_slist	*ft_slstlast(t_slist *lst)
 {
-	t_slist	*next;
-	t_slist	*new;
-
-	new = *lst;
-	if (new)
-	{
-		while (new)
-		{
-			next = new->next;
-			del(new->content);
-			free(new);
-			new = next;
-		}
-		*lst = NULL;
-	}
+	if (!lst)
+		return (0);
+	while (lst->next)
+		lst = lst->next;
+	return (lst);
 }

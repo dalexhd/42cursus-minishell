@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/25 17:45:25 by aborboll         ###   ########.fr        #
+#    Updated: 2021/05/26 17:05:25 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,8 @@ HEADER_DIR			=	includes/
 OBJ_DIR				=	obj/
 BUILTINS_DIR		=	builtins/
 LISTS_DIR			=	lists/
+SHELL_LISTS_DIR		=	shell/
+REDIRECTS_LISTS_DIR	=	redirects/
 UTILS_DIR			=	utils/
 SRC_DIR				=	srcs/
 BONUS_DIR			=	bonus/
@@ -53,8 +55,15 @@ BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builti
 
 UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/sys.c		utils/termcaps.c
 
-LISTS				=	lists/ft_slstadd_back.c		lists/ft_slstadd_front.c	lists/ft_slstclear.c	lists/ft_slstdelone.c	lists/ft_slstiter.c \
-						lists/ft_slstlast.c			lists/ft_slstnew.c			lists/ft_slstsize.c
+SHELL_LISTS			=	lists/shell/ft_slstadd_back.c		lists/shell/ft_slstadd_front.c	lists/shell/ft_slstclear.c	\
+						lists/shell/ft_slstdelone.c			lists/shell/ft_slstiter.c		lists/shell/ft_slstlast.c	\
+						lists/shell/ft_slstnew.c			lists/shell/ft_slstsize.c
+
+REDIRECTS_LISTS		=	lists/redirects/ft_rlstadd_back.c	lists/redirects/ft_rlstadd_front.c	lists/redirects/ft_rlstclear.c	\
+						lists/redirects/ft_rlstdelone.c		lists/redirects/ft_rlstiter.c		lists/redirects/ft_rlstlast.c	\
+						lists/redirects/ft_rlstnew.c		lists/redirects/ft_rlstsize.c
+
+LISTS				=	$(SHELL_LISTS) $(REDIRECTS_LISTS)
 
 SOURCES				=	$(SRCS) $(BUILTINS) $(UTILS) $(LISTS)
 
@@ -132,6 +141,8 @@ $(OBJ_DIR):
 			@mkdir -p $(OBJ_DIR)/$(BUILTINS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)
+			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(SHELL_LISTS_DIR)
+			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(REDIRECTS_LISTS_DIR)
 
 # Normal objects
 $(NAME): $(OBJ_DIR) $(OBJS)

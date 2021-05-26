@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_slstadd_front.c                                 :+:      :+:    :+:   */
+/*   ft_slstdelone.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/16 16:41:29 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/11 17:28:56 by aborboll         ###   ########.fr       */
+/*   Created: 2019/11/16 16:48:31 by aborboll          #+#    #+#             */
+/*   Updated: 2021/05/26 16:59:47 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../../includes/minishell.h"
 
-void	ft_slstadd_front(t_slist **alst, t_slist *new)
+void	ft_slstdelone(t_slist *lst, void (*del)(t_parsed *))
 {
-	if (alst)
-		new->next = *alst;
-	*alst = new;
+	if (lst)
+	{
+		del(lst->content);
+		free(lst);
+	}
 }
