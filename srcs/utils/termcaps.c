@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 18:48:04 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 23:01:34 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 23:13:11 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_printshell(t_shell *shell)
 
 static	void	ctlc(t_shell *shell)
 {
-	ft_bzero(&shell->term.line, 2048);
+	ft_bzero(&shell->term.line, BUFF_SIZE);
 	shell->term.pos = 0;
 	shell->term.new_line = true;
 	ft_printshell(shell);
@@ -50,7 +50,7 @@ static	void	ctlc(t_shell *shell)
 
 static	void	ctlb(t_shell *shell)
 {
-	ft_bzero(&shell->term.line, 2048);
+	ft_bzero(&shell->term.line, BUFF_SIZE);
 	shell->term.pos = 0;
 	tputs(tgetstr("cr", NULL), 1, ft_iputchar);
 	tputs(tgetstr("dl", NULL), 1, ft_iputchar);
@@ -153,7 +153,7 @@ static	void	sandman(t_shell *shell)
 		commands = commands->next;
 	}
 	tputs(tgetstr("ks", NULL), 1, ft_iputchar);
-	ft_bzero(&shell->term.line, 2048);
+	ft_bzero(&shell->term.line, BUFF_SIZE);
 	shell->term.history = ft_hlstfirst(shell->term.history);
 	shell->term.pos = 0;
 	if (g_running)
