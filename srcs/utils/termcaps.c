@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 18:48:04 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 23:13:11 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 23:24:53 by evila-ro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ static	void	die(char *msg)
 static	void	ctld(t_shell *shell)
 {
 	if (!*shell->term.line)
+	{
+		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_raw);
 		ft_success("exit\n", 1);
+	}
 }
 
 void	ft_printshell(t_shell *shell)
