@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 18:48:04 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 21:36:51 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 22:46:32 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,10 +178,6 @@ void	loureed(t_shell *shell)
 	{
 		if (buf[0] == 'D' - 64)
 			ctld(shell);
-		else if (buf[0] == 'J')
-			history_up(shell);
-		else if (buf[0] == 'M')
-			history_down(shell);
 		else if (buf[0] == 127)
 			eraser(shell);
 		else if (buf[0] == '\\' - 64)
