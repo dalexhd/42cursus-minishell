@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 18:48:04 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/20 20:47:38 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/26 19:45:43 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,8 @@ static	void	history_down(t_shell *shell) // History down
 
 static	void	sandman(t_shell *shell)
 {
+	t_list		*commands;
+
 	if (*shell->term.line)
 	{
 		shell->term.line[shell->term.pos] = 0;
@@ -145,16 +147,18 @@ static	void	sandman(t_shell *shell)
 				ft_lstadd_front(&shell->term.history, ft_lstnew(ft_strdup(shell->term.line)));
 	}
 	ft_putchar_fd('\n', STDOUT_FILENO);
-	exec_shell(shell, shell->term.line);
+	commands = ft_safesplitlist(shell->term.line, ';', "\"'");
+	while (commands)
+	{
+		exec_shell(shell, commands->content);
+		commands = commands->next;
+	}
 	ft_bzero(&shell->term.line, BUFF_SIZE);
 	ft_bzero(&shell->term.aux, BUFF_SIZE);
 	shell->term.pos = 0;
 	if (g_running)
-	{
 		ft_printshell(shell);
-	}
 	shell->term.cursor = 11;
-
 }
 
 void	loureed(t_shell *shell)
