@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 20:11:53 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/27 19:04:36 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,32 +23,24 @@ void	exec(t_shell *shell, t_parsed *parsed)
 	{
 		if (!ft_strcmp(arg, "cd"))
 			ft_cd(shell, parsed->args->next->content);
+		else if (!ft_strcmp(arg, "exit"))
+			ft_exit(args);
+		else if (!ft_strcmp(arg, "export"))
+			ft_export(shell, args);
 		else
 		{
-			if (!ft_strcmp(arg, "export"))
-				ft_export(shell, "hola", "mundo");
-			else if (!ft_strcmp(arg, "env"))
+			if (!ft_strcmp(arg, "env"))
 				ft_env(shell);
 			else if (!ft_strcmp(arg, "pwd"))
 				ft_printf("%s\n", ft_pwd());
 			else if (!ft_strcmp(arg, "echo"))
-			{
-				int i;
-
-				i = 1;
-				while (args[i])
-				{
-					ft_printf("%s\n", args[i]);
-					i++;
-				}
-			}
+				ft_echo(args);
 			exit(0);
 		}
 	}
 	else if (execve(builtin_bin_path(shell, args[0]), args, shell->envp) == -1)
 		ft_error("%s: command not found\n", 1, arg);
 }
-
 
 static void	handle_redirect(t_slist	*list)
 {
@@ -105,16 +97,9 @@ void	run(t_shell *shell)
 	while (list)
 	{
 		input = 0;
-		while (list->content->args)
-		{
-			if (list->content->args->content)
-				break ;
-			list->content->args = list->content->args->next;
-		}
 		if (ft_strcmp(list->content->args->content, "exit") == 0)
 		{
-			g_running = false;
-			break ;
+			exec(shell, list->content);
 		}
 		else if (ft_strcmp(list->content->args->content, "cd") == 0)
 		{
@@ -142,7 +127,13 @@ void	run(t_shell *shell)
 			{
 				if (i == 0)
 				{
-					handle_redirect(list);
+					if (list->content->flags.redirect.in.status)
+					{
+						input = open(list->content->flags.redirect.in.file, O_RDONLY, 0600);
+						if (input < 0)
+							return ft_error("bash: %s: %s\n", true, list->content->flags.redirect.in.file, strerror(errno));
+						dup2(input, STDIN_FILENO);
+					}
 					for(int j = 1; j < ft_slstsize(shell->parsed) - 1; j++)
 					{
 						close(pipes[j][1]);
@@ -189,7 +180,20 @@ void	run(t_shell *shell)
 				}
 				if (i == ft_slstsize(shell->parsed) - 1)
 				{
-					handle_redirect(list);
+					if (list->content->flags.redirect.out.status)
+					{
+						input = open(list->content->flags.redirect.out.file, O_TRUNC | O_WRONLY | O_CREAT, 0600);
+						if (input < 0)
+							return ft_error("bash: %s: %s\n", true, list->content->flags.redirect.out.file, strerror(errno));
+						dup2(input, STDOUT_FILENO);
+					}
+					else if (list->content->flags.redirect.aout.status)
+					{
+						input = open(list->content->flags.redirect.aout.file, O_WRONLY | O_APPEND, 0600);
+						if (input < 0)
+							return ft_error("bash: %s: %s\n", true, list->content->flags.redirect.aout.file, strerror(errno));
+						dup2(input, STDOUT_FILENO);
+					}
 					for(int j = 0; j < ft_slstsize(shell->parsed) - 2; j++)
 					{
 						close(pipes[j][1]);

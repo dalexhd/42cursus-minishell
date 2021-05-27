@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/24 17:55:19 by aborboll          #+#    #+#             */
-/*   Updated: 2021/04/15 19:07:43 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/27 16:59:24 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_info
 	va_list		*args;
 	char		**str;
 	int			count;
+	int			std;
 	char		*res;
 }				t_info;
 
@@ -76,7 +77,7 @@ int				ft_vfprintf(int fd, char *format, va_list *args);
 int				ft_vprintf(char *format, va_list *args);
 void			print(t_info *info);
 void			check_and_print(t_info *info);
-void			init_struct(t_info *info, char **str, va_list *args);
+void			init_struct(t_info *info, char **str, va_list *args, int fd);
 void			reinit(t_info *info);
 void			reinit_lengths(t_info *info);
 

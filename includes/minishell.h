@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 21:27:34 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/27 18:56:52 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,14 @@ char	*parse_line(t_shell *shell, char *cmd);
 /*
 ** Define builtins
 */
-int		ft_echo(char **args, size_t size);
+int		ft_echo(char **args);
 char	*ft_pwd();
 void	ft_env(t_shell *shell);
 void	ft_cd(t_shell *shell, char *dir);
-void	ft_export(t_shell *shell, char *env, char *value);
+void	ft_export_internal(t_shell *shell, char *env, char *value);
+void	ft_export(t_shell *shell, char **args);
 void	ft_unset(t_shell *shell, char *env);
+void	ft_exit(char **args);
 
 /*
 ** Define builtins helpers

@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/24 18:43:19 by aborboll          #+#    #+#             */
-/*   Updated: 2020/10/14 11:34:40 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/27 17:04:37 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ void	print(t_info *info)
 
 	i = 0;
 	if (info->flags[F_Neg] && info->flags[F_Trash])
-		ft_putchar((char)0);
+		ft_putchar_fd((char)0, info->std);
 	while (*info->res != '\0' && info->res[i])
 	{
-		ft_putchar((char)info->res[i]);
+		ft_putchar_fd((char)info->res[i], info->std);
 		i++;
 	}
 	if (!info->flags[F_Neg] && info->flags[F_Trash])
-		ft_putchar((char)0);
+		ft_putchar_fd((char)0, info->std);
 	if (ft_strlen(info->str[0]) > 0)
 		(info->str[0])++;
 	info->count += i;
@@ -70,13 +70,13 @@ int	ft_printf(char *format, ...)
 	if (!info || !(format))
 		return (EXIT_FAILURE);
 	va_start(args, format);
-	init_struct(info, &format, &args);
+	init_struct(info, &format, &args, STDOUT_FILENO);
 	result = info->count;
 	while (info->str[0][0])
 	{
 		if (info->str[0][0] != '%')
 		{
-			ft_putchar(info->str[0][0]);
+			ft_putchar_fd(info->str[0][0], info->std);
 			(info->str[0])++;
 			info->count++;
 		}
