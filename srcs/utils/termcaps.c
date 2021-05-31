@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/20 18:48:04 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 23:24:53 by evila-ro         ###   ########.fr       */
+/*   Updated: 2021/05/31 13:58:27 by evila-ro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ static	void	eraser(t_shell *shell)
 	}
 }
 
-static	void	history_up(t_shell *shell) // History up
+static	void	history_up(t_shell *shell)
 {
 	if (shell->term.history->next)
 	{
@@ -113,7 +113,7 @@ static	void	history_up(t_shell *shell) // History up
 	}
 }
 
-static	void	history_down(t_shell *shell) // History down
+static	void	history_down(t_shell *shell)
 {
 	if (!shell->term.history)
 		return ;
@@ -132,10 +132,8 @@ static	void	history_down(t_shell *shell) // History down
 	}
 }
 
-static	void	sandman(t_shell *shell)
+static	void	newliner(t_shell *shell)
 {
-	t_list		*commands;
-
 	if (*shell->term.line)
 	{
 		shell->term.history->copy = ft_strdup(shell->term.history->original);
@@ -146,6 +144,13 @@ static	void	sandman(t_shell *shell)
 		shell->term.history->copy = ft_strdup(shell->term.line);
 		ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup("")));
 	}
+}
+
+static	void	sandman(t_shell *shell)
+{
+	t_list		*commands;
+
+	newliner(shell);
 	free(shell->term.history->copy);
 	shell->term.history->copy = ft_strdup(shell->term.history->original);
 	ft_putchar_fd('\n', STDOUT_FILENO);
