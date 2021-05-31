@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/27 19:04:36 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/31 13:54:55 by evila-ro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ void	exec(t_shell *shell, t_parsed *parsed)
 
 static void	handle_redirect(t_slist	*list)
 {
-	int input;
-	t_rlist *redirect;
+	int		input;
+	t_rlist	*redirect;
 
 	redirect = list->content->redirects;
 	while (redirect)
@@ -54,21 +54,21 @@ static void	handle_redirect(t_slist	*list)
 		{
 			input = open(redirect->content->in.file, O_RDONLY, 0600);
 			if (input < 0)
-				return ft_error("bash: %s: %s\n", true, redirect->content->in.file, strerror(errno));
+				return (ft_error("bash: %s: %s\n", true, redirect->content->in.file, strerror(errno)));
 			dup2(input, STDIN_FILENO);
 		}
 		else if (redirect->content->out.status)
 		{
 			input = open(redirect->content->out.file, O_TRUNC | O_WRONLY | O_CREAT, 0600);
 			if (input < 0)
-				return ft_error("bash: %s: %s\n", true, redirect->content->out.file, strerror(errno));
+				return (ft_error("bash: %s: %s\n", true, redirect->content->out.file, strerror(errno)));
 			dup2(input, STDOUT_FILENO);
 		}
 		else if (redirect->content->aout.status)
 		{
 			input = open(redirect->content->aout.file, O_WRONLY | O_CREAT | O_APPEND, 0600);
 			if (input < 0)
-				return ft_error("bash: %s: %s\n", true, redirect->content->aout.file, strerror(errno));
+				return (ft_error("bash: %s: %s\n", true, redirect->content->aout.file, strerror(errno)));
 			dup2(input, STDOUT_FILENO);
 		}
 		redirect = redirect->next;
@@ -81,16 +81,22 @@ void	run(t_shell *shell)
 	pid_t	*pids;
 	t_slist	*list;
 	int		**pipes;
-	int input, i, s;
+	int		input;
+	int		i;
+	int		s;
+	int		j;
+	int		k;
 
 	list = shell->parsed;
 	pids = malloc(ft_slstsize(shell->parsed) * sizeof(int) + 1);
 	pipes = (int **) malloc ((ft_slstsize(shell->parsed) - 1) * sizeof(int *));
-	for(int i = 0; i < ft_slstsize(shell->parsed) - 1; i++)
+	i = 0;
+	while (i < ft_slstsize(shell->parsed) - 1)
 	{
-			pipes[i] = (int *) malloc (2 * sizeof(int));
-			if(pipe(pipes[i]) < 0)
-				ft_error("Fallo al crear el pipe %s/n", 1, strerror(errno));
+		pipes[i] = (int *) malloc (2 * sizeof(int));
+		if (pipe(pipes[i]) < 0)
+			ft_error("Fallo all crear el pipe %s\n", 1, strerror(errno));
+		i++;
 	}
 	i = 0;
 	s = 0;
@@ -108,7 +114,7 @@ void	run(t_shell *shell)
 		else if (ft_slstsize(shell->parsed) == 1) //If there is only a single command
 		{
 			pid = fork();
-			if(pid < 0)
+			if (pid < 0)
 				ft_error("Fallo el fork() %s\n", 1, strerror(errno));
 			else if (pid == 0) // Hijo
 			{
@@ -121,7 +127,7 @@ void	run(t_shell *shell)
 		else
 		{
 			pid = fork();
-			if(pid < 0)
+			if (pid < 0)
 				ft_error("Fallo el fork() %s\n", 1, strerror(errno));
 			else if (pid == 0) // Children
 			{
@@ -129,15 +135,18 @@ void	run(t_shell *shell)
 				{
 					if (list->content->flags.redirect.in.status)
 					{
-						input = open(list->content->flags.redirect.in.file, O_RDONLY, 0600);
+						input = open(list->content->flags.redirect.in.file,
+								O_RDONLY, 0600);
 						if (input < 0)
-							return ft_error("bash: %s: %s\n", true, list->content->flags.redirect.in.file, strerror(errno));
+							return (ft_error("bash: %s: %s\n", true, list->content->flags.redirect.in.file, strerror(errno)));
 						dup2(input, STDIN_FILENO);
 					}
-					for(int j = 1; j < ft_slstsize(shell->parsed) - 1; j++)
+					j = 1;
+					while (j < ft_slstsize(shell->parsed) - 1)
 					{
 						close(pipes[j][1]);
 						close(pipes[j][0]);
+						j++;
 					}
 					close(pipes[0][0]);
 					dup2(pipes[0][1], 1);
@@ -146,31 +155,41 @@ void	run(t_shell *shell)
 				{
 					if (i == 1 && ft_slstsize(shell->parsed) != 3)
 					{
-						for(int j = i + 1; j < ft_slstsize(shell->parsed) - 1; j++)
+						j = i + 1;
+						while (j < ft_slstsize(shell->parsed) - 1)
 						{
 							close(pipes[j][1]);
 							close(pipes[j][0]);
+							j++;
 						}
 					}
-					if (i == ft_slstsize(shell->parsed) - 2 && ft_slstsize(shell->parsed) != 3)
+					if (i == ft_slstsize(shell->parsed) - 2
+						&& ft_slstsize(shell->parsed) != 3)
 					{
-						for(int j = 0; j < i - 1; j++)
+						j = 0;
+						while (j < i - 1)
 						{
 							close(pipes[j][1]);
 							close(pipes[j][0]);
+							j++;
 						}
 					}
-					if (i != 1 && i != ft_slstsize(shell->parsed) -2  && ft_slstsize(shell->parsed) != 3)
+					if (i != 1 && i != ft_slstsize(shell->parsed) - 2
+						&& ft_slstsize(shell->parsed) != 3)
 					{
-						for(int j = 0; j < i - 1; j++)
+						j = 0;
+						while (j < i - 1)
 						{
 							close(pipes[j][1]);
 							close(pipes[j][0]);
+							j++;
 						}
-						for(int j = i + 1; j < ft_slstsize(shell->parsed) - 1; j++)
+						j = i + 1;
+						while (j < ft_slstsize(shell->parsed) - 1)
 						{
 							close(pipes[j][1]);
 							close(pipes[j][0]);
+							j++;
 						}
 					}
 					close(pipes[i - 1][1]);
@@ -184,20 +203,22 @@ void	run(t_shell *shell)
 					{
 						input = open(list->content->flags.redirect.out.file, O_TRUNC | O_WRONLY | O_CREAT, 0600);
 						if (input < 0)
-							return ft_error("bash: %s: %s\n", true, list->content->flags.redirect.out.file, strerror(errno));
+							return (ft_error("bash: %s: %s\n", true, list->content->flags.redirect.out.file, strerror(errno)));
 						dup2(input, STDOUT_FILENO);
 					}
 					else if (list->content->flags.redirect.aout.status)
 					{
 						input = open(list->content->flags.redirect.aout.file, O_WRONLY | O_APPEND, 0600);
 						if (input < 0)
-							return ft_error("bash: %s: %s\n", true, list->content->flags.redirect.aout.file, strerror(errno));
+							return (ft_error("bash: %s: %s\n", true, list->content->flags.redirect.aout.file, strerror(errno)));
 						dup2(input, STDOUT_FILENO);
 					}
-					for(int j = 0; j < ft_slstsize(shell->parsed) - 2; j++)
+					j = 0;
+					while (j < ft_slstsize(shell->parsed) - 2)
 					{
 						close(pipes[j][1]);
 						close(pipes[j][0]);
+						j++;
 					}
 					close(pipes[i - 1][1]);
 					dup2(pipes[i - 1][0], 0);
@@ -212,18 +233,24 @@ void	run(t_shell *shell)
 		list = list->next;
 		i++;
 	}
-	for(int k = 0; k < ft_slstsize(shell->parsed) - 1; k++)
+	k = 0;
+	while (k < ft_slstsize(shell->parsed) - 1)
 	{
 		close(pipes[k][1]);
 		close(pipes[k][0]);
+		k++;
 	}
-	for(int k = 0; k < ft_slstsize(shell->parsed); k++)
+	k = 0;
+	while (k < ft_slstsize(shell->parsed))
 	{
 		waitpid(pids[k], NULL, 0);
+		k++;
 	}
-	for(int i = 0; i < ft_slstsize(shell->parsed) - 1; i++)
+	i = 0;
+	while (i < ft_slstsize(shell->parsed) - 1)
 	{
 		free(pipes[i]);
+		i++;
 	}
 	free(pipes);
 	free(pids);
