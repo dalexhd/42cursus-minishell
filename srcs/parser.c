@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 19:49:14 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/31 12:51:52 by evila-ro         ###   ########.fr       */
+/*   Updated: 2021/05/31 18:50:00 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,6 @@ static	char	*clean_str(t_shell *shell, char *cmd)
 char	*parse_line(t_shell *shell, char *cmd)
 {
 	if (cmd)
-		return (clean_str(shell, ft_strdup(ft_strtrim(cmd, "\"'"))));
+		return (clean_str(shell, ft_strdup(cmd)));
 	return (cmd);
 }

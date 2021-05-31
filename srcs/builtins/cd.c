@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/29 12:44:33 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/31 18:19:36 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	ft_cd(t_shell *shell, char **args)
 	if (chdir(dir) == -1)
 	{
 		ft_strdel(&pwd);
-		ft_error("cd: %s: No such file or directory\n", 0, dir);
+		ft_error("minishell: cd: %s: No such file or directory\n", 0, dir);
 		return ;
 	}
 	ft_export_internal(shell, "OLDPWD", pwd);

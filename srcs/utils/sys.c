@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/31 16:49:15 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/31 17:45:10 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 		}
 	}
 	else if (execve(builtin_bin_path(shell, args[0]), args, shell->envp) == -1)
-		ft_error("%s: command not found\n", 1, arg);
+		ft_error("minishell: %s: command not found\n", 1, arg);
 }
 
 static void	handle_redirect(t_slist	*list)
