@@ -6,17 +6,22 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/27 18:28:12 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/29 12:44:33 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_cd(t_shell *shell, char *dir)
+void	ft_cd(t_shell *shell, char **args)
 {
 	char	*pwd;
+	char	*dir;
 
 	pwd = ft_pwd();
+	if (!args[1])
+		dir = ft_getenv(shell, "HOME");
+	else
+		dir = args[1];
 	if (chdir(dir) == -1)
 	{
 		ft_strdel(&pwd);

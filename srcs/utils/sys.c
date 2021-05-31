@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/13 18:06:58 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/27 19:04:36 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/05/31 13:34:55 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 	if (ft_isbuiltin(arg))
 	{
 		if (!ft_strcmp(arg, "cd"))
-			ft_cd(shell, parsed->args->next->content);
+			ft_cd(shell, args);
 		else if (!ft_strcmp(arg, "exit"))
 			ft_exit(args);
 		else if (!ft_strcmp(arg, "export"))
@@ -82,6 +82,7 @@ void	run(t_shell *shell)
 	t_slist	*list;
 	int		**pipes;
 	int input, i, s;
+	int status;
 
 	list = shell->parsed;
 	pids = malloc(ft_slstsize(shell->parsed) * sizeof(int) + 1);
@@ -116,7 +117,12 @@ void	run(t_shell *shell)
 				exec(shell, list->content);
 			}
 			else
-				waitpid(pid, NULL, 0); // Wait for the children
+			{
+				waitpid(pid, &status, 0); // Wait for the children
+				if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0) {
+					exit(WEXITSTATUS(status));
+				}
+			}
 		}
 		else
 		{
@@ -219,7 +225,10 @@ void	run(t_shell *shell)
 	}
 	for(int k = 0; k < ft_slstsize(shell->parsed); k++)
 	{
-		waitpid(pids[k], NULL, 0);
+		waitpid(pids[k], &status, 0); // Wait for the children
+		if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0) {
+			exit(WEXITSTATUS(status));
+		}
 	}
 	for(int i = 0; i < ft_slstsize(shell->parsed) - 1; i++)
 	{
