@@ -77,6 +77,8 @@ void	run(t_shell *shell)
 	int		status;
 
 	list = shell->parsed;
+	if (!list)
+		return ;
 	pids = malloc(ft_slstsize(shell->parsed) * sizeof(int) + 1);
 	pipes = (int **) malloc ((ft_slstsize(shell->parsed) - 1) * sizeof(int *));
 	i = 0;
