@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/24 15:33:18 by aborboll          #+#    #+#              #
-#    Updated: 2021/05/27 16:15:12 by aborboll         ###   ########.fr        #
+#    Updated: 2021/06/01 17:45:06 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ LISTS_DIR			=	lists/
 SHELL_LISTS_DIR		=	shell/
 REDIRECTS_LISTS_DIR	=	redirects/
 HISTORY_LISTS_DIR	=	history/
+ARGS_LISTS_DIR		=	args/
 UTILS_DIR			=	utils/
 SRC_DIR				=	srcs/
 BONUS_DIR			=	bonus/
@@ -54,7 +55,8 @@ SRCS				=	init.c				parser.c
 BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
 						builtins/unset.c	builtins/exit.c
 
-UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/sys.c		utils/termcaps.c
+UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/sys.c		utils/termcaps.c \
+						utils/parsing.c
 
 SHELL_LISTS			=	lists/shell/ft_slstadd_back.c		lists/shell/ft_slstadd_front.c	lists/shell/ft_slstclear.c	\
 						lists/shell/ft_slstdelone.c			lists/shell/ft_slstiter.c		lists/shell/ft_slstlast.c	\
@@ -68,7 +70,11 @@ HISTORY_LISTS		=	lists/history/ft_hlstadd_back.c		lists/history/ft_hlstadd_front
 						lists/history/ft_hlstdelone.c		lists/history/ft_hlstfirst.c		lists/history/ft_hlstlast.c		\
 						lists/history/ft_hlstnew.c			lists/history/ft_hlstsize.c
 
-LISTS				=	$(SHELL_LISTS) $(REDIRECTS_LISTS) $(HISTORY_LISTS)
+ARGS_LISTS			=	lists/args/ft_alstadd_back.c		lists/args/ft_alstadd_front.c		lists/args/ft_alstclear.c	\
+						lists/args/ft_alstdelone.c			lists/args/ft_alstfirst.c			lists/args/ft_alstlast.c	\
+						lists/args/ft_alstnew.c				lists/args/ft_alstsize.c
+
+LISTS				=	$(SHELL_LISTS) $(REDIRECTS_LISTS) $(HISTORY_LISTS) $(ARGS_LISTS)
 
 SOURCES				=	$(SRCS) $(BUILTINS) $(UTILS) $(LISTS)
 
@@ -149,6 +155,7 @@ $(OBJ_DIR):
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(SHELL_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(REDIRECTS_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(HISTORY_LISTS_DIR)
+			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(ARGS_LISTS_DIR)
 
 # Normal objects
 $(NAME): $(OBJ_DIR) $(OBJS)

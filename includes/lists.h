@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/26 21:26:49 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/01 17:46:43 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,15 @@ typedef struct s_rlist
 	struct s_rlist	*prev;
 }				t_rlist;
 
+typedef struct s_args
+{
+	t_list		*args;
+	char		*line;
+	pid_t		pid;
+	t_flags		flags;
+	t_rlist		*redirects;
+}				t_args;
+
 typedef struct s_parsed
 {
 	t_list		*args;
@@ -75,6 +84,13 @@ typedef struct s_slist
 	struct s_slist	*next;
 	struct s_slist	*prev;
 }				t_slist;
+
+typedef struct s_alist
+{
+	t_args			*content;
+	struct s_alist	*next;
+	struct s_alist	*prev;
+}				t_alist;
 
 /*
 ** Shell lists
@@ -111,5 +127,18 @@ t_hist			*ft_hlstfirst(t_hist *hst);
 t_hist			*ft_hlstlast(t_hist *lst);
 t_hist			*ft_hlstnew(void *content);
 int				ft_hlstsize(t_hist *lst);
+
+/*
+** Arguments lists
+*/
+t_alist			*ft_alstnew(t_args *content);
+void			ft_alstadd_front(t_alist **alst, t_alist *new);
+int				ft_alstsize(t_alist *lst);
+t_alist			*ft_alstlast(t_alist *lst);
+void			ft_alstadd_back(t_alist **alst, t_alist *new);
+void			ft_alstdelone(t_alist *lst, void (*del)(t_args *));
+void			ft_alstclear(t_alist **lst, void (*del)(t_args *));
+void			ft_alstiter(t_alist *lst, void (*f)(t_args *));
+t_alist			*ft_alstfirst(t_alist *lst);
 
 #endif

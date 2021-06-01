@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/27 18:56:34 by aborboll         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
@@ -36,7 +25,6 @@ void	ft_export_internal(t_shell *shell, char *env, char *value)
 void	ft_export(t_shell *shell, char **args)
 {
 	t_list	*tokens;
-	t_list	*spaces;
 	char	*env;
 	char	*value;
 	size_t	i;

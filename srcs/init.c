@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 18:21:08 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/31 12:49:06 by evila-ro         ###   ########.fr       */
+/*   Updated: 2021/06/01 18:45:59 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,50 +25,55 @@ void	lsh_split_line(t_shell *shell, char *line)
 	{
 		parsed = (t_parsed *)malloc(sizeof(t_parsed));
 		parsed->args = NULL;
-		args = ft_safesplitlist(tokens->content, ' ', "\"'");
-		parsed->line = ft_strdup(line);
-		parsed->flags = (t_flags){
-			.has_stdin = !!tokens->prev, .has_stdout = !!tokens->next
-		};
-		parsed->redirects = NULL;
-		i = 0;
-		while (args)
+		args = parse_args(tokens->content);
+		if (args)
 		{
-			redirect = (t_redirect *)malloc(sizeof(t_redirect));
-			redirect->in = (t_rstatus){.status = false, .file = NULL};
-			redirect->out = (t_rstatus){.status = false, .file = NULL};
-			redirect->aout = (t_rstatus){.status = false, .file = NULL};
-			if (args->content && ft_strcmp(args->content, ">") == 0)
+			parsed->line = ft_strdup(line);
+			parsed->flags = (t_flags){
+				.has_stdin = !!tokens->prev, .has_stdout = !!tokens->next
+			};
+			parsed->redirects = NULL;
+			i = 0;
+			while (args)
 			{
-				redirect->out = (t_rstatus){.status = true,
-					.file = ft_strdup(args->next->content)};
-				args->content = NULL;
-				args->next->content = NULL;
-				ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
+				redirect = (t_redirect *)malloc(sizeof(t_redirect));
+				redirect->in = (t_rstatus){.status = false, .file = NULL};
+				redirect->out = (t_rstatus){.status = false, .file = NULL};
+				redirect->aout = (t_rstatus){.status = false, .file = NULL};
+				if (args->content && ft_strcmp(args->content, ">") == 0)
+				{
+					redirect->out = (t_rstatus){.status = true,
+						.file = ft_strdup(args->next->content)};
+					args->content = NULL;
+					args->next->content = NULL;
+					ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
+				}
+				else if (args->content && ft_strcmp(args->content, "<") == 0)
+				{
+					redirect->in = (t_rstatus){.status = true,
+						.file = ft_strdup(args->next->content)};
+					args->content = NULL;
+					args->next->content = NULL;
+					ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
+				}
+				else if (args->content && ft_strcmp(args->content, ">>") == 0)
+				{
+					redirect->aout = (t_rstatus){.status = true,
+						.file = ft_strdup(args->next->content)};
+					args->content = NULL;
+					args->next->content = NULL;
+					ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
+				}
+				ft_lstadd_back(&parsed->args,
+					ft_lstnew(parse_line(shell, args->content)));
+				args = args->next;
+				i++;
 			}
-			else if (args->content && ft_strcmp(args->content, "<") == 0)
-			{
-				redirect->in = (t_rstatus){.status = true,
-					.file = ft_strdup(args->next->content)};
-				args->content = NULL;
-				args->next->content = NULL;
-				ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
-			}
-			else if (args->content && ft_strcmp(args->content, ">>") == 0)
-			{
-				redirect->aout = (t_rstatus){.status = true,
-					.file = ft_strdup(args->next->content)};
-				args->content = NULL;
-				args->next->content = NULL;
-				ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
-			}
-			ft_lstadd_back(&parsed->args,
-				ft_lstnew(parse_line(shell, args->content)));
-			args = args->next;
-			i++;
+			ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
+			tokens = tokens->next;
 		}
-		ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
-		tokens = tokens->next;
+		else
+			break ;
 	}
 }
 

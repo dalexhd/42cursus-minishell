@@ -1,37 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   ft_alstnew.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/05/26 19:49:14 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/01 18:44:48 by aborboll         ###   ########.fr       */
+/*   Created: 2019/11/16 16:36:06 by aborboll          #+#    #+#             */
+/*   Updated: 2021/06/01 17:41:35 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../../includes/minishell.h"
 
-t_bool	valid_quotes(char *cmd)
+t_alist	*ft_alstnew(t_args *content)
 {
-	return (true);
-}
+	t_alist	*elem;
 
-t_list	*parse_args(char *cmd)
-{
-	t_list		*args;
-
-	args = NULL;
-	if (valid_quotes(cmd))
-	{
-		args = ft_safesplitlist(cmd, ' ', "\"'");
-	}
-	return (args);
-}
-
-char	*parse_line(t_shell *shell, char *cmd)
-{
-	if (cmd)
-		return (clean_str(shell, ft_strdup(cmd)));
-	return (cmd);
+	elem = (t_alist *)malloc(sizeof(t_alist));
+	if (elem == NULL)
+		return (NULL);
+	elem->content = content;
+	elem->next = NULL;
+	elem->prev = NULL;
+	return (elem);
 }
