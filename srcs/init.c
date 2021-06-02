@@ -1,12 +1,42 @@
 #include "../includes/minishell.h"
 
+static void	inout_split(t_redirect *redirect, t_list *args,
+	t_parsed *parsed, t_rstatus *status)
+{
+	status->status = true;
+	status->file = ft_strdup(args->next->content);
+	args->content = NULL;
+	args->next->content = NULL;
+	ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
+}
+
+static	void	args_loop(t_shell *shell, t_list *args, t_parsed *parsed)
+{
+	t_redirect	*redirect;
+
+	while (args)
+	{
+		redirect = (t_redirect *)malloc(sizeof(t_redirect));
+		redirect->in = (t_rstatus){.status = false, .file = NULL};
+		redirect->out = (t_rstatus){.status = false, .file = NULL};
+		redirect->aout = (t_rstatus){.status = false, .file = NULL};
+		if (args->content && ft_strcmp(args->content, ">") == 0)
+			inout_split(redirect, args, parsed, &redirect->out);
+		else if (args->content && ft_strcmp(args->content, "<") == 0)
+			inout_split(redirect, args, parsed, &redirect->in);
+		else if (args->content && ft_strcmp(args->content, ">>") == 0)
+			inout_split(redirect, args, parsed, &redirect->aout);
+		ft_lstadd_back(&parsed->args,
+			ft_lstnew(parse_line(shell, args->content)));
+		args = args->next;
+	}
+}
+
 void	lsh_split_line(t_shell *shell, char *line)
 {
 	t_list		*tokens;
 	t_parsed	*parsed;
 	t_list		*args;
-	t_redirect	*redirect;
-	int			i;
 
 	tokens = ft_safesplitlist(line, '|', "\"'");
 	while (tokens)
@@ -21,42 +51,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 				.has_stdin = !!tokens->prev, .has_stdout = !!tokens->next
 			};
 			parsed->redirects = NULL;
-			i = 0;
-			while (args)
-			{
-				redirect = (t_redirect *)malloc(sizeof(t_redirect));
-				redirect->in = (t_rstatus){.status = false, .file = NULL};
-				redirect->out = (t_rstatus){.status = false, .file = NULL};
-				redirect->aout = (t_rstatus){.status = false, .file = NULL};
-				if (args->content && ft_strcmp(args->content, ">") == 0)
-				{
-					redirect->out = (t_rstatus){.status = true,
-						.file = ft_strdup(args->next->content)};
-					args->content = NULL;
-					args->next->content = NULL;
-					ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
-				}
-				else if (args->content && ft_strcmp(args->content, "<") == 0)
-				{
-					redirect->in = (t_rstatus){.status = true,
-						.file = ft_strdup(args->next->content)};
-					args->content = NULL;
-					args->next->content = NULL;
-					ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
-				}
-				else if (args->content && ft_strcmp(args->content, ">>") == 0)
-				{
-					redirect->aout = (t_rstatus){.status = true,
-						.file = ft_strdup(args->next->content)};
-					args->content = NULL;
-					args->next->content = NULL;
-					ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
-				}
-				ft_lstadd_back(&parsed->args,
-					ft_lstnew(parse_line(shell, args->content)));
-				args = args->next;
-				i++;
-			}
+			args_loop(shell, args, parsed);
 			ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
 			tokens = tokens->next;
 		}

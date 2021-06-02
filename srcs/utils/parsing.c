@@ -18,7 +18,7 @@ void	parse_dollar(t_shell *shell, char *cmd, size_t *i, char *line)
 		ft_strcat(line, env);
 }
 
-char *addLetter( char s[], char c, size_t pos )
+char	*addLetter(char s[], char c, size_t pos)
 {
 	size_t i = 0;
 
@@ -99,7 +99,6 @@ char	*fix_cmd(char *cmd)
 			}
 			else if (cmd[i - 1] != '>' && cmd[i - 1] != ' ')
 			{
-
 				positions[d] = i + d;
 				d++;
 			}
