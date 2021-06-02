@@ -42,21 +42,21 @@ static void	handle_redirect(t_slist	*list)
 		{
 			input = open(redirect->content->in.file, O_RDONLY, 0600);
 			if (input < 0)
-				return (ft_error("bash: %s: %s\n", true, redirect->content->in.file, strerror(errno)));
+				return (ft_error("minishell: %s: %s\n", true, redirect->content->in.file, strerror(errno)));
 			dup2(input, STDIN_FILENO);
 		}
 		else if (redirect->content->out.status)
 		{
 			input = open(redirect->content->out.file, O_TRUNC | O_WRONLY | O_CREAT, 0600);
 			if (input < 0)
-				return (ft_error("bash: %s: %s\n", true, redirect->content->out.file, strerror(errno)));
+				return (ft_error("minishell: %s: %s\n", true, redirect->content->out.file, strerror(errno)));
 			dup2(input, STDOUT_FILENO);
 		}
 		else if (redirect->content->aout.status)
 		{
 			input = open(redirect->content->aout.file, O_WRONLY | O_CREAT | O_APPEND, 0600);
 			if (input < 0)
-				return (ft_error("bash: %s: %s\n", true, redirect->content->aout.file, strerror(errno)));
+				return (ft_error("minishell: %s: %s\n", true, redirect->content->aout.file, strerror(errno)));
 			dup2(input, STDOUT_FILENO);
 		}
 		redirect = redirect->next;
@@ -134,7 +134,7 @@ void	run(t_shell *shell)
 						input = open(list->content->flags.redirect.in.file,
 								O_RDONLY, 0600);
 						if (input < 0)
-							return (ft_error("bash: %s: %s\n", true, list->content->flags.redirect.in.file, strerror(errno)));
+							return (ft_error("minishell: %s: %s\n", true, list->content->flags.redirect.in.file, strerror(errno)));
 						dup2(input, STDIN_FILENO);
 					}
 					j = 1;
@@ -199,14 +199,14 @@ void	run(t_shell *shell)
 					{
 						input = open(list->content->flags.redirect.out.file, O_TRUNC | O_WRONLY | O_CREAT, 0600);
 						if (input < 0)
-							return (ft_error("bash: %s: %s\n", true, list->content->flags.redirect.out.file, strerror(errno)));
+							return (ft_error("minishell: %s: %s\n", true, list->content->flags.redirect.out.file, strerror(errno)));
 						dup2(input, STDOUT_FILENO);
 					}
 					else if (list->content->flags.redirect.aout.status)
 					{
 						input = open(list->content->flags.redirect.aout.file, O_WRONLY | O_APPEND, 0600);
 						if (input < 0)
-							return (ft_error("bash: %s: %s\n", true, list->content->flags.redirect.aout.file, strerror(errno)));
+							return (ft_error("minishell: %s: %s\n", true, list->content->flags.redirect.aout.file, strerror(errno)));
 						dup2(input, STDOUT_FILENO);
 					}
 					j = 0;

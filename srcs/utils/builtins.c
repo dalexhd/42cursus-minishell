@@ -17,6 +17,8 @@ char	*builtin_bin_path(t_shell *shell, char *builtin)
 	int		i;
 	char	*path;
 
+	if (file_exists(builtin))
+		return (builtin);
 	folders = ft_split(ft_getenv(shell, "PATH"), ':');
 	i = 0;
 	while (folders[i] != NULL)
