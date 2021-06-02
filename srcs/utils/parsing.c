@@ -18,6 +18,101 @@ void	parse_dollar(t_shell *shell, char *cmd, size_t *i, char *line)
 		ft_strcat(line, env);
 }
 
+char *addLetter( char s[], char c, size_t pos )
+{
+	size_t i = 0;
+
+	while (i < pos && s[i]) ++i;
+
+	if (i == pos)
+	{
+		do
+		{
+			char tmp = s[i];
+			s[i++] = c;
+			c = tmp;
+		} while (c);
+		s[i] = c;
+	}
+
+	return s;
+}
+
+static	char *ft_strdupcus(const char *src, size_t len) {
+	len = len + 1;       // String plus '\0'
+	char *dst = malloc(len);            // Allocate space
+	if (dst == NULL) return NULL;       // No memory
+	ft_memcpy(dst, src, len);             // Copy the block
+	return dst;                         // Return the new string
+}
+
+
+char *add_spaces(char *need_to_add, int count, int *positions)
+{
+	int found;
+	char *with_spaces;
+
+	with_spaces =  ft_strdupcus(need_to_add, ft_strlen(need_to_add) + count);
+	for (int d = 0 ; d < count - 1; d++)
+		addLetter(with_spaces, ' ', positions[d]);
+	return (with_spaces);
+}
+
+
+char	*fix_cmd(char *cmd)
+{
+	int	*positions;
+	int	count;
+	int	d;
+	int	safequotes;
+
+	safequotes = 1;
+	count = 0;
+	for (size_t i = 0 ; i < ft_strlen(cmd); i++)
+	{
+		if (cmd[i] == '"')
+			safequotes = !safequotes; // Here we set safe quotes to the opposite value
+		if (safequotes && (cmd[i] == '>' || cmd[i] == '<'))
+		{
+			if (cmd[i - 1] != ' ')
+			count++;
+			if (cmd[i + 1] != ' ')
+			count++;
+		}
+	}
+	positions = (int *)malloc(sizeof(int) * count);
+	d = 0;
+	for (size_t i = 0 ; i < ft_strlen(cmd); i++)
+	{
+		if (cmd[i] == '"')
+			safequotes = !safequotes;
+		if (safequotes && (cmd[i] == '>' || cmd[i] == '<'))
+		{
+			if (cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 2] == '>')
+				ft_error("Eroor to many redirects!\n", 1);
+			if (cmd[i] == '>' && cmd[i + 1] == '>')
+			{
+				positions[d] = i + d;
+				d++;
+				positions[d] = i + d + 2;
+				d++;
+			}
+			else if (cmd[i - 1] != '>' && cmd[i - 1] != ' ')
+			{
+
+				positions[d] = i + d;
+				d++;
+			}
+			else if (cmd[i - 1] != '>' && cmd[i + 1] != ' ')
+			{
+				positions[d] = i + d + 1;
+				d++;
+			}
+		}
+	}
+	return (add_spaces(cmd, count, positions));
+}
+
 void	parse_tilde(t_shell *shell, char *cmd, size_t *i, char *line)
 {
 	char	*env;

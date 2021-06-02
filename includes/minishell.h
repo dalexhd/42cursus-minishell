@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/01 18:42:15 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/02 18:58:02 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ void	parse_dollar(t_shell *shell, char *cmd, size_t *i, char *line);
 void	parse_tilde(t_shell *shell, char *cmd, size_t *i, char *line);
 char	*clean_str(t_shell *shell, char *cmd);
 t_list	*parse_args(char *cmd);
+char	*fix_cmd(char *cmd);
 
 /*
 ** Define termcaps utils
