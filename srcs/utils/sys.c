@@ -27,7 +27,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 		}
 	}
 	else if (execve(parsed->args->content->bin_path, args, shell->envp) == -1)
-		ft_error("minishell: %s: command not found\n", 1, args[0]);
+		ft_error("minishell: %s: command not found\n", 127, args[0]);
 }
 
 static void	handle_redirect(t_slist	*list)
@@ -116,7 +116,7 @@ void	run(t_shell *shell)
 			{
 				waitpid(pid, &status, 0); // Wait for the children
 				if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0) {
-					exit(WEXITSTATUS(status));
+					shell->exit_status = WEXITSTATUS(status);
 				}
 			}
 		}
@@ -241,7 +241,7 @@ void	run(t_shell *shell)
 	{
 		waitpid(pids[k], &status, 0); // Wait for the children
 		if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0) {
-			exit(WEXITSTATUS(status));
+			shell->exit_status = WEXITSTATUS(status);
 		}
 		k++;
 	}

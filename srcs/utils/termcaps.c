@@ -10,7 +10,8 @@ static	void	ctld(t_shell *shell)
 	if (!*shell->term.line)
 	{
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_raw);
-		ft_success("exit\n", 1);
+		g_running = false;
+		ft_success("exit\n", 0);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/03 21:45:31 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/03 22:56:58 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ typedef struct s_shell
 	t_bool	first;
 	t_slist	*parsed;
 	t_term	term;
+	int		exit_status;
 }				t_shell;
 
 t_shell	*init_shell(char **envp);

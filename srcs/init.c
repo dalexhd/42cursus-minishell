@@ -86,6 +86,7 @@ t_shell	*init_shell(char **envp)
 	shell->envp = envp;
 	shell->parsed = NULL;
 	shell->first = true;
+	shell->exit_status = 0;
 	return (shell);
 }
 

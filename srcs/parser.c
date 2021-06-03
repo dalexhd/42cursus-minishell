@@ -86,7 +86,10 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			else if (arg->is_builtin || arg->bin_path)
 				arg->type = CMD;
 			else
+			{
+				arg->cmd = parse_line(shell, arg->cmd);
 				arg->type = ARG;
+			}
 			argback = arg;
 			ft_alstadd_back(&args, ft_alstnew(arg));
 			tmp = tmp->next;

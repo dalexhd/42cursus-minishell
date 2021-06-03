@@ -62,7 +62,7 @@ char	*addLetter(char s[], char c, size_t pos)
 
 static	char *ft_strdupcus(const char *src, size_t len) {
 	len = len + 1;       // String plus '\0'
-	char *dst = malloc(len);            // Allocate space
+	char *dst = (char *) malloc(sizeof(char) * len);            // Allocate space
 	if (dst == NULL) return NULL;       // No memory
 	ft_memcpy(dst, src, len);             // Copy the block
 	return dst;                         // Return the new string
