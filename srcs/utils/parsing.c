@@ -53,7 +53,7 @@ char *add_spaces(char *need_to_add, int count, int *positions)
 	char *with_spaces;
 
 	with_spaces =  ft_strdupcus(need_to_add, ft_strlen(need_to_add) + count);
-	for (int d = 0 ; d < count - 1; d++)
+	for (int d = 0 ; d < count; d++)
 		addLetter(with_spaces, ' ', positions[d]);
 	return (with_spaces);
 }
@@ -72,12 +72,20 @@ char	*fix_cmd(char *cmd)
 	{
 		if (cmd[i] == '"')
 			safequotes = !safequotes; // Here we set safe quotes to the opposite value
-		if (safequotes && (cmd[i] == '>' || cmd[i] == '<'))
+		if (safequotes && cmd[i] == '>' && cmd[i + 1] == '>')
 		{
 			if (cmd[i - 1] != ' ')
 			count++;
-			if (cmd[i + 1] != ' ')
+			if (cmd[i + 2] != ' ')
 			count++;
+			i++;
+		}
+		else if (safequotes && (cmd[i] == '>' || cmd[i] == '<'))
+		{
+			if (cmd[i - 1] != ' ')
+				count++;
+			if (cmd[i + 1] != ' ')
+				count++;
 		}
 	}
 	positions = (int *)malloc(sizeof(int) * count);
@@ -97,15 +105,18 @@ char	*fix_cmd(char *cmd)
 				positions[d] = i + d + 2;
 				d++;
 			}
-			else if (cmd[i - 1] != '>' && cmd[i - 1] != ' ')
+			else
 			{
-				positions[d] = i + d;
-				d++;
-			}
-			else if (cmd[i - 1] != '>' && cmd[i + 1] != ' ')
-			{
-				positions[d] = i + d + 1;
-				d++;
+				if (cmd[i - 1] != '>'  && cmd[i - 1] != '<' && cmd[i - 1] != ' ')
+				{
+					positions[d] = i + d;
+					d++;
+				}
+				if (cmd[i - 1] != '>'  && cmd[i - 1] != '<' && cmd[i + 1] != ' ')
+				{
+					positions[d] = i + d + 1;
+					d++;
+				}
 			}
 		}
 	}

@@ -13,7 +13,7 @@ void	ft_cd(t_shell *shell, char **args)
 	if (chdir(dir) == -1)
 	{
 		ft_strdel(&pwd);
-		ft_error("minishell: cd: %s: No such file or directory\n", 0, dir);
+		ft_error("minishell: cd: %s: %s\n", 0, dir, strerror(errno));
 		return ;
 	}
 	ft_export_internal(shell, "OLDPWD", pwd);

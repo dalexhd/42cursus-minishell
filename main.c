@@ -5,6 +5,7 @@ int	main(int argc, char **argv, char **envp)
 	t_shell	*shell;
 	t_list	*commands;
 
+	signal_handler();
 	shell = init_shell(envp);
 	if (argc != 3)
 	{

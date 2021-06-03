@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 10:05:54 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/31 20:09:45 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/03 15:10:40 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,12 @@ char	**ft_safesplit(t_list *list)
 	i = 0;
 	while (list)
 	{
-		tokens[i] = list->content;
+		if (list->content)
+		{
+			tokens[i] = list->content;
+			i++;
+		}
 		list = list->next;
-		i++;
 	}
 	tokens[i] = NULL;
 	return (tokens);

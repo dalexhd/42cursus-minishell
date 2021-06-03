@@ -27,7 +27,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 		}
 	}
 	else if (execve(builtin_bin_path(shell, args[0]), args, shell->envp) == -1)
-		ft_error("minishell: %s: command not found\n", 1, arg);
+		ft_error("minishell: %s: command not found\n", 1, args[0]);
 }
 
 static void	handle_redirect(t_slist	*list)

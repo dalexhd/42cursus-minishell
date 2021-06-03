@@ -60,6 +60,6 @@ t_list	*parse_args(char *cmd)
 char	*parse_line(t_shell *shell, char *cmd)
 {
 	if (cmd)
-		return (clean_str(shell, ft_strdup(cmd)));
+		return (clean_str(shell, ft_strdup(ft_strtrim(cmd, "\""))));
 	return (cmd);
 }
