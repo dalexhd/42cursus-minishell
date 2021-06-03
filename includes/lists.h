@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/01 17:46:43 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/03 22:25:18 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,23 @@ typedef struct s_rlist
 
 typedef struct s_args
 {
-	t_list		*args;
-	char		*line;
-	pid_t		pid;
-	t_flags		flags;
-	t_rlist		*redirects;
+	int			type;
+	char		*cmd;
+	char		*file;
+	t_bool		is_builtin;
+	char		*bin_path;
 }				t_args;
+
+typedef struct s_alist
+{
+	t_args			*content;
+	struct s_alist	*next;
+	struct s_alist	*prev;
+}				t_alist;
 
 typedef struct s_parsed
 {
-	t_list		*args;
+	t_alist		*args;
 	char		*line;
 	pid_t		pid;
 	t_flags		flags;
@@ -84,13 +91,6 @@ typedef struct s_slist
 	struct s_slist	*next;
 	struct s_slist	*prev;
 }				t_slist;
-
-typedef struct s_alist
-{
-	t_args			*content;
-	struct s_alist	*next;
-	struct s_alist	*prev;
-}				t_alist;
 
 /*
 ** Shell lists

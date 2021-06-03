@@ -5,6 +5,8 @@ void	ft_exit(char **args)
 	size_t	i;
 
 	i = 1;
+	if (!args[1])
+		g_running = false;
 	while (args[i])
 	{
 		if (args[i + 1])
@@ -19,10 +21,7 @@ void	ft_exit(char **args)
 			exit(255);
 		}
 		else
-		{
-			g_running = false;
 			exit(ft_atoi(args[1]));
-		}
 		i++;
 	}
 }

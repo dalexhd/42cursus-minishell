@@ -11,7 +11,7 @@
 			"program": "${workspaceRoot}/minishell",
 			"args": [
 				"-c",
-				"echo entre el clavel y la rosa >> a su majestad es coja ; cat a"
+				"ls -la > test"
 			]
 		}
 	]

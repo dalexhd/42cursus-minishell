@@ -5,9 +5,9 @@ void	exec(t_shell *shell, t_parsed *parsed)
 	char	*arg;
 	char	**args;
 
-	arg = (char *)parsed->args->content;
+	arg = (char *)parsed->args->content->cmd;
 	args = ft_safesplit(parsed->args);
-	if (ft_isbuiltin(arg))
+	if (parsed->args->content->is_builtin)
 	{
 		if (!ft_strcmp(arg, "cd"))
 			ft_cd(shell, args);
@@ -26,7 +26,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 			exit(0);
 		}
 	}
-	else if (execve(builtin_bin_path(shell, args[0]), args, shell->envp) == -1)
+	else if (execve(parsed->args->content->bin_path, args, shell->envp) == -1)
 		ft_error("minishell: %s: command not found\n", 1, args[0]);
 }
 
@@ -94,11 +94,11 @@ void	run(t_shell *shell)
 	while (list)
 	{
 		input = 0;
-		if (ft_strcmp(list->content->args->content, "exit") == 0)
+		if (ft_strcmp(list->content->args->content->cmd, "exit") == 0)
 		{
 			exec(shell, list->content);
 		}
-		else if (ft_strcmp(list->content->args->content, "cd") == 0)
+		else if (ft_strcmp(list->content->args->content->cmd, "cd") == 0)
 		{
 			exec(shell, list->content);
 		}

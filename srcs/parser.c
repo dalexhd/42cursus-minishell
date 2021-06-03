@@ -45,14 +45,52 @@ t_bool	valid_quotes(char *cmd)
 	return (tof_quotes(cmd, pos, one));
 }
 
-t_list	*parse_args(char *cmd)
+t_alist	*parse_args(t_shell *shell, char *cmd)
 {
-	t_list		*args;
+	t_alist		*args;
+	t_args		*arg;
+	t_args		*argback;
+	t_list		*tmp;
 
 	args = NULL;
+	argback = NULL;
 	if (valid_quotes(cmd))
 	{
-		args = ft_safesplitlist(cmd, ' ', "\"'");
+		tmp = ft_safesplitlist(cmd, ' ', "\"'");
+		while (tmp)
+		{
+			arg = (t_args *)malloc(sizeof(t_args));
+			arg->cmd = tmp->content;
+			arg->file = NULL;
+			arg->is_builtin = ft_isbuiltin(tmp->content);
+			arg->bin_path = NULL;
+			if (!arg->is_builtin)
+				arg->bin_path = builtin_bin_path(shell, tmp->content);
+			arg->type = 0;
+			if (ft_strcmp(tmp->content, ">>") == 0)
+				arg->type = R_AOUT;
+			else if (ft_strcmp(tmp->content, ">") == 0)
+				arg->type = R_OUT;
+			else if (ft_strcmp(tmp->content, "<") == 0)
+				arg->type = R_IN;
+			else if (ft_strstr(tmp->content, "-"))
+				arg->type = FLAG;
+			else if (argback && (argback->type == R_IN
+					|| argback->type == R_OUT
+					|| argback->type == R_AOUT
+				))
+			{
+				arg->type = FILE;
+				arg->file = tmp->content;
+			}
+			else if (arg->is_builtin || arg->bin_path)
+				arg->type = CMD;
+			else
+				arg->type = ARG;
+			argback = arg;
+			ft_alstadd_back(&args, ft_alstnew(arg));
+			tmp = tmp->next;
+		}
 	}
 	return (args);
 }

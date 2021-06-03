@@ -18,6 +18,28 @@ void	parse_dollar(t_shell *shell, char *cmd, size_t *i, char *line)
 		ft_strcat(line, env);
 }
 
+char	**ft_safesplit(t_alist *list)
+{
+	int		size;
+	int		i;
+	char	**tokens;
+
+	size = ft_alstsize(list);
+	tokens = (char **)malloc(sizeof(char *) * (size + 1));
+	i = 0;
+	while (list)
+	{
+		if (list->content)
+		{
+			tokens[i] = list->content->cmd;
+			i++;
+		}
+		list = list->next;
+	}
+	tokens[i] = NULL;
+	return (tokens);
+}
+
 char	*addLetter(char s[], char c, size_t pos)
 {
 	size_t i = 0;
