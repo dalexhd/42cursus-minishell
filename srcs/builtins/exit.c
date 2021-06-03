@@ -17,7 +17,8 @@ void	ft_exit(char **args)
 		else if ((args[1][0] == '-' && !ft_strevery(&args[1][1], ft_isdigit))
 			|| (args[1][0] != '-' && !ft_strevery(args[1], ft_isdigit)))
 		{
-			ft_error("minishell: exit: %s: numeric argument required\n", 0, args[i]);
+			ft_error("minishell: exit: %s: numeric argument required\n",
+				0, args[i]);
 			exit(255);
 		}
 		else

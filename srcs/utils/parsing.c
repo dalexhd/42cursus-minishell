@@ -71,7 +71,6 @@ static	char *ft_strdupcus(const char *src, size_t len) {
 
 char *add_spaces(char *need_to_add, int count, int *positions)
 {
-	int found;
 	char *with_spaces;
 
 	with_spaces =  ft_strdupcus(need_to_add, ft_strlen(need_to_add) + count);

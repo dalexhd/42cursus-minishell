@@ -12,7 +12,8 @@ void	ft_export_internal(t_shell *shell, char *env, char *value)
 	{
 		if (ft_strncmp(shell->envp[i], env, ft_strlen(env)) == 0)
 		{
-			shell->envp[i] = ft_strjoin_free(ft_strjoin(env, "="), ft_strdup(value));
+			shell->envp[i] = ft_strjoin_free(ft_strjoin(env, "="),
+				ft_strdup(value));
 			return ;
 		}
 		i++;
