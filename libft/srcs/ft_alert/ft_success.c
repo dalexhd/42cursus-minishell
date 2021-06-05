@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/21 15:15:10 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/20 20:28:11 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/05 16:57:14 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,5 @@ void	ft_success(char *s, t_bool force, ...)
 	ft_vfprintf(STDOUT_FILENO, s, &args);
 	va_end(args);
 	if (force)
-		exit(EXIT_FAILURE);
+		exit(EXIT_SUCCESS);
 }

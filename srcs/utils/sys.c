@@ -27,7 +27,16 @@ void	exec(t_shell *shell, t_parsed *parsed)
 		}
 	}
 	else if (execve(parsed->args->content->bin_path, args, shell->envp) == -1)
-		ft_error("minishell: %s: command not found\n", 127, args[0]);
+	{
+		if (is_directory(parsed->args->content->bin_path))
+			ft_error("minishell: %s: is a directory\n", 126, args[0]);
+		else if (!has_access(parsed->args->content->bin_path))
+			ft_error("minishell: %s: Permission denied\n", 126, args[0]);
+		else if (ft_strncmp(parsed->args->content->bin_path, "./", 2) == 0)
+			ft_error("minishell: %s: No such file or directory\n", 127, args[0]);
+		else
+			ft_error("minishell: %s: command not found\n", 127, args[0]);
+	}
 }
 
 static void	handle_redirect(t_slist	*list)

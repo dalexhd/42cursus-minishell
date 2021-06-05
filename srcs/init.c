@@ -45,7 +45,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 	{
 		parsed = (t_parsed *)malloc(sizeof(t_parsed));
 		parsed->args = NULL;
-		args = parse_args(shell, fix_cmd(tokens->content));
+		args = parse_args(shell, fix_cmd(shell, tokens->content));
 		if (args)
 		{
 			parsed->line = ft_strdup(line);
@@ -86,6 +86,7 @@ t_shell	*init_shell(char **envp)
 	shell->envp = envp;
 	shell->parsed = NULL;
 	shell->first = true;
+	shell->is_cmd = false;
 	shell->exit_status = 0;
 	return (shell);
 }
@@ -112,7 +113,8 @@ void	exec_shell(t_shell *shell, char *cmd)
 		lsh_split_line(shell, cmd);
 		shell->pipe_count = ft_slstsize(shell->parsed);
 		fill_data(shell->parsed);
-		run(shell);
+		if (shell->exit_status > -1)
+			run(shell);
 	}
 	//ft_printf("%i\n", g_running);
 	//terminate(shell);
@@ -120,5 +122,3 @@ void	exec_shell(t_shell *shell, char *cmd)
 
 //ls | cat -e | "aaa aaaa" | "abaaasssssss" | "aaaaaaa"aaasdasd | sdadaaaawqdwqdqw
 //ls | ls | "aaaab" | "abaaasssssss"
-
-//

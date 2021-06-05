@@ -64,6 +64,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			arg->file = NULL;
 			arg->is_builtin = ft_isbuiltin(tmp->content);
 			arg->bin_path = NULL;
+			arg->is_literal = arg->cmd[0] == '\'' && arg->cmd[ft_strlen(arg->cmd) - 1] == '\'';
 			if (!arg->is_builtin)
 				arg->bin_path = builtin_bin_path(shell, tmp->content);
 			arg->type = 0;
@@ -87,7 +88,8 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 				arg->type = CMD;
 			else
 			{
-				arg->cmd = parse_line(shell, arg->cmd);
+				arg->cmd = parse_line(shell, arg, arg->cmd);
+				arg->bin_path = arg->cmd;
 				arg->type = ARG;
 			}
 			argback = arg;
@@ -98,9 +100,9 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	return (args);
 }
 
-char	*parse_line(t_shell *shell, char *cmd)
+char	*parse_line(t_shell *shell, t_args *arg, char *cmd)
 {
 	if (cmd)
-		return (clean_str(shell, ft_strdup(ft_strtrim(cmd, "\""))));
+		return (clean_str(shell, arg, ft_strdup(ft_strtrim(cmd, "\"'"))));
 	return (cmd);
 }

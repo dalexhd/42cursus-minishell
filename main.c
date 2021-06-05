@@ -16,6 +16,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	else
 	{
+		shell->is_cmd = true;
 		commands = ft_safesplitlist(argv[2], ';', "\"'");
 		while (commands)
 		{

@@ -80,7 +80,7 @@ char *add_spaces(char *need_to_add, int count, int *positions)
 }
 
 
-char	*fix_cmd(char *cmd)
+char	*fix_cmd(t_shell *shell, char *cmd)
 {
 	int	*positions;
 	int	count;
@@ -118,7 +118,21 @@ char	*fix_cmd(char *cmd)
 		if (safequotes && (cmd[i] == '>' || cmd[i] == '<'))
 		{
 			if (cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 2] == '>')
-				ft_error("Eroor to many redirects!\n", 1);
+			{
+				if (shell->is_cmd)
+					ft_error("minishell: -c: syntax error near unexpected token `>'\nminishell: -c: `%s'\n", 0, cmd);
+				else
+					ft_error("minishell: syntax error near unexpected token `>'\n", 0);
+				shell->exit_status = 2;
+			}
+			else if (cmd[i] == '<' && cmd[i + 1] == '<' && cmd[i + 2] == '<')
+			{
+				if (shell->is_cmd)
+					ft_error("minishell: -c: syntax error near unexpected token `<'\nminishell: -c: `%s'\n", 0, cmd);
+				else
+					ft_error("minishell: syntax error near unexpected token `<'\n", 0);
+				shell->exit_status = 2;
+			}
 			if (cmd[i] == '>' && cmd[i + 1] == '>')
 			{
 				positions[d] = i + d;
@@ -163,13 +177,13 @@ void	parse_tilde(t_shell *shell, char *cmd, size_t *i, char *line)
 	ft_strcat(line, tmp);
 }
 
-char	*clean_str(t_shell *shell, char *cmd)
+char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 {
 	size_t	i;
-	char	*line;
+	char	*res;
 	t_bool	test;
 
-	line = ft_strnew(ft_strlen(cmd));
+	res = ft_strnew(ft_strlen(cmd));
 	test = true;
 	i = 0;
 	while (cmd[i])
@@ -177,14 +191,14 @@ char	*clean_str(t_shell *shell, char *cmd)
 		if (i > 0 && cmd[i - 1] == '\\')
 			test = false;
 		if (cmd[i] == '\\' && cmd[i + 1] != '\\') // If current char is '\\' and next char isn´t '\\'
-			ft_strncat(line, &cmd[i], 1);
-		else if (cmd[i] == '$' && test)
-			parse_dollar(shell, cmd, &i, line);
+			ft_strncat(res, &cmd[i], 1);
+		else if (!arg->is_literal && cmd[i] == '$' && test)
+			parse_dollar(shell, cmd, &i, res);
 		else if (cmd[i] == '~' && test)
-			parse_tilde(shell, cmd, &i, line);
+			parse_tilde(shell, cmd, &i, res);
 		else
-			ft_strncat(line, &cmd[i], 1);
+			ft_strncat(res, &cmd[i], 1);
 		i++;
 	}
-	return (line);
+	return (res);
 }

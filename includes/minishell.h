@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/31 07:32:52 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/03 22:56:58 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/05 20:24:45 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # include <termios.h>
 # include <termcap.h>
 # include <string.h>
+# include <dirent.h>
 
 /*
 ** Include internal values of the cub3d.
@@ -61,6 +62,7 @@ typedef struct s_shell
 	size_t	pipe_count;
 	size_t	pid;
 	t_bool	first;
+	t_bool	is_cmd;
 	t_slist	*parsed;
 	t_term	term;
 	int		exit_status;
@@ -69,7 +71,7 @@ typedef struct s_shell
 t_shell	*init_shell(char **envp);
 void	exec_shell(t_shell *shell, char *cmd);
 void	signal_handler(void);
-char	*parse_line(t_shell *shell, char *cmd);
+char	*parse_line(t_shell *shell, t_args *arg, char *cmd);
 
 /*
 ** Define builtins
@@ -93,15 +95,17 @@ char	*ft_getenv(t_shell *shell, char *env);
 */
 t_bool	ft_isbuiltin(char *builtin);
 t_bool	file_exists(char *filename);
+t_bool	is_directory(char *path);
+t_bool	has_access(char *path);
 char	*builtin_bin_path(t_shell *shell, char *builtin);
 char	*getCurrentDir(char *path);
 void	exec(t_shell *shell, t_parsed *parsed);
 void	run(t_shell *shell);
 void	parse_dollar(t_shell *shell, char *cmd, size_t *i, char *line);
 void	parse_tilde(t_shell *shell, char *cmd, size_t *i, char *line);
-char	*clean_str(t_shell *shell, char *cmd);
+char	*clean_str(t_shell *shell, t_args *arg, char *line);
 t_alist	*parse_args(t_shell *shell, char *cmd);
-char	*fix_cmd(char *cmd);
+char	*fix_cmd(t_shell *shell, char *cmd);
 char	**ft_safesplit(t_alist *list);
 
 /*

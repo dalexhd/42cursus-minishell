@@ -7,6 +7,33 @@ t_bool	file_exists(char *filename)
 	return (stat(filename, &buffer) == 0);
 }
 
+t_bool	is_directory(char *path)
+{
+	DIR	*dir;
+
+	if (ft_strcmp(path, "..") == 0)
+		return (false);
+	dir = opendir(path);
+	if (dir)
+	{
+		closedir(dir);
+		return (true);
+	}
+	else if (ENOENT == errno)
+		return (false);
+	return (false);
+}
+
+t_bool	has_access(char *path)
+{
+	int	input;
+
+	input = open(path, O_RDONLY);
+	if (input < 0 && errno == EACCES)
+		return (false);
+	return (true);
+}
+
 char	*getCurrentDir(char *path)
 {
 	char	*token;

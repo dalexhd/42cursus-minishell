@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/03 22:25:18 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/05 18:08:56 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_args
 	char		*file;
 	t_bool		is_builtin;
 	char		*bin_path;
+	t_bool		is_literal;
 }				t_args;
 
 typedef struct s_alist
