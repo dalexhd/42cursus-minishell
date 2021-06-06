@@ -11,7 +11,7 @@
 			"program": "${workspaceRoot}/minishell",
 			"args": [
 				"-c",
-				"echo '$HOME'"
+				"echo \"'HOME'\"XA"
 			]
 		}
 	]

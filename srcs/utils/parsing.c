@@ -1,15 +1,35 @@
 #include "../../includes/minishell.h"
 
-void	parse_dollar(t_shell *shell, char *cmd, size_t *i, char *line)
+t_bool	ft_isenv(int c)
+{
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+		|| (c >= '0' && c <= '9') || (c == '_'))
+	{
+		return (true);
+	}
+	return (false);
+}
+
+void	parse_dollar(t_shell *shell, char **cmd, int *i, char *line)
 {
 	char	*env;
 	char	*tmp;
+	char	*aux;
+
 
 	tmp = ft_strnew(1);
-	while (cmd[*i] && !ft_isspace(cmd[*i]))
+	if (ft_isdigit(ft_strdup(*cmd)[*i + 1]))
 	{
-		if (cmd[*i] != '$')
-			ft_strncat(tmp, &cmd[*i], 1);
+		*(cmd) += 2;
+		(*i)--;
+		return ;
+	}
+	aux = ft_strdup(*cmd);
+	(*i)++;
+	while (aux[*i] && ft_isenv(aux[*i]))
+	{
+		if (aux[*i] != '$')
+			ft_strncat(tmp, &aux[*i], 1);
 		(*i)++;
 	}
 	(*i)--;
@@ -158,7 +178,7 @@ char	*fix_cmd(t_shell *shell, char *cmd)
 	return (add_spaces(cmd, count, positions));
 }
 
-void	parse_tilde(t_shell *shell, char *cmd, size_t *i, char *line)
+void	parse_tilde(t_shell *shell, char *cmd, int *i, char *line)
 {
 	char	*env;
 	char	*tmp;
@@ -179,7 +199,7 @@ void	parse_tilde(t_shell *shell, char *cmd, size_t *i, char *line)
 
 char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 {
-	size_t	i;
+	int	i;
 	char	*res;
 	t_bool	test;
 
@@ -193,7 +213,7 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 		if (cmd[i] == '\\' && cmd[i + 1] != '\\') // If current char is '\\' and next char isn´t '\\'
 			ft_strncat(res, &cmd[i], 1);
 		else if (!arg->is_literal && cmd[i] == '$' && test)
-			parse_dollar(shell, cmd, &i, res);
+			parse_dollar(shell, &cmd, &i, res);
 		else if (cmd[i] == '~' && test)
 			parse_tilde(shell, cmd, &i, res);
 		else

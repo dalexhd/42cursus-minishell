@@ -64,7 +64,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			arg->file = NULL;
 			arg->is_builtin = ft_isbuiltin(tmp->content);
 			arg->bin_path = NULL;
-			arg->is_literal = arg->cmd[0] == '\'' && arg->cmd[ft_strlen(arg->cmd) - 1] == '\'';
+			arg->is_literal = arg->cmd[0] == '\'' && arg->cmd[ft_strlen(arg->cmd) - 1] == '\'';// o barra en posicion anterior
 			if (!arg->is_builtin)
 				arg->bin_path = builtin_bin_path(shell, tmp->content);
 			arg->type = 0;
@@ -99,10 +99,51 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	}
 	return (args);
 }
+char	*quotes_trim(char *cmd)
+{
+	int		i;
+	char	one;
+	char	*tmp;
+	int		j;
+
+	i = 0;
+	j = 0;
+	one = 0;
+	while (cmd[i])
+	{
+		if ((cmd[i] == '\'' || cmd[i] == '"') && cmd[i])
+		{
+			one = cmd[i];
+			tmp = ft_strrev(ft_strdup(cmd));
+			while (tmp[j] != one)
+				j++;
+			if (tmp[j] == one)
+			{
+				if (i != 0)
+					tmp = ft_strcut(cmd, 0, i);
+				else
+					tmp = ft_strdup("");
+				tmp = ft_strcat(tmp, ft_strcut(cmd, i + 1, ft_strlen(cmd) - j - 2));
+				if ( j != 0)
+					tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j, ft_strlen(cmd)));
+//				else
+//					tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j, ft_strlen(cmd)));
+		//			tmp = ft_strcat(tmp, "");
+				return (tmp);
+			}
+		}
+		i++;
+	}
+	return (cmd);
+}
 
 char	*parse_line(t_shell *shell, t_args *arg, char *cmd)
 {
 	if (cmd)
-		return (clean_str(shell, arg, ft_strdup(ft_strtrim(cmd, "\"'"))));
+		return (clean_str(shell, arg, ft_strdup(quotes_trim(cmd))));
 	return (cmd);
 }
+/*
+//1. quita espacios
+Comillas dobles
+*/
