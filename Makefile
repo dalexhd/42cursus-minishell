@@ -215,7 +215,7 @@ testback:		## Make minishell test
 			cd ./tools/tester && ./test_map_valid_function.sh -f
 
 test:		## Make minishell test
-			cd ./minishell-tester && ./destroyer.sh --process 3
+			cd ./unittest && ./unit_test.sh && cd ..
 
 leak:		## Run memory leak for valid cub file.
 			@if [ $(shell ./tools/memory_leak.sh $(OUTPUT) $(LEAKS_FLAGS) && cat valgrind_out | grep "definitely lost:" | cut -d : -f 2 | cut -d b  -f 1 | tr -d " " | tr -d ",") ]; then\

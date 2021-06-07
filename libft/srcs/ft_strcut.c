@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 23:10:31 by aborboll          #+#    #+#             */
-/*   Updated: 2021/05/24 23:17:03 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/07 20:23:04 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ char	*ft_strcut(char *str, int from, int to)
 	char	*begin;
 
 	if (from >= to)
-		return (NULL);
+		return (" ");
 	cut = ft_calloc(sizeof(char), (to - from) + 1);
 	begin = cut;
 	if (!cut)
-		return (NULL);
+		return (" ");
 	ft_memcpy(cut, str + from, to);
 	return (begin);
 }

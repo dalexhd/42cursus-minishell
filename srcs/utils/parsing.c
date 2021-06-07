@@ -16,7 +16,6 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char *line)
 	char	*tmp;
 	char	*aux;
 
-
 	tmp = ft_strnew(1);
 	if (ft_isdigit(ft_strdup(*cmd)[*i + 1]))
 	{
@@ -204,15 +203,20 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 	t_bool	test;
 
 	res = ft_strnew(ft_strlen(cmd));
-	test = true;
 	i = 0;
 	while (cmd[i])
 	{
-		if (i > 0 && cmd[i - 1] == '\\')
-			test = false;
-		if (cmd[i] == '\\' && cmd[i + 1] != '\\') // If current char is '\\' and next char isn´t '\\'
+		if (cmd[i] == '\\' && cmd[i + 1] == '\\') // If current char is '\\' and next char isn´t '\\'
+		{
 			ft_strncat(res, &cmd[i], 1);
-		else if (!arg->is_literal && cmd[i] == '$' && test)
+			i++;
+		}
+		else if (cmd[i] == '\\' && cmd[i + 1] == '$')
+		{
+			ft_strncat(res, "$", 1);
+			i++;
+		}
+		else if (!arg->is_literal && cmd[i] == '$' && (ft_isalpha(cmd[i + 1]) || cmd[i + 1] == '_') && test)
 			parse_dollar(shell, &cmd, &i, res);
 		else if (cmd[i] == '~' && test)
 			parse_tilde(shell, cmd, &i, res);
