@@ -108,6 +108,7 @@ void	exec_shell(t_shell *shell, char *cmd)
 {
 	if (ft_strlen(cmd) > 0)
 	{
+		shell->exit_status = 0;
 		shell->parsed = NULL;
 		shell->first = false;
 		lsh_split_line(shell, cmd);

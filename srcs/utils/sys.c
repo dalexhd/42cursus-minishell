@@ -15,6 +15,8 @@ void	exec(t_shell *shell, t_parsed *parsed)
 			ft_exit(args);
 		else if (!ft_strcmp(arg, "export"))
 			ft_export(shell, args);
+		else if (!ft_strcmp(arg, "unset"))
+			ft_unset(shell, args);
 		else
 		{
 			if (!ft_strcmp(arg, "env"))
@@ -102,12 +104,18 @@ void	run(t_shell *shell)
 	s = 0;
 	while (list)
 	{
+		while (list->content->args)
+		{
+			if (list->content->args->content)
+				break ;
+			list->content->args = list->content->args->next;
+		}
 		input = 0;
-		if (ft_strcmp(list->content->args->content->cmd, "exit") == 0)
+		if (/*list->content->args->content && */ft_strcmp(list->content->args->content->cmd, "exit") == 0)
 		{
 			exec(shell, list->content);
 		}
-		else if (ft_strcmp(list->content->args->content->cmd, "cd") == 0)
+		else if (/*list->content->args->content && */ft_strcmp(list->content->args->content->cmd, "cd") == 0)
 		{
 			exec(shell, list->content);
 		}

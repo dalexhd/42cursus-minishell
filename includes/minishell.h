@@ -82,7 +82,7 @@ void	ft_env(t_shell *shell);
 void	ft_cd(t_shell *shell, char **args);
 void	ft_export_internal(t_shell *shell, char *env, char *value);
 void	ft_export(t_shell *shell, char **args);
-void	ft_unset(t_shell *shell, char *env);
+void	ft_unset(t_shell *shell, char **args);
 void	ft_exit(char **args);
 
 /*

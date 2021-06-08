@@ -206,14 +206,9 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 	i = 0;
 	while (cmd[i])
 	{
-		if (cmd[i] == '\\' && cmd[i + 1] == '\\') // If current char is '\\' and next char isn´t '\\'
+		if (cmd[i] == '\\' && ft_strchr("\\$\"n", cmd[i + 1]))
 		{
-			ft_strncat(res, &cmd[i], 1);
-			i++;
-		}
-		else if (cmd[i] == '\\' && cmd[i + 1] == '$')
-		{
-			ft_strncat(res, "$", 1);
+			ft_strncat(res, &cmd[i + 1], 1);
 			i++;
 		}
 		else if (!arg->is_literal && cmd[i] == '$' && (ft_isalpha(cmd[i + 1]) || cmd[i + 1] == '_') && test)
