@@ -49,45 +49,55 @@ static	void	ctlb(t_shell *shell)
 	ft_printshell(shell);
 	shell->term.cursor = 11;
 }
-static void	NEW(t_shell *shell)
-{
-	int		fd;
 
-	fd = open('HISTORIAL', O_RDONLY);
-	while(shell->term.history)
+static void	new(t_shell *shell)
+{
+	int		input;
+	char	*tmp_dir;
+
+	tmp_dir = ft_getenv(shell, "HOME");
+	if (tmp_dir)
 	{
-		write(fd, &shell->term.history->original, ft_strlen(shell->term.history->original));
-		shell->term.history = shell->term.history->next;
+		input = open(ft_strjoin(tmp_dir, "/.minishell_history"), O_CREAT | O_WRONLY | O_APPEND, 0600);
+		write(input, ft_strjoin(shell->term.line, "\n"), ft_strlen(shell->term.line) + 1);
+		close(input);
 	}
-	close (fd);
 }
 
-static void	OLD(t_shell *shell)
+
+static void	old(t_shell *shell)
 {
+	int		test;
 	int		fd;
-	char	**line;
+	char	*line;
+	char	*tmp_dir;
 
-	fd = open('HISTORIAL', O_RDONLY);
-	while(shell->term.history)
+	tmp_dir = ft_getenv(shell, "HOME");
+	if (tmp_dir)
 	{
-
-		//shell->term.history->original, ft_strlen(shell->term.history->original));
-		shell->term.history = shell->term.history->next;
+		fd = open(ft_strjoin(tmp_dir, "/.minishell_history"), O_CREAT | O_RDONLY, 0600);
+		test = get_next_line(fd, &line);
+		while(test)
+		{
+			ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup(line)));
+			shell->term.history->original = ft_strdup(line);
+			shell->term.history->copy = ft_strdup(line);
+			test = get_next_line(fd, &line);
+		}
+		close (fd);
 	}
-	close (fd);
 }
 
 void	end_tc(t_shell *shell)
 {
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_raw);
-	NEW(shell);
 }
 
 void	init_tc(t_shell *shell)
 {
 	ft_bzero(&shell->term, sizeof(t_term));
 	shell->term.cursor = 11;
-	OLD(shell);
+	old(shell);
 	ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup("")));
 	shell->term.term_name = getenv("TERM");
 	tgetent(NULL, shell->term.term_name);
@@ -160,6 +170,7 @@ static	void	newliner(t_shell *shell)
 		free(shell->term.history->copy);
 		shell->term.history->original = ft_strdup(shell->term.line);
 		shell->term.history->copy = ft_strdup(shell->term.line);
+		new(shell);
 		ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup("")));
 	}
 }
@@ -178,6 +189,7 @@ static	void	sandman(t_shell *shell)
 		exec_shell(shell, commands->content);
 		commands = commands->next;
 	}
+
 	tputs(tgetstr("ks", NULL), 1, ft_iputchar);
 	ft_bzero(&shell->term.line, BUFF_SIZE);
 	shell->term.history = ft_hlstfirst(shell->term.history);
