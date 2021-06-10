@@ -81,7 +81,7 @@ TEST_ARRAY=(
 "echo \"'\$'\""
 "echo \\\\\n"
 "echo \"< no pipe | or semicolon will ; stop me >\""
-'bash -c "I am not a command" "Im the program name"'
+'bash -c "I am" "Im the"'
 'pwd" should not work"'
 'echo\" should not work neiter\"'
 '################		    PIPES			#################'
