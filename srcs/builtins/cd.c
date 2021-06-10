@@ -7,7 +7,15 @@ void	ft_cd(t_shell *shell, char **args)
 
 	pwd = ft_pwd();
 	if (!args[1])
+	{
 		dir = ft_getenv(shell, "HOME");
+		if (!dir)
+		{
+			ft_error("minishell: cd: HOME not set\n", 0);
+			shell->exit_status = 1;
+			return ;
+		}
+	}
 	else
 		dir = args[1];
 	if (chdir(dir) == -1)
