@@ -11,7 +11,7 @@
 			"program": "${workspaceRoot}/minishell",
 			"args": [
 				"-c",
-				"> a echo cucu cantaba la rana; cat a"
+				"< >> a"
 			]
 		}
 	]

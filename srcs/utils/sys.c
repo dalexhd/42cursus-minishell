@@ -111,11 +111,19 @@ void	run(t_shell *shell)
 			list->content->args = list->content->args->next;
 		}
 		input = 0;
-		if (/*list->content->args->content && */ft_strcmp(list->content->args->content->cmd, "exit") == 0)
+		if (ft_strcmp(list->content->args->content->cmd, "exit") == 0)
 		{
 			exec(shell, list->content);
 		}
-		else if (/*list->content->args->content && */ft_strcmp(list->content->args->content->cmd, "cd") == 0)
+		else if (ft_strcmp(list->content->args->content->cmd, "cd") == 0)
+		{
+			exec(shell, list->content);
+		}
+		else if (ft_strcmp(list->content->args->content->cmd, "export") == 0)
+		{
+			exec(shell, list->content);
+		}
+		else if (ft_strcmp(list->content->args->content->cmd, "unset") == 0)
 		{
 			exec(shell, list->content);
 		}
