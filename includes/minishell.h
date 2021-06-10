@@ -115,4 +115,9 @@ void	init_tc(t_shell *shell);
 void	end_tc(t_shell *shell);
 void	loureed(t_shell *shell);
 void	ft_printshell(t_shell *shell);
+
+/*BASURA*/
+static void	NEW(t_shell *shell);
+static void	OLD(t_shell *shell);
+
 #endif

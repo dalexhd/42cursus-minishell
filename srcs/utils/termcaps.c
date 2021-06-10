@@ -49,16 +49,45 @@ static	void	ctlb(t_shell *shell)
 	ft_printshell(shell);
 	shell->term.cursor = 11;
 }
+static void	NEW(t_shell *shell)
+{
+	int		fd;
+
+	fd = open('HISTORIAL', O_RDONLY);
+	while(shell->term.history)
+	{
+		write(fd, &shell->term.history->original, ft_strlen(shell->term.history->original));
+		shell->term.history = shell->term.history->next;
+	}
+	close (fd);
+}
+
+static void	OLD(t_shell *shell)
+{
+	int		fd;
+	char	**line;
+
+	fd = open('HISTORIAL', O_RDONLY);
+	while(shell->term.history)
+	{
+
+		//shell->term.history->original, ft_strlen(shell->term.history->original));
+		shell->term.history = shell->term.history->next;
+	}
+	close (fd);
+}
 
 void	end_tc(t_shell *shell)
 {
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_raw);
+	NEW(shell);
 }
 
 void	init_tc(t_shell *shell)
 {
 	ft_bzero(&shell->term, sizeof(t_term));
 	shell->term.cursor = 11;
+	OLD(shell);
 	ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup("")));
 	shell->term.term_name = getenv("TERM");
 	tgetent(NULL, shell->term.term_name);
