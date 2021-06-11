@@ -94,7 +94,7 @@ void	parse_tilde(t_shell *shell, char *cmd, int *i, char *line);
 char	*clean_str(t_shell *shell, t_args *arg, char *line);
 t_alist	*parse_args(t_shell *shell, char *cmd);
 char	*fix_cmd(t_shell *shell, char *cmd);
-char	**ft_safesplit(t_alist *list);
+char	**ft_safesplit(t_shell *shell, t_alist *list);
 
 /*
 ** Define termcaps utils

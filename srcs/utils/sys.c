@@ -6,7 +6,8 @@ void	exec(t_shell *shell, t_parsed *parsed)
 	char	**args;
 
 	arg = (char *)parsed->args->content->cmd;
-	args = ft_safesplit(parsed->args);
+	args = ft_safesplit(shell, parsed->args);
+	shell->exit_status = 0;
 	if (parsed->args->content->is_builtin)
 	{
 		if (!ft_strcmp(arg, "cd"))

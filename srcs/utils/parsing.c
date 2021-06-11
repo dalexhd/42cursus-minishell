@@ -37,7 +37,7 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char *line)
 		ft_strcat(line, env);
 }
 
-char	**ft_safesplit(t_alist *list)
+char	**ft_safesplit(t_shell *shell, t_alist *list)
 {
 	int		size;
 	int		i;
@@ -50,7 +50,10 @@ char	**ft_safesplit(t_alist *list)
 	{
 		if (list->content)
 		{
-			tokens[i] = list->content->cmd;
+			if (!list->content->is_literal && !ft_strcmp(list->content->cmd, "$?"))
+				tokens[i] = ft_itoa(shell->exit_status);
+			else
+				tokens[i] = list->content->cmd;
 			i++;
 		}
 		list = list->next;
