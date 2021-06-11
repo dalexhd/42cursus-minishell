@@ -1,11 +1,11 @@
 #include "../../includes/minishell.h"
 
-static	void	die(char *msg)
+static void die(char *msg)
 {
 	ft_error("%s\n", 1, msg);
 }
 
-static	void	ctld(t_shell *shell)
+static void ctld(t_shell *shell)
 {
 	if (!*shell->term.line)
 	{
@@ -15,23 +15,20 @@ static	void	ctld(t_shell *shell)
 	}
 }
 
-void	ft_printshell(t_shell *shell)
+void ft_printshell(t_shell *shell)
 {
-	if (shell->first)
-		ft_fprintf(STDOUT_FILENO,
-			C_CYAN "Wellcome to our minishell 😋" C_GREEN "❯ " C_X);
-	else if (shell->term.new_line)
+	if (shell->term.new_line)
 	{
 		ft_fprintf(STDOUT_FILENO,
-			C_GREEN "\n%s "C_GREEN "❯ " C_X, getCurrentDir(ft_pwd()));
+				   C_GREEN "\n%s " C_GREEN "❯ " C_X, getCurrentDir(ft_pwd()));
 		shell->term.new_line = false;
 	}
 	else
 		ft_fprintf(STDOUT_FILENO,
-			C_GREEN "%s "C_GREEN "❯ " C_X, getCurrentDir(ft_pwd()));
+				   C_GREEN "%s " C_GREEN "❯ " C_X, getCurrentDir(ft_pwd()));
 }
 
-static	void	ctlc(t_shell *shell)
+static void ctlc(t_shell *shell)
 {
 	ft_bzero(&shell->term.line, BUFF_SIZE);
 	shell->term.pos = 0;
@@ -40,7 +37,16 @@ static	void	ctlc(t_shell *shell)
 	shell->term.cursor = 11;
 }
 
-static	void	ctlb(t_shell *shell)
+static void ctll(t_shell *shell)
+{
+/* 	tputs(tgetstr("cl", NULL), 1, ft_iputchar);
+	ft_printshell(shell);
+	ft_printf("%s", shell->term.line); */
+		ft_printf("cursor:%i, pos%i\n", shell->term.cursor, shell->term.pos);
+
+}
+
+static void ctlb(t_shell *shell)
 {
 	ft_bzero(&shell->term.line, BUFF_SIZE);
 	shell->term.pos = 0;
@@ -50,10 +56,10 @@ static	void	ctlb(t_shell *shell)
 	shell->term.cursor = 11;
 }
 
-static void	new(t_shell *shell)
+static void new (t_shell *shell)
 {
-	int		input;
-	char	*tmp_dir;
+	int input;
+	char *tmp_dir;
 
 	tmp_dir = ft_getenv(shell, "HOME");
 	if (tmp_dir)
@@ -64,36 +70,35 @@ static void	new(t_shell *shell)
 	}
 }
 
-
-static void	old(t_shell *shell)
+static void old(t_shell *shell)
 {
-	int		test;
-	int		fd;
-	char	*line;
-	char	*tmp_dir;
+	int test;
+	int fd;
+	char *line;
+	char *tmp_dir;
 
 	tmp_dir = ft_getenv(shell, "HOME");
 	if (tmp_dir)
 	{
 		fd = open(ft_strjoin(tmp_dir, "/.minishell_history"), O_CREAT | O_RDONLY, 0600);
 		test = get_next_line(fd, &line);
-		while(test)
+		while (test)
 		{
 			ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup(line)));
 			shell->term.history->original = ft_strdup(line);
 			shell->term.history->copy = ft_strdup(line);
 			test = get_next_line(fd, &line);
 		}
-		close (fd);
+		close(fd);
 	}
 }
 
-void	end_tc(t_shell *shell)
+void end_tc(t_shell *shell)
 {
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_raw);
 }
 
-void	init_tc(t_shell *shell)
+void init_tc(t_shell *shell)
 {
 	ft_bzero(&shell->term, sizeof(t_term));
 	shell->term.cursor = 11;
@@ -113,7 +118,7 @@ void	init_tc(t_shell *shell)
 	tputs(tgetstr("ks", NULL), 1, ft_iputchar);
 }
 
-static	void	eraser(t_shell *shell)
+static void eraser(t_shell *shell)
 {
 	if (shell->term.cursor > 11)
 	{
@@ -124,7 +129,7 @@ static	void	eraser(t_shell *shell)
 	}
 }
 
-static	void	history_up(t_shell *shell)
+static void history_up(t_shell *shell)
 {
 	if (shell->term.history->next)
 	{
@@ -141,10 +146,10 @@ static	void	history_up(t_shell *shell)
 	}
 }
 
-static	void	history_down(t_shell *shell)
+static void history_down(t_shell *shell)
 {
 	if (!shell->term.history)
-		return ;
+		return;
 	if (shell->term.history->prev)
 	{
 		tputs(tgetstr("cr", NULL), 1, ft_iputchar);
@@ -160,7 +165,7 @@ static	void	history_down(t_shell *shell)
 	}
 }
 
-static	void	newliner(t_shell *shell)
+static void newliner(t_shell *shell)
 {
 	if (*shell->term.line)
 	{
@@ -170,14 +175,14 @@ static	void	newliner(t_shell *shell)
 		free(shell->term.history->copy);
 		shell->term.history->original = ft_strdup(shell->term.line);
 		shell->term.history->copy = ft_strdup(shell->term.line);
-		new(shell);
+		new (shell);
 		ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup("")));
 	}
 }
 
-static	void	sandman(t_shell *shell)
+static void sandman(t_shell *shell)
 {
-	t_list		*commands;
+	t_list *commands;
 
 	newliner(shell);
 	free(shell->term.history->copy);
@@ -199,17 +204,65 @@ static	void	sandman(t_shell *shell)
 	shell->term.cursor = 11;
 }
 
-static	void	tear(t_shell *shell, char c)
+static void tear(t_shell *shell, char c)
 {
-	write(STDOUT_FILENO, &c, 1);
-	shell->term.line[shell->term.pos++] = c;
-	shell->term.line[shell->term.pos] = 0;
-	shell->term.cursor++;
+	int i;
+	char *test;
+
+	if (shell->term.pos > 0 && shell->term.pos < shell->term.cursor)
+	{
+		write(STDOUT_FILENO, &c, 1);
+		test = ft_strdup(&shell->term.line[shell->term.pos]);
+		shell->term.line[shell->term.pos++] = c;
+		shell->term.cursor++;
+		i = 0;
+		while (i < ft_strlen(test))
+		{
+			shell->term.line[shell->term.pos++] = test[i];
+			shell->term.cursor++;
+			write(STDOUT_FILENO, &test[i], 1);
+			i++;
+		}
+		while (i > 0)
+		{
+			tputs(tgetstr("le", NULL), 1, ft_iputchar);
+			shell->term.pos--;
+			i--;
+		}
+		shell->term.cursor++;
+	}
+	else
+	{
+		write(STDOUT_FILENO, &c, 1);
+		shell->term.line[shell->term.pos++] = c;
+		shell->term.line[shell->term.pos] = 0;
+		shell->term.cursor++;
+	}
 }
 
-void	loureed(t_shell *shell)
+static void move_right(t_shell *shell)
 {
-	char	buf[4];
+	if (shell->term.pos < ft_strlen(shell->term.line))
+	{
+		shell->term.pos++;
+		shell->term.cursor = 11 + shell->term.pos;
+		tputs(tgetstr("nd", NULL), 1, ft_iputchar);
+	}
+}
+
+static void move_left(t_shell *shell)
+{
+	if (shell->term.pos > 0)
+	{
+		shell->term.pos--;
+		shell->term.cursor = 11 + shell->term.pos;
+		tputs(tgetstr("le", NULL), 1, ft_iputchar);
+	}
+}
+
+void loureed(t_shell *shell)
+{
+	char buf[4];
 
 	shell->term.pos = 0;
 	ft_bzero(&buf, 4);
@@ -223,10 +276,16 @@ void	loureed(t_shell *shell)
 			ctlb(shell);
 		else if (buf[0] == 'C' - 64)
 			ctlc(shell);
+		else if (buf[0] == 'L' - 64)
+			ctll(shell);
 		else if (tgetstr("ku", NULL) && !ft_strcmp(buf, tgetstr("ku", NULL)))
 			history_up(shell);
 		else if (tgetstr("kd", NULL) && !ft_strcmp(buf, tgetstr("kd", NULL)))
 			history_down(shell);
+		else if (tgetstr("kr", NULL) && !ft_strcmp(buf, tgetstr("kr", NULL)))
+			move_right(shell);
+		else if (tgetstr("kl", NULL) && !ft_strcmp(buf, tgetstr("kl", NULL)))
+			move_left(shell);
 		else if (buf[0] == 'M' - 64)
 			sandman(shell);
 		else if (buf[0] > 31 && buf[0] < 127 && buf[1] == 0)
