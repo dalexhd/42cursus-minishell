@@ -269,6 +269,8 @@ void	run(t_shell *shell)
 		if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0) {
 			shell->exit_status = WEXITSTATUS(status);
 		}
+		else
+			shell->exit_status = 0;
 		k++;
 	}
 	i = 0;
