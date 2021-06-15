@@ -24,7 +24,7 @@ t_bool	tof_redirect(char *cmd, int pos)
 {
 	if (pos)
 	{
-		ft_error("minishell: syntax error near unexpected token: %s\n",
+		ft_error("minishell: syntax error near redirect: %s\n",
 			0, pos, cmd + (pos));
 		return (false);
 	}
@@ -42,23 +42,25 @@ t_bool	valid_quotes(char *cmd)
 	one = 0;
 	while (cmd[i])
 	{
-	if (cmd[i] == '<' || cmd[i] == '>')
+		if	((cmd[i] == '<' || cmd[i] == '>') && !red)
 		{
 			if (cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 1])
 				i++;
 			red = i;
 			if (cmd[i + 1])
 				i++;
+			while (cmd[i + 1] == ' ')
+				i++;
 			if (cmd[i] == '<' || cmd[i] == '>')
 				return (tof_redirect(cmd, red));
-			while ((cmd[i + 1] == ' ')
-				i++;
-			while (ft_isalnum(cmd[i])) && cmd[i + 1])
+			while (ft_isalnum(cmd[i]) && cmd[i + 1])
 			{
 				red = 0;
 				i++;
 			}
 		}
+		else if(red)
+			return (tof_redirect(cmd, red));
 		if ((cmd[i] == '\'' || cmd[i] == '"') && cmd[i])
 		{
 			one = cmd[i];
