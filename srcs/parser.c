@@ -24,7 +24,7 @@ t_bool	tof_redirect(char *cmd, int pos)
 {
 	if (pos)
 	{
-		ft_error("minishell: Unmaching opening quotes at col %d: %s\n",
+		ft_error("minishell: syntax error near unexpected token: %s\n",
 			0, pos, cmd + (pos));
 		return (false);
 	}
@@ -51,7 +51,9 @@ t_bool	valid_quotes(char *cmd)
 				i++;
 			if (cmd[i] == '<' || cmd[i] == '>')
 				return (tof_redirect(cmd, red));
-			while ((cmd[i + 1] == ' ' || ft_isalnum(cmd[i])) && cmd[i + 1])
+			while ((cmd[i + 1] == ' ')
+				i++;
+			while (ft_isalnum(cmd[i])) && cmd[i + 1])
 			{
 				red = 0;
 				i++;
