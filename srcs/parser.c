@@ -20,16 +20,43 @@ t_bool	tof_quotes(char *cmd, int pos, char one)
 	return (true);
 }
 
+t_bool	tof_redirect(char *cmd, int pos)
+{
+	if (pos)
+	{
+		ft_error("minishell: Unmaching opening quotes at col %d: %s\n",
+			0, pos, cmd + (pos));
+		return (false);
+	}
+	return (true);
+}
+
 t_bool	valid_quotes(char *cmd)
 {
 	int		i;
 	char	one;
 	int		pos;
+	int		red;
 
 	i = 0;
 	one = 0;
 	while (cmd[i])
 	{
+	if (cmd[i] == '<' || cmd[i] == '>')
+		{
+			if (cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 1])
+				i++;
+			red = i;
+			if (cmd[i + 1])
+				i++;
+			if (cmd[i] == '<' || cmd[i] == '>')
+				return (tof_redirect(cmd, red));
+			while ((cmd[i + 1] == ' ' || ft_isalnum(cmd[i])) && cmd[i + 1])
+			{
+				red = 0;
+				i++;
+			}
+		}
 		if ((cmd[i] == '\'' || cmd[i] == '"') && cmd[i])
 		{
 			one = cmd[i];
