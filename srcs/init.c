@@ -45,7 +45,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 	{
 		parsed = (t_parsed *)malloc(sizeof(t_parsed));
 		parsed->args = NULL;
-		args = parse_args(shell, fix_cmd(shell, tokens->content));
+		args = parse_args(shell, tokens->content);
 		if (args)
 		{
 			parsed->line = ft_strdup(line);

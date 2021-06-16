@@ -63,51 +63,17 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 	return (tokens);
 }
 
-char	*addLetter(char s[], char c, size_t pos)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < pos && s[i])
-		++i;
-	if (i == pos)
-	{
-		do
-		{
-		char tmp = s[i];
-		s[i++] = c;
-		c = tmp;
-		}
-	   	while (c);
-		s[i] = c;
-	}
-	return s;
-}
-
-static char	*ft_strdupcus(const char *src, size_t len)
-{
-	char	*dst;
-
-	len = len + 1;
-	dst = (char *) malloc(sizeof(char) * len);
-	if (dst == NULL)
-		return (NULL);
-	ft_memcpy(dst, src, len);
-	return (dst);
-}
-
-char	*add_spaces(char *need_to_add, int count, int *positions)
-{
-	char *with_spaces;
-
-	with_spaces =  ft_strdupcus(need_to_add, ft_strlen(need_to_add) + count);
-	for (int d = 0 ; d < count; d++)
-		addLetter(with_spaces, ' ', positions[d]);
-	return (with_spaces);
+static	char *ft_strdupcus(const char *src, size_t len) {
+	len = len + 1;       // String plus '\0'
+	char *dst = (char *) malloc(sizeof(char) * len);            // Allocate space
+	if (dst == NULL) return NULL;       // No memory
+	ft_memcpy(dst, src, len);             // Copy the block
+	return dst;                         // Return the new string
 }
 
 
-char	*fix_cmd(t_shell *shell, char *cmd)
+
+/* char	*fix_cmd(t_shell *shell, char *cmd)
 {
 	int	*positions;
 	int	count;
@@ -167,7 +133,7 @@ char	*fix_cmd(t_shell *shell, char *cmd)
 		}
 	}
 	return (add_spaces(cmd, count, positions));
-}
+} */
 
 void	parse_tilde(t_shell *shell, char *cmd, int *i, char *line)
 {

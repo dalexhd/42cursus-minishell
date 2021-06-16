@@ -47,7 +47,7 @@ t_bool	valid_quotes(char *cmd)
 			pos = i++;
 			while (cmd[i] == ' ')
 				i++;
-			if (ft_isalnum(cmd[i]))
+			if (cmd[i] != '>' && cmd[i] != '<')
 				red = 0;
 			else
 				return (tof(cmd, pos, two));
@@ -67,6 +67,75 @@ t_bool	valid_quotes(char *cmd)
 	return (tof(cmd, pos, one));
 }
 
+static char	*addLetter(char *s, char c, size_t pos)
+{
+	size_t i;
+
+	i = 0;
+	while (i < pos && s[i])
+		i++;
+	if (i == pos)
+	{
+		while (c)
+		{
+			char tmp = s[i];
+			s[i] = c;
+			c = tmp;
+			i++;
+		}
+		s[i] = c;
+	}
+
+	return s;
+}
+
+static	char *ft_strdupcus(const char *src, size_t len) {
+	len = len + 1;       // String plus '\0'
+	char *dst = (char *) malloc(sizeof(char) * len);            // Allocate space
+	if (dst == NULL) return NULL;       // No memory
+	ft_memcpy(dst, src, len);             // Copy the block
+	return dst;                         // Return the new string
+}
+
+static	char	*fix_cmd(char *cmd)
+{
+	int			i;
+	int			end;
+	int			safequotes[2];
+	char		*cut;
+
+	i = 0;
+	safequotes[0] = 1;
+	safequotes[1] = 1;
+	while (i < ft_strlen(cmd))
+	{
+		if (cmd[i] == '"')
+			safequotes[0] = 0;
+		if (safequotes[0] && cmd[i] == '\'')
+			safequotes[1] = 0;
+		if (safequotes[0] && safequotes[1] && (cmd[i] == '>' || cmd[i] == '<'))
+		{
+			if (i > 0 && cmd[i - 1] != ' ' && cmd[i - 1] != '>' && cmd[i - 1] != '<')
+			{
+				cmd = ft_strdupcus(cmd, ft_strlen(cmd) + 1);
+				addLetter(cmd, ' ', i);
+				i++;
+			}
+		}
+		else if (i > 0 && (cmd[i - 1] == '>' || cmd[i - 1] == '<')
+			&& (cmd[i] != '>' || cmd[i] != '<')
+			&& cmd[i] != ' '
+		)
+		{
+			cmd = ft_strdupcus(cmd, ft_strlen(cmd) + 1);
+			addLetter(cmd, ' ', i);
+			i++;
+		}
+		i++;
+	}
+	return (cmd);
+}
+
 t_alist	*parse_args(t_shell *shell, char *cmd)
 {
 	t_alist		*args;
@@ -76,6 +145,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 
 	args = NULL;
 	argback = NULL;
+	cmd = fix_cmd(cmd);
 	if (valid_quotes(cmd))
 	{
 		tmp = ft_safesplitlist(cmd, ' ', "\"'");
