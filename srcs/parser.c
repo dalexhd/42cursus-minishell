@@ -9,23 +9,18 @@ static int	quotes(char *cmd, int i, char c)
 	return (i);
 }
 
-t_bool	tof_quotes(char *cmd, int pos, char one)
+t_bool	tof(char *cmd, int pos, char one)
 {
-	if (one)
+	if (one == '\'' || one == '"')
 	{
 		ft_error("minishell: Unmaching opening quotes at col %d: %s\n",
 			0, pos, cmd + (pos));
 		return (false);
 	}
-	return (true);
-}
-
-t_bool	tof_redirect(char *cmd, int pos)
-{
-	if (pos)
+	else if (one == '<' || one == '>')
 	{
 		ft_error("minishell: syntax error near redirect: %s\n",
-			0, pos, cmd + (pos));
+			0, cmd + (pos));
 		return (false);
 	}
 	return (true);
@@ -35,32 +30,28 @@ t_bool	valid_quotes(char *cmd)
 {
 	int		i;
 	char	one;
+	char	two;
 	int		pos;
 	int		red;
 
 	i = 0;
 	one = 0;
+	two = 0;
 	while (cmd[i])
 	{
-		if	((cmd[i] == '<' || cmd[i] == '>') && !red)
+		if ((cmd[i] == '<' || cmd[i] == '>') && !two)
 		{
+			two = cmd[i];
 			if (cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 1])
 				i++;
-			red = i;
-			if (cmd[i + 1])
-				i++;
+			pos = i++;
 			while (cmd[i + 1] == ' ')
 				i++;
-			if (cmd[i] == '<' || cmd[i] == '>')
-				return (tof_redirect(cmd, red));
-			while (ft_isalnum(cmd[i]) && cmd[i + 1])
-			{
+			if (ft_isalnum(cmd[i]))
 				red = 0;
-				i++;
-			}
+			else
+				return (tof(cmd, pos, two));
 		}
-		else if(red)
-			return (tof_redirect(cmd, red));
 		if ((cmd[i] == '\'' || cmd[i] == '"') && cmd[i])
 		{
 			one = cmd[i];
@@ -73,7 +64,7 @@ t_bool	valid_quotes(char *cmd)
 		}
 		i++;
 	}
-	return (tof_quotes(cmd, pos, one));
+	return (tof(cmd, pos, one));
 }
 
 t_alist	*parse_args(t_shell *shell, char *cmd)
@@ -95,7 +86,8 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			arg->file = NULL;
 			arg->is_builtin = ft_isbuiltin(tmp->content);
 			arg->bin_path = NULL;
-			arg->is_literal = arg->cmd[0] == '\'' && arg->cmd[ft_strlen(arg->cmd) - 1] == '\'';// o barra en posicion anterior
+			arg->is_literal = arg->cmd[0] == '\''
+				&& arg->cmd[ft_strlen(arg->cmd) - 1] == '\'';
 			if (!arg->is_builtin)
 				arg->bin_path = builtin_bin_path(shell, tmp->content);
 			arg->type = 0;
@@ -130,6 +122,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	}
 	return (args);
 }
+
 char	*quotes_trim(char *cmd)
 {
 	int		i;
@@ -154,9 +147,11 @@ char	*quotes_trim(char *cmd)
 					tmp = ft_strcut(cmd, 0, i);
 				else
 					tmp = ft_strdup("");
-				tmp = ft_strcat(tmp, ft_strcut(cmd, i + 1, ft_strlen(cmd) - j - 2));
-				if ( j != 0)
-					tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j, ft_strlen(cmd)));
+				tmp = ft_strcat(tmp, ft_strcut(cmd, i + 1,
+							ft_strlen(cmd) - j - 2));
+				if (j != 0)
+					tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j,
+								ft_strlen(cmd)));
 //				else
 //					tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j, ft_strlen(cmd)));
 		//			tmp = ft_strcat(tmp, "");

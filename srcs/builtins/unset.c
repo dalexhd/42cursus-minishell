@@ -20,7 +20,8 @@ void	ft_unset(t_shell *shell, char **args)
 	i = 0;
 	while (shell->envp[i] != 0)
 	{
-		if (ft_strncmp(shell->envp[i], ft_strjoin(args[1], "="), ft_strlen(args[1]) + 1) != 0)
+		if (ft_strncmp(shell->envp[i], ft_strjoin(args[1], "="),
+				ft_strlen(args[1]) + 1) != 0)
 		{
 			tmp[u] = shell->envp[i];
 			u++;

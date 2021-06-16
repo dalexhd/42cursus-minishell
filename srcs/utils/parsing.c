@@ -50,7 +50,8 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 	{
 		if (list->content)
 		{
-			if (!list->content->is_literal && !ft_strcmp(list->content->cmd, "$?"))
+			if (!list->content->is_literal
+				&& !ft_strcmp(list->content->cmd, "$?"))
 				tokens[i] = ft_itoa(shell->exit_status);
 			else
 				tokens[i] = list->content->cmd;
@@ -64,34 +65,38 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 
 char	*addLetter(char s[], char c, size_t pos)
 {
-	size_t i = 0;
+	size_t	i;
 
-	while (i < pos && s[i]) ++i;
-
+	i = 0;
+	while (i < pos && s[i])
+		++i;
 	if (i == pos)
 	{
 		do
 		{
-			char tmp = s[i];
-			s[i++] = c;
-			c = tmp;
-		} while (c);
+		char tmp = s[i];
+		s[i++] = c;
+		c = tmp;
+		}
+	   	while (c);
 		s[i] = c;
 	}
-
 	return s;
 }
 
-static	char *ft_strdupcus(const char *src, size_t len) {
-	len = len + 1;       // String plus '\0'
-	char *dst = (char *) malloc(sizeof(char) * len);            // Allocate space
-	if (dst == NULL) return NULL;       // No memory
-	ft_memcpy(dst, src, len);             // Copy the block
-	return dst;                         // Return the new string
+static char	*ft_strdupcus(const char *src, size_t len)
+{
+	char	*dst;
+
+	len = len + 1;
+	dst = (char *) malloc(sizeof(char) * len);
+	if (dst == NULL)
+		return (NULL);
+	ft_memcpy(dst, src, len);
+	return (dst);
 }
 
-
-char *add_spaces(char *need_to_add, int count, int *positions)
+char	*add_spaces(char *need_to_add, int count, int *positions)
 {
 	char *with_spaces;
 
@@ -114,7 +119,7 @@ char	*fix_cmd(t_shell *shell, char *cmd)
 	for (size_t i = 0 ; i < ft_strlen(cmd); i++)
 	{
 		if (cmd[i] == '"')
-			safequotes = !safequotes; // Here we set safe quotes to the opposite value
+			safequotes = !safequotes;
 		if (safequotes && cmd[i] == '>' && cmd[i + 1] == '>')
 		{
 			if (cmd[i - 1] != ' ')
@@ -139,22 +144,6 @@ char	*fix_cmd(t_shell *shell, char *cmd)
 			safequotes = !safequotes;
 		if (safequotes && (cmd[i] == '>' || cmd[i] == '<'))
 		{
-			if (cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 2] == '>')
-			{
-				if (shell->is_cmd)
-					ft_error("minishell: -c: syntax error near unexpected token `>'\nminishell: -c: `%s'\n", 0, cmd);
-				else
-					ft_error("minishell: syntax error near unexpected token `>'\n", 0);
-				shell->exit_status = 2;
-			}
-			else if (cmd[i] == '<' && cmd[i + 1] == '<' && cmd[i + 2] == '<')
-			{
-				if (shell->is_cmd)
-					ft_error("minishell: -c: syntax error near unexpected token `<'\nminishell: -c: `%s'\n", 0, cmd);
-				else
-					ft_error("minishell: syntax error near unexpected token `<'\n", 0);
-				shell->exit_status = 2;
-			}
 			if (cmd[i] == '>' && cmd[i + 1] == '>')
 			{
 				positions[d] = i + d;
@@ -214,7 +203,8 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 			ft_strncat(res, &cmd[i + 1], 1);
 			i++;
 		}
-		else if (!arg->is_literal && cmd[i] == '$' && (ft_isalpha(cmd[i + 1]) || cmd[i + 1] == '_') && test)
+		else if (!arg->is_literal && cmd[i] == '$' && (ft_isalpha(cmd[i + 1])
+			|| cmd[i + 1] == '_') && test)
 			parse_dollar(shell, &cmd, &i, res);
 		else if (cmd[i] == '~' && test)
 			parse_tilde(shell, cmd, &i, res);

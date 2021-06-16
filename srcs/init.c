@@ -116,9 +116,4 @@ void	exec_shell(t_shell *shell, char *cmd)
 		if (shell->exit_status > -1)
 			run(shell);
 	}
-	//ft_printf("%i\n", g_running);
-	//terminate(shell);
 }
-
-//ls | cat -e | "aaa aaaa" | "abaaasssssss" | "aaaaaaa"aaasdasd | sdadaaaawqdwqdqw
-//ls | ls | "aaaab" | "abaaasssssss"
