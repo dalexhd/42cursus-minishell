@@ -39,13 +39,13 @@ t_bool	valid_quotes(char *cmd)
 	two = 0;
 	while (cmd[i])
 	{
-		if ((cmd[i] == '<' || cmd[i] == '>') && !two)
+		if (cmd[i] == '<' || cmd[i] == '>')
 		{
 			two = cmd[i];
 			if (cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 1])
 				i++;
 			pos = i++;
-			while (cmd[i + 1] == ' ')
+			while (cmd[i] == ' ')
 				i++;
 			if (ft_isalnum(cmd[i]))
 				red = 0;
