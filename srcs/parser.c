@@ -9,7 +9,7 @@ static int	quotes(char *cmd, int i, char c)
 	return (i);
 }
 
-t_bool	tof(char *cmd, int pos, char one)
+t_bool	tof(t_shell *shell, char *cmd, int pos, char one)
 {
 	if (one == '\'' || one == '"')
 	{
@@ -21,50 +21,55 @@ t_bool	tof(char *cmd, int pos, char one)
 	{
 		ft_error("minishell: syntax error near redirect: %s\n",
 			0, cmd + (pos));
+		shell->exit_status = 2;
 		return (false);
 	}
 	return (true);
 }
 
-t_bool	valid_quotes(char *cmd)
+static t_bool	pre_quo(char *cmd, int **rat, char *two)
 {
-	int		i;
+	if (cmd[*rat[0]] == '<' || cmd[*rat[0]] == '>')
+	{
+		two = &cmd[*rat[0]];
+		if (cmd[*rat[0]] == '>' && cmd[*rat[0] + 1] == '>' && cmd[*rat[0] + 1])
+			rat[0]++;
+		*rat[1] = *rat[0]++;
+		while (cmd[*rat[0]] == ' ')
+			rat[0]++;
+		if (cmd[*rat[0]] == '>' && cmd[*rat[0]] == '<')
+			return (true);
+	}
+	return (false);
+}
+
+t_bool	valid_quotes(t_shell *shell, char *cmd)
+{
+	int		rat[2];
 	char	one;
 	char	two;
-	int		pos;
-	int		red;
 
-	i = 0;
+	rat[0] = 0;
+	rat[1] = 0;
 	one = 0;
 	two = 0;
-	while (cmd[i])
+	while (cmd[rat[0]])
 	{
-		if (cmd[i] == '<' || cmd[i] == '>')
+		if (pre_quo(cmd, &(*rat), &two))
+			return (tof(shell, cmd, rat[1], two));
+		if ((cmd[rat[0]] == '\'' || cmd[rat[0]] == '"') && cmd[rat[0]])
 		{
-			two = cmd[i];
-			if (cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 1])
-				i++;
-			pos = i++;
-			while (cmd[i] == ' ')
-				i++;
-			if (cmd[i] != '>' && cmd[i] != '<')
-				red = 0;
-			else
-				return (tof(cmd, pos, two));
-		}
-		if ((cmd[i] == '\'' || cmd[i] == '"') && cmd[i])
-		{
-			one = cmd[i];
-			pos = i++;
-			i = quotes(cmd, i, one);
-			if (i == -42)
+			one = cmd[rat[0]];
+			rat[1] = rat[0]++;
+			rat[0] = quotes(cmd, rat[0], one);
+			if (rat[0] == -42)
 				break ;
-			else if (cmd[i] == one)
+			else if (cmd[rat[0]] == one)
 				one = 0;
 		}
-		i++;
+		rat[0]++;
 	}
-	return (tof(cmd, pos, one));
+	return (tof(shell, cmd, rat[1], one));
 }
 
 static char	*addLetter(char *s, char c, size_t pos)
@@ -146,7 +151,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	args = NULL;
 	argback = NULL;
 	cmd = fix_cmd(cmd);
-	if (valid_quotes(cmd))
+	if (valid_quotes(shell, cmd))
 	{
 		tmp = ft_safesplitlist(cmd, ' ', "\"'");
 		while (tmp)

@@ -207,58 +207,10 @@ static void	sandman(t_shell *shell)
 
 static void	tear(t_shell *shell, char c)
 {
-	int		i;
-	char	*test;
-
-	if (shell->term.pos > 0 && shell->term.pos < shell->term.cursor)
-	{
-		write(STDOUT_FILENO, &c, 1);
-		test = ft_strdup(&shell->term.line[shell->term.pos]);
-		shell->term.line[shell->term.pos++] = c;
-		shell->term.cursor++;
-		i = 0;
-		while (i < ft_strlen(test))
-		{
-			shell->term.line[shell->term.pos++] = test[i];
-			shell->term.cursor++;
-			write(STDOUT_FILENO, &test[i], 1);
-			i++;
-		}
-		while (i > 0)
-		{
-			tputs(tgetstr("le", NULL), 1, ft_iputchar);
-			shell->term.pos--;
-			i--;
-		}
-		shell->term.cursor++;
-	}
-	else
-	{
-		write(STDOUT_FILENO, &c, 1);
-		shell->term.line[shell->term.pos++] = c;
-		shell->term.line[shell->term.pos] = 0;
-		shell->term.cursor++;
-	}
-}
-
-static void	move_right(t_shell *shell)
-{
-	if (shell->term.pos < ft_strlen(shell->term.line))
-	{
-		shell->term.pos++;
-		shell->term.cursor = 11 + shell->term.pos;
-		tputs(tgetstr("nd", NULL), 1, ft_iputchar);
-	}
-}
-
-static void	move_left(t_shell *shell)
-{
-	if (shell->term.pos > 0)
-	{
-		shell->term.pos--;
-		shell->term.cursor = 11 + shell->term.pos;
-		tputs(tgetstr("le", NULL), 1, ft_iputchar);
-	}
+	write(STDOUT_FILENO, &c, 1);
+	shell->term.line[shell->term.pos++] = c;
+	shell->term.line[shell->term.pos] = 0;
+	shell->term.cursor++;
 }
 
 void	loureed(t_shell *shell)
@@ -282,10 +234,6 @@ void	loureed(t_shell *shell)
 			history_up(shell);
 		else if (tgetstr("kd", NULL) && !ft_strcmp(buf, tgetstr("kd", NULL)))
 			history_down(shell);
-		else if (tgetstr("kr", NULL) && !ft_strcmp(buf, tgetstr("kr", NULL)))
-			move_right(shell);
-		else if (tgetstr("kl", NULL) && !ft_strcmp(buf, tgetstr("kl", NULL)))
-			move_left(shell);
 		else if (buf[0] == 'M' - 64)
 			sandman(shell);
 		else if (buf[0] > 31 && buf[0] < 127 && buf[1] == 0)
