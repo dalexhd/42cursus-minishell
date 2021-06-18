@@ -27,87 +27,51 @@ t_bool	tof(t_shell *shell, char *cmd, int pos, char one)
 	return (true);
 }
 
-static t_bool	pre_quo(char *cmd, int **rat, char *two)
-{
-	if (cmd[*rat[0]] == '<' || cmd[*rat[0]] == '>')
-	{
-		two = &cmd[*rat[0]];
-		if (cmd[*rat[0]] == '>' && cmd[*rat[0] + 1] == '>' && cmd[*rat[0] + 1])
-			rat[0]++;
-		*rat[1] = *rat[0]++;
-		while (cmd[*rat[0]] == ' ')
-			rat[0]++;
-		if (cmd[*rat[0]] == '>' && cmd[*rat[0]] == '<')
-			return (true);
-	}
-	return (false);
-}
-
 t_bool	valid_quotes(t_shell *shell, char *cmd)
 {
-	int		rat[2];
+	int		i;
 	char	one;
 	char	two;
-
-	rat[0] = 0;
-	rat[1] = 0;
-	one = 0;
-	two = 0;
-	while (cmd[rat[0]])
-	{
-		if (pre_quo(cmd, &(*rat), &two))
-			return (tof(shell, cmd, rat[1], two));
-		if ((cmd[rat[0]] == '\'' || cmd[rat[0]] == '"') && cmd[rat[0]])
-		{
-			one = cmd[rat[0]];
-			rat[1] = rat[0]++;
-			rat[0] = quotes(cmd, rat[0], one);
-			if (rat[0] == -42)
-				break ;
-			else if (cmd[rat[0]] == one)
-				one = 0;
-		}
-		rat[0]++;
-	}
-	return (tof(shell, cmd, rat[1], one));
-}
-
-static char	*addLetter(char *s, char c, size_t pos)
-{
-	size_t i;
+	int		pos;
+	int		red;
 
 	i = 0;
-	while (i < pos && s[i])
-		i++;
-	if (i == pos)
+	one = 0;
+	two = 0;
+	while (cmd[i])
 	{
-		while (c)
+		if (cmd[i] == '<' || cmd[i] == '>')
 		{
-			char tmp = s[i];
-			s[i] = c;
-			c = tmp;
-			i++;
+			two = cmd[i];
+			if (cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 1])
+				i++;
+			pos = i++;
+			while (cmd[i] == ' ')
+				i++;
+			if (cmd[i] != '>' && cmd[i] != '<')
+				red = 0;
+			else
+				return (tof(shell, cmd, pos, two));
 		}
-		s[i] = c;
+		if ((cmd[i] == '\'' || cmd[i] == '"') && cmd[i])
+		{
+			one = cmd[i];
+			pos = i++;
+			i = quotes(cmd, i, one);
+			if (i == -42)
+				break ;
+			else if (cmd[i] == one)
+				one = 0;
+		}
+		i++;
 	}
-
-	return s;
-}
-
-static	char *ft_strdupcus(const char *src, size_t len) {
-	len = len + 1;       // String plus '\0'
-	char *dst = (char *) malloc(sizeof(char) * len);            // Allocate space
-	if (dst == NULL) return NULL;       // No memory
-	ft_memcpy(dst, src, len);             // Copy the block
-	return dst;                         // Return the new string
+	return (tof(shell, cmd, pos, one));
 }
 
 static	char	*fix_cmd(char *cmd)
 {
-	int			i;
-	int			end;
+	size_t		i;
 	int			safequotes[2];
-	char		*cut;
 
 	i = 0;
 	safequotes[0] = 1;
@@ -122,8 +86,8 @@ static	char	*fix_cmd(char *cmd)
 		{
 			if (i > 0 && cmd[i - 1] != ' ' && cmd[i - 1] != '>' && cmd[i - 1] != '<')
 			{
-				cmd = ft_strdupcus(cmd, ft_strlen(cmd) + 1);
-				addLetter(cmd, ' ', i);
+				cmd = ft_strduplen(cmd, ft_strlen(cmd) + 1);
+				ft_insertchar(cmd, ' ', i);
 				i++;
 			}
 		}
@@ -132,8 +96,8 @@ static	char	*fix_cmd(char *cmd)
 			&& cmd[i] != ' '
 		)
 		{
-			cmd = ft_strdupcus(cmd, ft_strlen(cmd) + 1);
-			addLetter(cmd, ' ', i);
+			cmd = ft_strduplen(cmd, ft_strlen(cmd) + 1);
+			ft_insertchar(cmd, ' ', i);
 			i++;
 		}
 		i++;
@@ -227,9 +191,6 @@ char	*quotes_trim(char *cmd)
 				if (j != 0)
 					tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j,
 								ft_strlen(cmd)));
-//				else
-//					tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j, ft_strlen(cmd)));
-		//			tmp = ft_strcat(tmp, "");
 				return (tmp);
 			}
 		}
@@ -244,7 +205,3 @@ char	*parse_line(t_shell *shell, t_args *arg, char *cmd)
 		return (clean_str(shell, arg, ft_strdup(quotes_trim(cmd))));
 	return (cmd);
 }
-/*
-//1. quita espacios
-Comillas dobles
-*/

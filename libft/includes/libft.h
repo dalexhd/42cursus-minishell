@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/22 20:45:27 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/03 21:07:42 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/18 17:30:01 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ char			*ft_strchr(const char *s, int c);
 int				ft_countwords(char const *str, char c);
 char			*ft_strrchr(const char *s, int c);
 char			*ft_strdup(const char *s1);
+char			*ft_strduplen(const char *s, size_t len);
 char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_strjoin_free(char *s1, char *s2);
 size_t			ft_strlcpy(char *dst, const char *src, size_t dstsize);
@@ -131,4 +132,5 @@ t_llong			ft_atoll(const char *str);
 size_t			ft_countnumbers(char const *str);
 t_list			*ft_safesplitlist(char *s, char c, char *set);
 char			*ft_strcut(char *str, int from, int to);
+char			*ft_insertchar(char *s, char c, size_t pos);
 #endif

@@ -65,7 +65,7 @@ char	*parse_line(t_shell *shell, t_args *arg, char *cmd);
 ** Define builtins
 */
 int		ft_echo(char **args);
-char	*ft_pwd();
+char	*ft_pwd(void);
 void	ft_env(t_shell *shell);
 void	ft_cd(t_shell *shell, char **args);
 void	ft_export_internal(t_shell *shell, char *env, char *value);
@@ -89,11 +89,15 @@ char	*builtin_bin_path(t_shell *shell, char *builtin);
 char	*getCurrentDir(char *path);
 void	exec(t_shell *shell, t_parsed *parsed);
 void	run(t_shell *shell);
-void	parse_dollar(t_shell *shell, char **cmd, int *i, char *line);
-void	parse_tilde(t_shell *shell, char *cmd, int *i, char *line);
 char	*clean_str(t_shell *shell, t_args *arg, char *line);
 t_alist	*parse_args(t_shell *shell, char *cmd);
 char	**ft_safesplit(t_shell *shell, t_alist *list);
+
+/*
+** Parsing
+*/
+void	parse_dollar(t_shell *shell, char **cmd, int *i, char *line);
+void	parse_tilde(t_shell *shell, char *cmd, int *i, char *line);
 
 /*
 ** Define termcaps utils

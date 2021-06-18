@@ -7,7 +7,7 @@ PID					=	.pid
 CC					=	@gcc
 SH					=	@bash
 RM					=	@/bin/rm -rf
-FLAGS				=	-Wextra -Wall -g -fsanitize=address
+FLAGS				=	-Wextra -Wall -g
 
 HEADER_DIR			=	includes/
 OBJ_DIR				=	obj/
@@ -19,6 +19,7 @@ HISTORY_LISTS_DIR	=	history/
 ARGS_LISTS_DIR		=	args/
 UTILS_DIR			=	utils/
 SRC_DIR				=	srcs/
+PARSING_DIR			=	parsing/
 BONUS_DIR			=	bonus/
 LIBFT_DIR			=	libft/
 ifeq ($(shell whoami), runner)
@@ -44,7 +45,7 @@ BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builti
 						builtins/unset.c	builtins/exit.c
 
 UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/sys.c		utils/termcaps.c \
-						utils/parsing.c
+						utils/parsing.c		utils/parsing/dollar.c			utils/parsing/tilde.c
 
 SHELL_LISTS			=	lists/shell/ft_slstadd_back.c		lists/shell/ft_slstadd_front.c	lists/shell/ft_slstclear.c	\
 						lists/shell/ft_slstdelone.c			lists/shell/ft_slstiter.c		lists/shell/ft_slstlast.c	\
@@ -127,6 +128,7 @@ NORM_COLOR			=	$(shell printf "\033[0;38;5;153m")
 NORM_COLOR_WAR		=	$(shell printf "\033[38;5;214m")
 NORM_COLOR_ERR		=	$(shell printf "\033[0;41m")
 BG_X				=	$(shell printf "\033[0;39m")
+TAB					=	$(shell printf "\t")
 
 # Make all files.
 all:
@@ -139,10 +141,12 @@ $(OBJ_DIR):
 			@mkdir -p $(OBJ_DIR)
 			@mkdir -p $(OBJ_DIR)/$(BUILTINS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)
+			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)/$(PARSING_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(SHELL_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(REDIRECTS_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(HISTORY_LISTS_DIR)
+			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(ARGS_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(ARGS_LISTS_DIR)
 
 # Normal objects
@@ -198,7 +202,7 @@ normi:		## Check norminette.
 			@if [ ${OS} = "Ubuntu" ]; then\
 				norminette $(NORME) | sed "s/Norme/$(NORM_COLOR_T)➤  $(NORM_COLOR)Norme/g;s/Warning/\t $(NORM_COLOR_WAR)Warning/g;s/Error/\t🚨 $(NORM_COLOR_ERR)Error/gm;s/$$/$(X)/g"; \
 			else\
-				norminette $(NORME) | sed "s/Norme/$(NORM_COLOR_T)➤  $(NORM_COLOR)Norme/g;s/Warning/\t $(NORM_COLOR_WAR)Warning/g;s/Error/\t🚨 $(NORM_COLOR_ERR)Error/g"; \
+				norminette $(NORME) | sed "s/Norme/$(NORM_COLOR_T)➤  $(NORM_COLOR)Norme/g;s/Warning/\t $(NORM_COLOR_WAR)Warning/g;s/Error:/$(TAB)🚨 $(NORM_COLOR_ERR)Error:/g;s/$$/$(X)/g"; \
 			fi
 
 ##@ Compilation
