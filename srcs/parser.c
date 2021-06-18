@@ -2,36 +2,34 @@
 
 static	char	*fix_cmd(char *cmd)
 {
-	size_t		i;
-	int			safequotes[2];
+	size_t	i;
+	int		quo[2];
 
 	i = 0;
-	safequotes[0] = 1;
-	safequotes[1] = 1;
+	quo[0] = 0;
+	quo[1] = 0;
 	while (i < ft_strlen(cmd))
 	{
-		char *a = &cmd[i];
 		if (cmd[i] == '"')
-			safequotes[0] = !safequotes[0];
-		if (safequotes[0] && cmd[i] == '\'')
-			safequotes[1] = !safequotes[1];
-		if (safequotes[0] && safequotes[1] && (cmd[i] == '>' || cmd[i] == '<'))
+			quo[0] = !quo[0];
+		if (quo[0] && cmd[i] == '\'')
+			quo[1] = !quo[1];
+		while (quo[0] && quo[1] && cmd[i + 1] != '\'' && cmd[i + 1] != '"')
+			i++;
+		if ((!quo[0] && !quo[1]) && (cmd[i] == '<' || cmd[i] == '>'))
 		{
-			if (i > 0 && cmd[i - 1] != ' ' && cmd[i - 1] != '>' && cmd[i - 1] != '<')
+			if (cmd[i - 1] != '<' && cmd[i - 1] != '>' && cmd[i - 1] != ' ')
 			{
 				cmd = ft_strduplen(cmd, ft_strlen(cmd) + 1);
 				ft_insertchar(cmd, ' ', i);
 				i++;
 			}
-		}
-		else if (cmd[i] != '"' && cmd[i] != '\'' && safequotes[0] && safequotes[1] && i > 0 && (cmd[i - 1] == '>' || cmd[i - 1] == '<')
-			&& (cmd[i] != '>' || cmd[i] != '<')
-			&& cmd[i] != ' '
-		)
-		{
-			cmd = ft_strduplen(cmd, ft_strlen(cmd) + 1);
-			ft_insertchar(cmd, ' ', i);
-			i++;
+			if (cmd[i + 1] != '<' && cmd[i + 1] != '>' && cmd[i + 1] != ' ')
+			{
+				cmd = ft_strduplen(cmd, ft_strlen(cmd) + 1);
+				ft_insertchar(cmd, ' ', i + 1);
+				i++;
+			}
 		}
 		i++;
 	}
