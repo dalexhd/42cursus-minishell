@@ -100,6 +100,13 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char *line);
 void	parse_tilde(t_shell *shell, char *cmd, int *i, char *line);
 
 /*
+** Vallidation
+*/
+t_bool	valid_quotes(t_shell *shell, char *cmd, int *i);
+t_bool	valid_redirects(t_shell *shell, char *cmd, int *i);
+t_bool	validate_str(t_shell *shell, char *cmd);
+
+/*
 ** Define termcaps utils
 */
 void	init_tc(t_shell *shell);

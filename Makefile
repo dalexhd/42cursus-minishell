@@ -20,6 +20,7 @@ ARGS_LISTS_DIR		=	args/
 UTILS_DIR			=	utils/
 SRC_DIR				=	srcs/
 PARSING_DIR			=	parsing/
+VALIDATION_DIR		=	validation/
 BONUS_DIR			=	bonus/
 LIBFT_DIR			=	libft/
 ifeq ($(shell whoami), runner)
@@ -45,7 +46,8 @@ BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builti
 						builtins/unset.c	builtins/exit.c
 
 UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/sys.c		utils/termcaps.c \
-						utils/parsing.c		utils/parsing/dollar.c			utils/parsing/tilde.c
+						utils/parsing.c		utils/parsing/dollar.c			utils/parsing/tilde.c			\
+						utils/validation/quotes.c			utils/validation/redirect.c
 
 SHELL_LISTS			=	lists/shell/ft_slstadd_back.c		lists/shell/ft_slstadd_front.c	lists/shell/ft_slstclear.c	\
 						lists/shell/ft_slstdelone.c			lists/shell/ft_slstiter.c		lists/shell/ft_slstlast.c	\
@@ -142,6 +144,7 @@ $(OBJ_DIR):
 			@mkdir -p $(OBJ_DIR)/$(BUILTINS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)/$(PARSING_DIR)
+			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)/$(VALIDATION_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(SHELL_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(REDIRECTS_LISTS_DIR)

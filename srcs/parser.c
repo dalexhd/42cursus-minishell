@@ -1,73 +1,5 @@
 #include "../includes/minishell.h"
 
-static int	quotes(char *cmd, int i, char c)
-{
-	while (cmd[i] && cmd[i] != c)
-		i++;
-	if (!cmd[i])
-		return (-42);
-	return (i);
-}
-
-t_bool	tof(t_shell *shell, char *cmd, int pos, char one)
-{
-	if (one == '\'' || one == '"')
-	{
-		ft_error("minishell: Unmaching opening quotes at col %d: %s\n",
-			0, pos, cmd + (pos));
-		return (false);
-	}
-	else if (one == '<' || one == '>')
-	{
-		ft_error("minishell: syntax error near redirect: %s\n",
-			0, cmd + (pos));
-		shell->exit_status = 2;
-		return (false);
-	}
-	return (true);
-}
-
-t_bool	valid_quotes(t_shell *shell, char *cmd)
-{
-	int		i;
-	char	one;
-	char	two;
-	int		pos;
-	int		red;
-
-	i = 0;
-	one = 0;
-	two = 0;
-	while (cmd[i])
-	{
-		if (cmd[i] == '<' || cmd[i] == '>')
-		{
-			two = cmd[i];
-			if (cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 1])
-				i++;
-			pos = i++;
-			while (cmd[i] == ' ')
-				i++;
-			if (cmd[i] != '>' && cmd[i] != '<')
-				red = 0;
-			else
-				return (tof(shell, cmd, pos, two));
-		}
-		if ((cmd[i] == '\'' || cmd[i] == '"') && cmd[i])
-		{
-			one = cmd[i];
-			pos = i++;
-			i = quotes(cmd, i, one);
-			if (i == -42)
-				break ;
-			else if (cmd[i] == one)
-				one = 0;
-		}
-		i++;
-	}
-	return (tof(shell, cmd, pos, one));
-}
-
 static	char	*fix_cmd(char *cmd)
 {
 	size_t		i;
@@ -78,10 +10,11 @@ static	char	*fix_cmd(char *cmd)
 	safequotes[1] = 1;
 	while (i < ft_strlen(cmd))
 	{
+		char *a = &cmd[i];
 		if (cmd[i] == '"')
-			safequotes[0] = 0;
+			safequotes[0] = !safequotes[0];
 		if (safequotes[0] && cmd[i] == '\'')
-			safequotes[1] = 0;
+			safequotes[1] = !safequotes[1];
 		if (safequotes[0] && safequotes[1] && (cmd[i] == '>' || cmd[i] == '<'))
 		{
 			if (i > 0 && cmd[i - 1] != ' ' && cmd[i - 1] != '>' && cmd[i - 1] != '<')
@@ -91,7 +24,7 @@ static	char	*fix_cmd(char *cmd)
 				i++;
 			}
 		}
-		else if (i > 0 && (cmd[i - 1] == '>' || cmd[i - 1] == '<')
+		else if (cmd[i] != '"' && cmd[i] != '\'' && safequotes[0] && safequotes[1] && i > 0 && (cmd[i - 1] == '>' || cmd[i - 1] == '<')
 			&& (cmd[i] != '>' || cmd[i] != '<')
 			&& cmd[i] != ' '
 		)
@@ -115,7 +48,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	args = NULL;
 	argback = NULL;
 	cmd = fix_cmd(cmd);
-	if (valid_quotes(shell, cmd))
+	if (validate_str(shell, cmd))
 	{
 		tmp = ft_safesplitlist(cmd, ' ', "\"'");
 		while (tmp)

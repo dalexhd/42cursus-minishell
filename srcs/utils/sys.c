@@ -278,8 +278,8 @@ void	run(t_shell *shell)
 		waitpid(pids[k], &status, 0);
 		if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0)
 			shell->exit_status = WEXITSTATUS(status);
-		else
-			shell->exit_status = 0;
+		// else
+		// 	shell->exit_status = 0; // Using this will break builtins exit statuses
 		k++;
 	}
 	i = 0;

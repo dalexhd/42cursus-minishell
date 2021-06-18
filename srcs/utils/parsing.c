@@ -26,6 +26,26 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 	return (tokens);
 }
 
+t_bool	validate_str(t_shell *shell, char *cmd)
+{
+	int		i;
+	t_bool	status;
+
+	i = 0;
+	status = true;
+	while (cmd[i])
+	{
+		if (!valid_redirects(shell, cmd, &i)
+			|| !valid_quotes(shell, cmd, &i))
+		{
+			status = false;
+			break ;
+		}
+		i++;
+	}
+	return (status);
+}
+
 char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 {
 	int		i;

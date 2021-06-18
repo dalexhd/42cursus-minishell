@@ -59,6 +59,6 @@
 	"editor.renderWhitespace": "all",
 	"files.trimTrailingWhitespace": true,
 	"files.insertFinalNewline": true,
-	"42norminette.showErrors": "one",
+	"42norminette.showErrors": "all",
 	"C_Cpp.loggingLevel": "Debug"
 }
