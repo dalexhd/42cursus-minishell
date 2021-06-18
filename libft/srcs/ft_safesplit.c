@@ -6,30 +6,33 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 10:05:54 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/03 21:07:00 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/18 17:02:12 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
+static void	ft_safesplit_init(int *flags, int *size, t_list **list)
+{
+	*flags = 0;
+	*size = 0;
+	*list = NULL;
+}
+
 t_list	*ft_safesplitlist(char *s, char c, char *set)
 {
 	int		size;
-	int		flags;
+	int		fl;
 	char	*start;
-	char	*pos;
 	t_list	*list;
 
-	flags = 0;
-	size = 0;
+	ft_safesplit_init(&fl, &size, &list);
 	start = s;
-	list = NULL;
 	while (1)
 	{
-		pos = ft_strchr(set, *s);
-		if (pos && (!flags || flags & 1 << (pos - set)))
-			flags ^= 1 << (pos - set);
-		if (!*s || (*s == c && !flags))
+		if (ft_strchr(set, *s) && (!fl || fl & 1 << (ft_strchr(set, *s) - set)))
+			fl ^= 1 << (ft_strchr(set, *s) - set);
+		if (!*s || (*s == c && !fl))
 		{
 			if (size > 0)
 				ft_lstadd_back(&list, ft_lstnew(ft_strcut(start, 0, size)));
