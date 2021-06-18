@@ -1,23 +1,33 @@
 #include "../includes/minishell.h"
 
+static char	*ft_cd_checker(t_shell *shell, char **dir, char **args)
+{
+	char	*pwd;
+
+	pwd = ft_pwd();
+	if (!args[1])
+	{
+		*dir = ft_getenv(shell, "HOME");
+		if (!*dir)
+		{
+			ft_error("minishell: cd: HOME not set\n", 0);
+			shell->exit_status = 1;
+			return (NULL);
+		}
+	}
+	else
+		*dir = args[1];
+	return (pwd);
+}
+
 void	ft_cd(t_shell *shell, char **args)
 {
 	char	*pwd;
 	char	*dir;
 
-	pwd = ft_pwd();
-	if (!args[1])
-	{
-		dir = ft_getenv(shell, "HOME");
-		if (!dir)
-		{
-			ft_error("minishell: cd: HOME not set\n", 0);
-			shell->exit_status = 1;
-			return ;
-		}
-	}
-	else
-		dir = args[1];
+	pwd = ft_cd_checker(shell, &dir, args);
+	if (!pwd)
+		return ;
 	if (chdir(dir) == -1)
 	{
 		ft_strdel(&pwd);
