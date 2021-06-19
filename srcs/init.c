@@ -62,7 +62,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 	}
 }
 
-static void	fill_data(t_slist *list)
+void	fill_data(t_slist *list)
 {
 	while (list)
 	{
@@ -74,21 +74,6 @@ static void	fill_data(t_slist *list)
 			fill_data(list->next);
 		break ;
 	}
-}
-
-t_shell	*init_shell(char **envp)
-{
-	t_shell	*shell;
-
-	shell = malloc(sizeof(t_shell));
-	g_running = true;
-	shell->should_wait = true;
-	shell->envp = envp;
-	shell->parsed = NULL;
-	shell->first = true;
-	shell->is_cmd = false;
-	shell->exit_status = 0;
-	return (shell);
 }
 
 /* static	void	*terminate(t_shell *shell)
@@ -103,17 +88,3 @@ t_shell	*init_shell(char **envp)
 	}
 	list = shell->parsed;
 } */
-
-void	exec_shell(t_shell *shell, char *cmd)
-{
-	if (ft_strlen(cmd) > 0)
-	{
-		shell->parsed = NULL;
-		shell->first = false;
-		lsh_split_line(shell, cmd);
-		shell->pipe_count = ft_slstsize(shell->parsed);
-		fill_data(shell->parsed);
-		if (shell->exit_status > -1)
-			run(shell);
-	}
-}

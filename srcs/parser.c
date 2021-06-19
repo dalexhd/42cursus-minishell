@@ -69,8 +69,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 				arg->type = R_IN;
 			else if (ft_strstr(tmp->content, "-"))
 				arg->type = FLAG;
-			else if (argback && (argback->type == R_IN
-					|| argback->type == R_OUT
+			else if (argback && (argback->type == R_IN || argback->type == R_OUT
 					|| argback->type == R_AOUT
 				))
 			{
@@ -117,8 +116,7 @@ char	*quotes_trim(char *cmd)
 					tmp = ft_strcut(cmd, 0, i);
 				else
 					tmp = ft_strdup("");
-				tmp = ft_strcat(tmp, ft_strcut(cmd, i + 1,
-							ft_strlen(cmd) - j - 2));
+				tmp = ft_strcat(tmp, ft_strcut(cmd, i + 1, ft_strlen(cmd) - j - 2));
 				if (j != 0)
 					tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j,
 								ft_strlen(cmd)));

@@ -60,7 +60,8 @@ t_shell	*init_shell(char **envp);
 void	exec_shell(t_shell *shell, char *cmd);
 void	signal_handler(void);
 char	*parse_line(t_shell *shell, t_args *arg, char *cmd);
-
+void	fill_data(t_slist *list);
+void	lsh_split_line(t_shell *shell, char *line);
 /*
 ** Define builtins
 */
@@ -113,5 +114,17 @@ void	init_tc(t_shell *shell);
 void	end_tc(t_shell *shell);
 void	loureed(t_shell *shell);
 void	ft_printshell(t_shell *shell);
+void	ctld(t_shell *shell);
+void	ctlb(t_shell *shell);
+void	ctlc(t_shell *shell);
+void	ctll(t_shell *shell);
+void	tear(t_shell *shell, char c);
+void	sandman(t_shell *shell);
+void	newliner(t_shell *shell);
+void	eraser(t_shell *shell);
+void	new(t_shell *shell);
+void	old(t_shell *shell);
+void	history_up(t_shell *shell);
+void	history_down(t_shell *shell);
 
 #endif

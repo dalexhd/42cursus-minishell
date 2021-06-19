@@ -40,14 +40,15 @@ VER					=	$(shell lsb_release -sr)
 
 # Mandatory part
 
-SRCS				=	init.c				parser.c
+SRCS				=	init.c				parser.c		initshell.c
 
 BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
 						builtins/unset.c	builtins/exit.c
 
 UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/sys.c		utils/termcaps.c \
 						utils/parsing.c		utils/parsing/dollar.c			utils/parsing/tilde.c			\
-						utils/validation/quotes.c			utils/validation/redirect.c
+						utils/validation/quotes.c			utils/validation/redirect.c		utils/control.c	\
+						utils/termtext.c	utils/termhist.c
 
 SHELL_LISTS			=	lists/shell/ft_slstadd_back.c		lists/shell/ft_slstadd_front.c	lists/shell/ft_slstclear.c	\
 						lists/shell/ft_slstdelone.c			lists/shell/ft_slstiter.c		lists/shell/ft_slstlast.c	\
