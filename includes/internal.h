@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/03 22:07:20 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/20 14:51:38 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@
 # define R_IN 5
 # define R_OUT 6
 # define R_AOUT 7
+
+/*
+** Define chars
+*/
+# define DEL 127
 
 /*
 ** Define errors
