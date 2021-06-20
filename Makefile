@@ -243,6 +243,9 @@ leak:		## Run memory leak for valid cub file.
 ##@ Helpers
 kill:		## Kill all minishells
 			@pkill -f $(OUTPUT)
+
+escape:		## Kill all minishells
+			./tools/escaper.sh
 ##@ Help
 help:		## View all available commands.
 			$(shell $(TARGETS_EXE))
