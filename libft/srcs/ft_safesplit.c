@@ -34,7 +34,7 @@ t_list	*ft_safesplitlist(char *s, char c, char *set)
 			fl ^= 1 << (ft_strchr(set, *s) - set);
 		if (!*s || (*s == c && !fl))
 		{
-			if (size > 0)
+			if (size > 0 && size + 1 != '"')
 				ft_lstadd_back(&list, ft_lstnew(ft_strcut(start, 0, size)));
 			start += size + 1;
 			size = 0;
