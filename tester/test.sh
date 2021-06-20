@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/13 20:16:23 by thallard          #+#    #+#              #
-#    Updated: 2021/06/20 16:06:11 by aborboll         ###   ########.fr        #
+#    Updated: 2021/06/20 17:02:23 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -157,9 +157,8 @@ if [ "$RUN" == "1" ]; then
 					printf "\n${GREENB}${line}\n"
 					continue
 				fi
-				echo -n $line > cmd
+				printf "%s" "$line" > cmd
 				line=$(< cmd jq -aRs . | sed 's/^.\(.*\).$/\1/')
-				echo $line
 				# If Valgrind flags is enabled, run tests with valgrind
 				BASH_RESULT=$(bash -c "$line" 2>&-)
 				BASH_EXIT=$?
