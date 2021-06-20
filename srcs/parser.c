@@ -131,6 +131,19 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			else
 			{
 				arg->cmd = parse_line(shell, arg, arg->cmd);
+				char *new = ft_strnew(ft_strlen(arg->cmd));
+				int fl = 0;
+				int i = 0;
+				while (arg->cmd[i])
+				{
+					if (arg->cmd[i] != DEL)
+					{
+						new[fl] = arg->cmd[i];
+						fl++;
+					}
+					i++;
+				}
+				arg->cmd = new;
 				arg->bin_path = arg->cmd;
 				arg->type = ARG;
 			}

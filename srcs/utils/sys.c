@@ -227,26 +227,7 @@ void	run(t_shell *shell)
 				}
 				if (i == ft_slstsize(shell->parsed) - 1)
 				{
-					if (list->content->flags.redirect.out.status)
-					{
-						input = open(list->content->flags.redirect.out.file,
-								O_TRUNC | O_WRONLY | O_CREAT, 0600);
-						if (input < 0)
-							return (ft_error("minishell: %s: %s\n", true,
-									list->content->flags.redirect.out.file,
-									strerror(errno)));
-						dup2(input, STDOUT_FILENO);
-					}
-					else if (list->content->flags.redirect.aout.status)
-					{
-						input = open(list->content->flags.redirect.aout.file,
-								O_WRONLY | O_APPEND, 0600);
-						if (input < 0)
-							return (ft_error("minishell: %s: %s\n", true,
-									list->content->flags.redirect.aout.file,
-									strerror(errno)));
-						dup2(input, STDOUT_FILENO);
-					}
+					handle_redirect(list);
 					j = 0;
 					while (j < ft_slstsize(shell->parsed) - 2)
 					{

@@ -119,6 +119,7 @@ TEST_ARRAY=(
 '< doesnotexist'
 'cat < doesnotexist'
 'cat < dir'
+"pwd ; cd .. | echo \"something\" | cat -e"
 )
 
 usage() {

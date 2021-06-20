@@ -11,7 +11,7 @@
 			"program": "${workspaceRoot}/minishell",
 			"args": [
 				"-c",
-				"echo \" '1' \\\"2\\\" '3' \""
+				"printf \"hola\n\" | cat -e"
 			]
 		}
 	]
