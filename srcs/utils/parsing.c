@@ -28,15 +28,14 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 
 t_bool	validate_str(t_shell *shell, char *cmd)
 {
-	size_t	i;
+	int		i;
 	t_bool	status;
 
 	i = 0;
 	status = true;
-	while (i < ft_strlen(cmd))
+	while (i < (int)ft_strlen(cmd))
 	{
-		if (!valid_redirects(shell, cmd, &i)
-			|| !valid_quotes(shell, cmd, &i))
+		if (!valid_redirects(shell, cmd, &i) || !valid_quotes(shell, cmd, &i))
 		{
 			status = false;
 			break ;

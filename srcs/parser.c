@@ -1,47 +1,14 @@
 #include "../includes/minishell.h"
 
-static	char	*fix_cmd(char *cmd)
-{
-	size_t	i;
-	int		quo[2];
-
-	i = 0;
-	quo[0] = 0;
-	quo[1] = 0;
-	while (i < ft_strlen(cmd))
-	{
-		if (cmd[i] == '"')
-			quo[0] = !quo[0];
-		if (quo[0] && cmd[i] == '\'')
-			quo[1] = !quo[1];
-		while (quo[0] && quo[1] && cmd[i + 1] != '\'' && cmd[i + 1] != '"')
-			i++;
-		if ((!quo[0] && !quo[1]) && (cmd[i] == '<' || cmd[i] == '>'))
-		{
-			if (cmd[i - 1] != '<' && cmd[i - 1] != '>' && cmd[i - 1] != ' ')
-			{
-				cmd = ft_strduplen(cmd, ft_strlen(cmd) + 1);
-				ft_insertchar(cmd, ' ', i);
-				i++;
-			}
-			if (cmd[i + 1] != '<' && cmd[i + 1] != '>' && cmd[i + 1] != ' ')
-			{
-				cmd = ft_strduplen(cmd, ft_strlen(cmd) + 1);
-				ft_insertchar(cmd, ' ', i + 1);
-				i++;
-			}
-		}
-		i++;
-	}
-	return (cmd);
-}
-
 t_alist	*parse_args(t_shell *shell, char *cmd)
 {
-	t_alist		*args;
-	t_args		*arg;
-	t_args		*argback;
-	t_list		*tmp;
+	t_alist	*args;
+	t_args	*arg;
+	t_args	*argback;
+	t_list	*tmp;
+	int		fl;
+	int		i;
+	char	*new;
 
 	args = NULL;
 	argback = NULL;
@@ -81,9 +48,9 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			else
 			{
 				arg->cmd = parse_line(shell, arg, arg->cmd);
-				char *new = ft_strnew(ft_strlen(arg->cmd));
-				int fl = 0;
-				int i = 0;
+				new = ft_strnew(ft_strlen(arg->cmd));
+				fl = 0;
+				i = 0;
 				while (arg->cmd[i])
 				{
 					if (arg->cmd[i] != DEL)
@@ -105,6 +72,19 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	return (args);
 }
 
+static char	*partial_trim(char *tmp, char *cmd, int i, int j)
+{
+	if (i != 0)
+		tmp = ft_strcut(cmd, 0, i);
+	else
+		tmp = ft_strdup("");
+	tmp = ft_strcat(tmp, ft_strcut(cmd, i + 1, ft_strlen(cmd) - j - 2));
+	if (j != 0)
+		tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j,
+					ft_strlen(cmd)));
+	return (tmp);
+}
+
 char	*quotes_trim(char *cmd)
 {
 	int		i;
@@ -118,24 +98,14 @@ char	*quotes_trim(char *cmd)
 	while (cmd[i])
 	{
 		if (!(i > 0 && cmd[i - 1] == '\\')
-			&& (cmd[i - 1] != '\\' && cmd[i] == '\'' || cmd[i] == '"'))
+			&& (cmd[i - 1] != '\\' && (cmd[i] == '\'' || cmd[i] == '"')))
 		{
 			one = cmd[i];
 			tmp = ft_strrev(ft_strdup(cmd));
 			while (tmp[j] != one)
 				j++;
 			if (tmp[j] == one)
-			{
-				if (i != 0)
-					tmp = ft_strcut(cmd, 0, i);
-				else
-					tmp = ft_strdup("");
-				tmp = ft_strcat(tmp, ft_strcut(cmd, i + 1, ft_strlen(cmd) - j - 2));
-				if (j != 0)
-					tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j,
-								ft_strlen(cmd)));
-				return (tmp);
-			}
+				return (partial_trim(tmp, cmd, i, j));
 		}
 		i++;
 	}

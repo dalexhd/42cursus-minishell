@@ -103,6 +103,7 @@ void	parse_tilde(t_shell *shell, char *cmd, int *i, char *line);
 /*
 ** Vallidation
 */
+char	*fix_cmd(char *cmdi);
 t_bool	valid_quotes(t_shell *shell, char *cmd, int *i);
 t_bool	valid_redirects(t_shell *shell, char *cmd, int *i);
 t_bool	validate_str(t_shell *shell, char *cmd);
