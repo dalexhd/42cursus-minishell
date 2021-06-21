@@ -37,4 +37,5 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char *line)
 	env = ft_strdup(aux);
 	if (env)
 		ft_strcat(line, env);
+	//TODO: echo $USER $9999USER $8888USER $7777USER
 }

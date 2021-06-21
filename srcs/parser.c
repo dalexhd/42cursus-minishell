@@ -98,7 +98,7 @@ char	*quotes_trim(char *cmd)
 	while (cmd[i])
 	{
 		if (!(i > 0 && cmd[i - 1] == '\\')
-			&& (cmd[i - 1] != '\\' && (cmd[i] == '\'' || cmd[i] == '"')))
+			&& (i > 0 && cmd[i - 1] != '\\' && (cmd[i] == '\'' || cmd[i] == '"')))
 		{
 			one = cmd[i];
 			tmp = ft_strrev(ft_strdup(cmd));

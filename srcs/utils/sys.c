@@ -42,6 +42,14 @@ void	exec(t_shell *shell, t_parsed *parsed)
 	}
 }
 
+static int	renegado(int **pipes, int j)
+{
+	close(pipes[j][1]);
+	close(pipes[j][0]);
+	j++;
+	return (j);
+}
+
 static void	handle_redirect(t_slist	*list)
 {
 	int		input;
@@ -116,23 +124,11 @@ void	run(t_shell *shell)
 				break ;
 			list->content->args = list->content->args->next;
 		}
-		input = 0;
-		if (ft_strcmp(list->content->args->content->cmd, "exit") == 0)
-		{
-			exec(shell, list->content);
-		}
-		else if (ft_strcmp(list->content->args->content->cmd, "cd") == 0)
-		{
-			exec(shell, list->content);
-		}
-		else if (ft_strcmp(list->content->args->content->cmd, "export") == 0)
-		{
-			exec(shell, list->content);
-		}
-		else if (ft_strcmp(list->content->args->content->cmd, "unset") == 0)
-		{
-			exec(shell, list->content);
-		}
+		if (ft_strcmp(list->content->args->content->cmd, "exit") == 0
+			|| ft_strcmp(list->content->args->content->cmd, "cd") == 0
+			|| ft_strcmp(list->content->args->content->cmd, "export") == 0
+			|| ft_strcmp(list->content->args->content->cmd, "unset") == 0)
+				exec(shell, list->content);
 		else if (ft_slstsize(shell->parsed) == 1)
 		{
 			pid = fork();
@@ -171,11 +167,7 @@ void	run(t_shell *shell)
 					}
 					j = 1;
 					while (j < ft_slstsize(shell->parsed) - 1)
-					{
-						close(pipes[j][1]);
-						close(pipes[j][0]);
-						j++;
-					}
+						j = renegado(pipes, j);
 					close(pipes[0][0]);
 					dup2(pipes[0][1], 1);
 				}
@@ -185,40 +177,24 @@ void	run(t_shell *shell)
 					{
 						j = i + 1;
 						while (j < ft_slstsize(shell->parsed) - 1)
-						{
-							close(pipes[j][1]);
-							close(pipes[j][0]);
-							j++;
-						}
+							j = renegado(pipes, j);
 					}
 					if (i == ft_slstsize(shell->parsed) - 2
 						&& ft_slstsize(shell->parsed) != 3)
 					{
 						j = 0;
 						while (j < i - 1)
-						{
-							close(pipes[j][1]);
-							close(pipes[j][0]);
-							j++;
-						}
+							j = renegado(pipes, j);
 					}
 					if (i != 1 && i != ft_slstsize(shell->parsed) - 2
 						&& ft_slstsize(shell->parsed) != 3)
 					{
 						j = 0;
 						while (j < i - 1)
-						{
-							close(pipes[j][1]);
-							close(pipes[j][0]);
-							j++;
-						}
+							j = renegado(pipes, j);
 						j = i + 1;
 						while (j < ft_slstsize(shell->parsed) - 1)
-						{
-							close(pipes[j][1]);
-							close(pipes[j][0]);
-							j++;
-						}
+							j = renegado(pipes, j);
 					}
 					close(pipes[i - 1][1]);
 					dup2(pipes[i - 1][0], 0);
@@ -230,11 +206,7 @@ void	run(t_shell *shell)
 					handle_redirect(list);
 					j = 0;
 					while (j < ft_slstsize(shell->parsed) - 2)
-					{
-						close(pipes[j][1]);
-						close(pipes[j][0]);
-						j++;
-					}
+						j = renegado(pipes, j);
 					close(pipes[i - 1][1]);
 					dup2(pipes[i - 1][0], 0);
 				}
@@ -248,19 +220,15 @@ void	run(t_shell *shell)
 	}
 	k = 0;
 	while (k < ft_slstsize(shell->parsed) - 1)
-	{
-		close(pipes[k][1]);
-		close(pipes[k][0]);
-		k++;
-	}
+		k = renegado(pipes, k);
 	k = 0;
 	while (k < ft_slstsize(shell->parsed))
 	{
 		waitpid(pids[k], &status, 0);
 		if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0)
 			shell->exit_status = WEXITSTATUS(status);
-		// else
-		// 	shell->exit_status = 0; // Using this will break builtins exit statuses
+		//else
+		//	shell->exit_status = 0; // Using this will break builtins exit statuses
 		k++;
 	}
 	i = 0;

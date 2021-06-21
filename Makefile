@@ -7,7 +7,7 @@ PID					=	.pid
 CC					=	@gcc
 SH					=	@bash
 RM					=	@/bin/rm -rf
-FLAGS				=	-Wextra -Wall -g
+FLAGS				=	-Wextra -Wall -g -fsanitize=address
 
 HEADER_DIR			=	includes/
 OBJ_DIR				=	obj/

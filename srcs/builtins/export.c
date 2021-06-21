@@ -80,8 +80,14 @@ void	ft_export(t_shell *shell, char **args)
 		{
 			tokens = ft_safesplitlist(args[i], '=', "\"'");
 			env = ft_strdup(tokens->content);
-			if (tokens->next && !valid_export(shell, env,
-					(char **)&tokens->next->content))
+			if (!tokens->next)
+			{
+				ft_error("minishell: export: `%s': not a valid identifier\n",
+					false, args[i]);
+				shell->exit_status = 1;
+				break ;
+			}
+			else if (!valid_export(shell, env, (char **)&tokens->next->content))
 				break ;
 			else if (tokens->next)
 			{
