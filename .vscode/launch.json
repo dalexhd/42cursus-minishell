@@ -11,7 +11,7 @@
 			"program": "${workspaceRoot}/minishell",
 			"args": [
 				"-c",
-				"echo \\\\\\\\\\\"hola\\\\\\\\\\\""
+				"export TEST=$USER ; echo $TEST ; export TEST+=$PWD ; echo $TEST"
 			]
 		}
 	]

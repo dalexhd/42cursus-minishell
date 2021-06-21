@@ -50,7 +50,7 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 	int		i;
 	char	*res;
 
-	res = ft_strnew(ft_strlen(cmd));
+	res = ft_strnew(ft_strlen(cmd) + 1);
 	i = 0;
 	while (cmd[i])
 	{
@@ -68,5 +68,5 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 			ft_strncat(res, &cmd[i], 1);
 		i++;
 	}
-	return (res);
+	return (ft_strdup(res));
 }

@@ -32,7 +32,9 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char *line)
 		(*i)++;
 	}
 	(*i)--;
-	env = ft_getenv(shell, tmp);
+	free(aux);
+	aux = ft_getenv(shell, tmp);
+	env = ft_strdup(aux);
 	if (env)
 		ft_strcat(line, env);
 }

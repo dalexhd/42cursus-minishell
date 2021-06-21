@@ -50,7 +50,8 @@
 		"tuple": "c",
 		"type_traits": "c",
 		"typeinfo": "c",
-		"complex": "c"
+		"complex": "c",
+		"sstream": "c"
 	},
 	"42header.email": "aborboll@student.42.fr",
 	"42header.username": "aborboll",
