@@ -71,44 +71,57 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	}
 	return (args);
 }
-
+/*
 static char	*partial_trim(char *tmp, char *cmd, int i, int j)
 {
 	if (i != 0)
 		tmp = ft_strcut(cmd, 0, i);
 	else
 		tmp = ft_strdup("");
-	tmp = ft_strcat(tmp, ft_strcut(cmd, i + 1, ft_strlen(cmd) - j - 2));
+	tmp = ft_strcat(tmp, ft_strcut(cmd, i + 1, j + 1));
 	if (j != 0)
-		tmp = ft_strcat(tmp, ft_strcut(cmd, ft_strlen(cmd) - j,
-					ft_strlen(cmd)));
+		tmp = ft_strcat(tmp, ft_strcut(cmd, j,	ft_strlen(cmd) - 1));
 	return (tmp);
 }
-
+*/
 char	*quotes_trim(char *cmd)
 {
 	int		i;
-	char	one;
+	char	out;
 	char	*tmp;
-	int		j;
+	t_bool	flag;
 
 	i = 0;
-	j = 0;
-	one = 0;
-	while (cmd[i])
+	out = 0;
+	while (i < (int)ft_strlen(cmd))
 	{
-		if (!(i > 0 && cmd[i - 1] == '\\')
-			&& (i > 0 && cmd[i - 1] != '\\' && (cmd[i] == '\'' || cmd[i] == '"')))
+		flag = true;
+		if (i > 0 && cmd[i - 1] == '\\')
+			flag = false;
+		if (/*(cmd[i] != '\\') &&  */flag && (cmd[i] == '\'' || cmd[i] == '"'))
 		{
-			one = cmd[i];
-			tmp = ft_strrev(ft_strdup(cmd));
-			while (tmp[j] != one)
-				j++;
-			if (tmp[j] == one)
-				return (partial_trim(tmp, cmd, i, j));
+			out = cmd[i];
+			cmd[i] = DEL;
+			if (out == '"')
+			{
+				tmp = ft_strdup(cmd);
+				while (tmp[i])
+				{
+					if (tmp[i] == out && tmp[i - 1] != '\\')
+						break ;
+					i++;
+				}
+				if (tmp[i] == out)
+					cmd[i] = DEL;
+			}
+			else if (out == '\'')
+			{
+				tmp = ft_strdup(cmd + i);
+			}
 		}
 		i++;
 	}
+
 	return (cmd);
 }
 

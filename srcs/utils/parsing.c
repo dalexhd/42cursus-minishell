@@ -52,7 +52,7 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 
 	res = ft_strnew(ft_strlen(cmd) + 1);
 	i = 0;
-	while (cmd[i])
+	while (i < (int)ft_strlen(cmd))
 	{
 		if (cmd[i] == '\\' && ft_strchr("\\$\"n", cmd[i + 1]))
 		{
