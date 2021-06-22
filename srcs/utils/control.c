@@ -5,9 +5,9 @@ void	ctld(t_shell *shell)
 	if (!*shell->term.line)
 	{
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_raw);
-		g_running = false;
-		ft_success("exit\n", -1);
+		ft_printf("exit\n");
 	}
+	g_running = false;
 }
 
 void	ctlc(t_shell *shell)
