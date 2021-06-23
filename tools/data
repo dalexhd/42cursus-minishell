@@ -1,1 +1,1 @@
-export TEST=$USER ; echo $TEST ; export TEST+=$PWD ; echo $TEST
+echo '"$HOME"'

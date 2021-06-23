@@ -23,8 +23,8 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			arg->file = NULL;
 			arg->is_builtin = ft_isbuiltin(tmp->content);
 			arg->bin_path = NULL;
-			arg->is_literal = arg->cmd[0] == '\''
-				&& arg->cmd[ft_strlen(arg->cmd) - 1] == '\'';
+	//		arg->is_literal = arg->cmd[0] == '\''
+			//	&& arg->cmd[ft_strlen(arg->cmd) - 1] == '\'';
 			if (!arg->is_builtin)
 				arg->bin_path = builtin_bin_path(shell, tmp->content);
 			arg->type = 0;
@@ -88,7 +88,6 @@ char	*quotes_trim(char *cmd)
 {
 	int		i;
 	char	out;
-	char	*tmp;
 	t_bool	flag;
 
 	i = 0;
@@ -104,25 +103,55 @@ char	*quotes_trim(char *cmd)
 			cmd[i] = DEL;
 			if (out == '"')
 			{
-				tmp = ft_strdup(cmd);
-				while (tmp[i])
+				while (cmd[i])
 				{
-					if (tmp[i] == out && tmp[i - 1] != '\\')
+					if (cmd[i] == out && cmd[i - 1] != '\\')
 						break ;
 					i++;
 				}
-				if (tmp[i] == out)
+				if (cmd[i] == out)
 					cmd[i] = DEL;
 			}
 			else if (out == '\'')
 			{
-				tmp = ft_strdup(cmd + i);
+				cmd[i++] = DEL;
+				while (cmd[i])
+				{
+					flag = true;
+					if (i > 0 && cmd[i - 1] == '\\')
+						flag = false;
+					if (cmd[i] == out && cmd[i - 1] != '\\')
+						break;
+					else if (!flag && cmd[i] != out && cmd[i] != '"')
+					{
+						cmd = ft_strdup(ft_strjoin(ft_strjoin(ft_strduplen(cmd, i - 1), "\\\\"), cmd + i));
+						i += 2;
+					}
+					i++;
+				}
+				if (cmd[i] == out)
+					cmd[i] = DEL;
 			}
+		}
+		out = 0;
+		i++;
+	}
+	i = 0;
+	int j = 0;
+	char *tmp = ft_strdup(cmd);
+	while (i < (int)ft_strlen(cmd))
+	{
+		if (cmd[i] != DEL)
+		{
+			tmp[j] = cmd[i];
+			j++;
 		}
 		i++;
 	}
-
-	return (cmd);
+	tmp[j] = 0;
+	free(cmd);
+	cmd = ft_strdup(tmp);
+	return (tmp);
 }
 
 char	*parse_line(t_shell *shell, t_args *arg, char *cmd)
