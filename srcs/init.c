@@ -39,6 +39,7 @@ static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 		}
 		args = args->next;
 	}
+	shell->ext_status = shell->status != 2;
 }
 
 void	lsh_split_line(t_shell *shell, char *line)

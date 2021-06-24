@@ -94,6 +94,7 @@ void	run(t_shell *shell)
 	pid_t	*pids;
 	t_slist	*list;
 	int		**pipes;
+	t_bool	*whitelist;
 	int		input;
 	int		i;
 	int		s;
@@ -105,6 +106,7 @@ void	run(t_shell *shell)
 	if (!list)
 		return ;
 	pids = malloc(ft_slstsize(shell->parsed) * sizeof(int) + 1);
+	whitelist = malloc(ft_slstsize(shell->parsed) * sizeof(t_bool) + 1);
 	pipes = (int **) malloc ((ft_slstsize(shell->parsed) - 1) * sizeof(int *));
 	i = 0;
 	while (i < ft_slstsize(shell->parsed) - 1)
@@ -124,11 +126,15 @@ void	run(t_shell *shell)
 				break ;
 			list->content->args = list->content->args->next;
 		}
+		whitelist[i] = true;
 		if (ft_strcmp(list->content->args->content->cmd, "exit") == 0
 			|| ft_strcmp(list->content->args->content->cmd, "cd") == 0
 			|| ft_strcmp(list->content->args->content->cmd, "export") == 0
 			|| ft_strcmp(list->content->args->content->cmd, "unset") == 0)
-				exec(shell, list->content);
+		{
+			exec(shell, list->content);
+			whitelist[i] = false;
+		}
 		else if (ft_slstsize(shell->parsed) == 1)
 		{
 			pid = fork();
@@ -224,11 +230,14 @@ void	run(t_shell *shell)
 	k = 0;
 	while (k < ft_slstsize(shell->parsed))
 	{
-		waitpid(pids[k], &status, 0);
-		if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0)
-			shell->status = WEXITSTATUS(status);
-		//else
-		//	shell->exit_status = 0; // Using this will break builtins exit statuses
+		if (whitelist[k])
+		{
+			waitpid(pids[k], &status, 0);
+			if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0)
+				shell->status = WEXITSTATUS(status);
+			else if (WEXITSTATUS(status) == 0)
+				shell->status = 0;
+		}
 		k++;
 	}
 	i = 0;
@@ -238,5 +247,6 @@ void	run(t_shell *shell)
 		i++;
 	}
 	free(pipes);
+	free(whitelist);
 	free(pids);
 }

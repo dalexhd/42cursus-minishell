@@ -54,6 +54,7 @@ typedef struct s_shell
 	t_slist	*parsed;
 	t_term	term;
 	int		status;
+	int		ext_status;
 }				t_shell;
 
 t_shell	*init_shell(char **envp);
