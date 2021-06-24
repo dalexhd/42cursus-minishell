@@ -1,16 +1,23 @@
 #include "../includes/minishell.h"
 
-static void	inout_split(t_redirect *redirect, t_alist *args,
+static int	split(t_redirect *redirect, t_alist *args,
 	t_parsed *parsed, t_rstatus *status)
 {
 	status->status = true;
+	if (!args->next)
+	{
+		ft_error("minishell: syntax error near unexpected token `newline'\n",
+			false);
+		return (2);
+	}
 	status->file = ft_strdup(args->next->content->file);
 	args->content = NULL;
 	args->next->content = NULL;
 	ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
+	return (0);
 }
 
-static	void	args_loop(t_alist *args, t_parsed *parsed)
+static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 {
 	t_redirect	*redirect;
 
@@ -23,11 +30,11 @@ static	void	args_loop(t_alist *args, t_parsed *parsed)
 		if (args->content)
 		{
 			if (args->content->type == R_IN)
-				inout_split(redirect, args, parsed, &redirect->in);
+				shell->status = split(redirect, args, parsed, &redirect->in);
 			else if (args->content->type == R_OUT)
-				inout_split(redirect, args, parsed, &redirect->out);
+				shell->status = split(redirect, args, parsed, &redirect->out);
 			else if (args->content->type == R_AOUT)
-				inout_split(redirect, args, parsed, &redirect->aout);
+				shell->status = split(redirect, args, parsed, &redirect->aout);
 			ft_alstadd_back(&parsed->args, ft_alstnew(args->content));
 		}
 		args = args->next;
@@ -53,7 +60,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 				.has_stdin = !!tokens->prev, .has_stdout = !!tokens->next
 			};
 			parsed->redirects = NULL;
-			args_loop(args, parsed);
+			args_loop(shell, args, parsed);
 			ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
 			tokens = tokens->next;
 		}

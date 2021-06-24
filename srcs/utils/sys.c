@@ -7,7 +7,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 
 	arg = (char *)parsed->args->content->cmd;
 	args = ft_safesplit(shell, parsed->args);
-	shell->exit_status = 0;
+	shell->status = 0;
 	if (parsed->args->content->is_builtin)
 	{
 		if (!ft_strcmp(arg, "cd"))
@@ -143,7 +143,7 @@ void	run(t_shell *shell)
 			{
 				waitpid(pid, &status, 0);
 				if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0)
-					shell->exit_status = WEXITSTATUS(status);
+					shell->status = WEXITSTATUS(status);
 			}
 		}
 		else
@@ -226,7 +226,7 @@ void	run(t_shell *shell)
 	{
 		waitpid(pids[k], &status, 0);
 		if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0)
-			shell->exit_status = WEXITSTATUS(status);
+			shell->status = WEXITSTATUS(status);
 		//else
 		//	shell->exit_status = 0; // Using this will break builtins exit statuses
 		k++;

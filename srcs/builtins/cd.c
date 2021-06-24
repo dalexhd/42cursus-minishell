@@ -11,7 +11,7 @@ static char	*ft_cd_checker(t_shell *shell, char **dir, char **args)
 		if (!*dir)
 		{
 			ft_error("minishell: cd: HOME not set\n", 0);
-			shell->exit_status = 1;
+			shell->status = 1;
 			return (NULL);
 		}
 	}
@@ -32,7 +32,7 @@ void	ft_cd(t_shell *shell, char **args)
 	{
 		ft_strdel(&pwd);
 		ft_error("minishell: cd: %s: %s\n", 0, dir, strerror(errno));
-		shell->exit_status = 1;
+		shell->status = 1;
 		return ;
 	}
 	ft_export_internal(shell, "OLDPWD", pwd);

@@ -15,7 +15,7 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 		{
 			if (!list->content->is_literal
 				&& !ft_strcmp(list->content->cmd, "$?"))
-				tokens[i] = ft_itoa(shell->exit_status);
+				tokens[i] = ft_itoa(shell->status);
 			else
 				tokens[i] = list->content->cmd;
 			i++;

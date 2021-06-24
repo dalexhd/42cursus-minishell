@@ -6,7 +6,7 @@ static t_bool	check_error(t_shell *shell, char *cmd, int pos, char one)
 	{
 		ft_error("minishell: syntax error near redirect: %s\n",
 			0, cmd + (pos));
-		shell->exit_status = 2;
+		shell->status = 2;
 		return (false);
 	}
 	return (true);

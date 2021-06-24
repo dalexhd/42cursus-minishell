@@ -24,7 +24,7 @@ int	main(int argc, char **argv, char **envp)
 			commands = commands->next;
 		}
 	}
-	if (shell->exit_status != 0)
-		exit(shell->exit_status);
+	if (shell->status != 0)
+		exit(shell->status);
 	return (0);
 }

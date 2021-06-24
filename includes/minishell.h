@@ -53,7 +53,7 @@ typedef struct s_shell
 	t_bool	is_cmd;
 	t_slist	*parsed;
 	t_term	term;
-	int		exit_status;
+	int		status;
 }				t_shell;
 
 t_shell	*init_shell(char **envp);

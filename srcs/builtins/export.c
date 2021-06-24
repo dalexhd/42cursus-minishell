@@ -33,9 +33,9 @@ t_bool	valid_export(t_shell *shell, char *str, char **val)
 		ft_error("minishell: export: `%s=%s': not a valid identifier\n",
 			false, str, val);
 		if (str[0] == '+')
-			shell->exit_status = 1;
+			shell->status = 1;
 		else
-			shell->exit_status = 2;
+			shell->status = 2;
 		return (false);
 	}
 	status = true;
@@ -56,7 +56,7 @@ t_bool	valid_export(t_shell *shell, char *str, char **val)
 			status = false;
 			ft_error("minishell: export: `%s=%s': not a valid identifier\n",
 				false, str, val);
-			shell->exit_status = 1;
+			shell->status = 1;
 			break ;
 		}
 		i++;
@@ -84,7 +84,7 @@ void	ft_export(t_shell *shell, char **args)
 			{
 				ft_error("minishell: export: `%s': not a valid identifier\n",
 					false, args[i]);
-				shell->exit_status = 1;
+				shell->status = 1;
 				break ;
 			}
 			else if (!valid_export(shell, env, (char **)&tokens->next->content))

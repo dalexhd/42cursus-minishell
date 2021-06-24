@@ -11,7 +11,7 @@ t_shell	*init_shell(char **envp)
 	shell->parsed = NULL;
 	shell->first = true;
 	shell->is_cmd = false;
-	shell->exit_status = 0;
+	shell->status = 0;
 	return (shell);
 }
 
@@ -24,7 +24,7 @@ void	exec_shell(t_shell *shell, char *cmd)
 		lsh_split_line(shell, cmd);
 		shell->pipe_count = ft_slstsize(shell->parsed);
 		fill_data(shell->parsed);
-		if (shell->exit_status > -1)
+		if (shell->status > -1)
 			run(shell);
 	}
 }

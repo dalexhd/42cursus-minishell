@@ -14,7 +14,7 @@ static t_bool	check_error(t_shell *shell, char *cmd, int *pos, char one)
 	{
 		ft_error("minishell: Unmaching opening quotes at col %d: %s\n",
 			0, *pos, cmd + *pos);
-		shell->exit_status = 2;
+		shell->status = 2;
 		return (false);
 	}
 	return (true);
