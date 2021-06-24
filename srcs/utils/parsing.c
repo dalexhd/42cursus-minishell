@@ -50,6 +50,8 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 	int		i;
 	char	*res;
 
+	if (arg)
+		i = 0;
 	res = ft_strnew(ft_strlen(cmd) + 1);
 	i = 0;
 	while (i < (int)ft_strlen(cmd))
@@ -59,7 +61,7 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 			ft_strncat(res, &cmd[i + 1], 1);
 			i++;
 		}
-		else if (!arg->is_literal && cmd[i] == '$'
+		else if (/*!arg->is_literal && */cmd[i] == '$'
 			&& (ft_isalpha(cmd[i + 1]) || cmd[i + 1] == '_'))
 			parse_dollar(shell, &cmd, &i, res);
 		else if (cmd[i] == '~')

@@ -6,8 +6,8 @@ void	ctld(t_shell *shell)
 	{
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term.termios_raw);
 		ft_printf("exit\n");
+		g_running = false;
 	}
-	g_running = false;
 }
 
 void	ctlc(t_shell *shell)
