@@ -49,6 +49,7 @@ typedef struct s_shell
 	char	**envp;
 	size_t	pipe_count;
 	size_t	pid;
+	t_pids	*pids;
 	t_bool	first;
 	t_bool	is_cmd;
 	t_slist	*parsed;
@@ -94,6 +95,7 @@ void	run(t_shell *shell);
 char	*clean_str(t_shell *shell, t_args *arg, char *line);
 t_alist	*parse_args(t_shell *shell, char *cmd);
 char	**ft_safesplit(t_shell *shell, t_alist *list);
+void	debug_log(char *string);
 
 /*
 ** Parsing

@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/05 18:08:56 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/06/26 19:27:12 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_redirect
 	t_rstatus	out;
 	t_rstatus	in;
 	t_rstatus	aout;
+	int			fd;
 }				t_redirect;
 
 typedef struct s_flags
@@ -62,6 +63,13 @@ typedef struct s_alist
 	struct s_alist	*next;
 	struct s_alist	*prev;
 }				t_alist;
+
+typedef struct s_pids
+{
+	pid_t			*content;
+	struct s_pids	*next;
+	struct s_pids	*prev;
+}				t_pids;
 
 typedef struct s_parsed
 {
@@ -128,6 +136,18 @@ t_hist			*ft_hlstfirst(t_hist *hst);
 t_hist			*ft_hlstlast(t_hist *lst);
 t_hist			*ft_hlstnew(void *content);
 int				ft_hlstsize(t_hist *lst);
+
+/*
+** Pids lists
+*/
+void			ft_plstadd_back(t_pids **alst, t_pids *new);
+void			ft_plstadd_front(t_pids **alst, t_pids *new);
+void			ft_plstclear(t_pids **lst, void (*del)(void*));
+void			ft_plstdelone(t_pids *lst, void (*del)(void*));
+t_pids			*ft_plstfirst(t_pids *hst);
+t_pids			*ft_plstlast(t_pids *lst);
+t_pids			*ft_plstnew(pid_t *content);
+int				ft_plstsize(t_pids *lst);
 
 /*
 ** Arguments lists

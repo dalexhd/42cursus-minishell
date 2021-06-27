@@ -23,8 +23,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			arg->file = NULL;
 			arg->is_builtin = ft_isbuiltin(tmp->content);
 			arg->bin_path = NULL;
-	//		arg->is_literal = arg->cmd[0] == '\''
-			//	&& arg->cmd[ft_strlen(arg->cmd) - 1] == '\'';
+			arg->is_literal = 0;
 			if (!arg->is_builtin)
 				arg->bin_path = builtin_bin_path(shell, tmp->content);
 			arg->type = 0;
@@ -121,7 +120,7 @@ char	*quotes_trim(char *cmd)
 					if (i > 0 && cmd[i - 1] == '\\')
 						flag = false;
 					if (cmd[i] == out && cmd[i - 1] != '\\')
-						break;
+						break ;
 					else if (!flag && cmd[i] != out && cmd[i] != '"')
 					{
 						cmd = ft_strdup(ft_strjoin(ft_strjoin(ft_strduplen(cmd, i - 1), "\\\\"), cmd + i));
