@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/13 20:16:23 by thallard          #+#    #+#              #
-#    Updated: 2021/06/20 17:02:23 by aborboll         ###   ########.fr        #
+#    Updated: 2021/06/27 16:25:48 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,29 @@ RED='\033[0;31m'
 REDB='\033[1;31m'
 BLANK='\033[0m'
 YELLOW='\033[0;33m'
+
+Y="\033[33m"
+R="\033[31m"
+G="\033[32m"
+CYAN="\033[36m"
+B="\033[34m"
+X="\033[0m"
+UP="\033[A"
+CUT="\033[K"
+W="\033[37m"
+UND="\033[4m"
+BLINK="\033[5m"
+BOLD="\033[1m"
+UP="\033[5A"
+NORM_COLOR_T="\033[0;1;141m"
+NORM_COLOR="\033[0;38;5;153m"
+NORM_COLOR_WAR="\033[38;5;214m"
+NORM_COLOR_ERR="\033[0;41m"
+BG_X="\033[0;39m"
+TAB="\t"
+
+
+
 
 # ----------------------- MODIFY THESE VARIABLES ----------------------------
 # Please modify this variable if your Makefile or your minishell executable is not found
@@ -103,7 +126,7 @@ if [ "$RUN" == "1" ]; then
 			elif [ "$var" == "--fast" ] || [ "$var" == "-f" ]; then
 				SPEED=0.001
 			elif [ "$var" == "--valgrind" ] || [ "$var" == "-v" ]; then
-				VALGRIND="valgrind -q --leak-check=full"
+				VALGRIND="valgrind -q --tool=memcheck --leak-check=full --leak-resolution=high --show-leak-kinds=all --track-origins=yes --verbose"
 			else
 				if [ "$var" == "all" ]; then
 					FILE_TO_READ="$(find file_tests -type f -name "*.txt" -print)"
@@ -164,7 +187,7 @@ if [ "$RUN" == "1" ]; then
 				BASH_EXIT=$?
 				# Remove temp files if they exists
 				rm -f tmp/file tmp/file1 tmp/file2 2>/dev/null
-				MINISHELL_RESULT=$($VALGRIND ./minishell -c "$line" 2>&-)
+				MINISHELL_RESULT=$($VALGRIND ./minishell -c "$line" 2>&1)
 				MINISHELL_EXIT=$?
 				if [ "$DIFF_FLAGS" == "1" ]; then
 					if [ "$BASH_RESULT" == "$MINISHELL_RESULT" ] && [ "$BASH_EXIT" == "$MINISHELL_EXIT" ]; then
@@ -192,8 +215,20 @@ if [ "$RUN" == "1" ]; then
 						fi
 						echo $line >> tmp/valid
 					else
-						printf "${RED}$i: [$line]\n"
+						printf "${RED}$i: [$line]${X}\n"
 						echo $line >> tofix/tofix_tests.txt
+						if [[ $(echo "$MINISHELL_RESULT" | grep "definitely lost:" | cut -d : -f 2 | cut -d b  -f 1 | tr -d " " | tr -d ",") ]]; then
+							printf "${BOLD}${UND}${R}🚨 Memory leaks detected${X}\n";
+							printf "${G}$MINISHELL_RESULT" | grep -A2 "HEAP SUMMARY:" | cut -d = -f 5 | cut -c 2-;
+							printf "${CYAN}$MINISHELL_RESULT" | grep -A5 "LEAK SUMMARY:" | cut -d = -f 5 | cut -c 2-;
+						else
+							printf "☕ No memory leaks detected$ ☕";
+							printf "${CYAN}$MINISHELL_RESULT" | grep -A4 "HEAP SUMMARY:" | cut -d = -f 5 | cut -c 2-;
+						fi
+						echo "$MINISHELL_RESULT" >> tofix/tofix_tests.txt
+						echo '----------------------Test end-------------------------------' >> tofix/tofix_tests.txt
+						echo >> tofix/tofix_tests.txt
+						echo >> tofix/tofix_tests.txt
 					fi
 				fi
 				i=$((i + 1))

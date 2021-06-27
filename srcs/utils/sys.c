@@ -4,6 +4,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 {
 	char	*arg;
 	char	**args;
+	char	*pwd;
 
 	arg = (char *)parsed->args->content->cmd;
 	args = ft_safesplit(shell, parsed->args);
@@ -23,7 +24,11 @@ void	exec(t_shell *shell, t_parsed *parsed)
 			if (!ft_strcmp(arg, "env"))
 				ft_env(shell);
 			else if (!ft_strcmp(arg, "pwd"))
-				ft_printf("%s\n", ft_pwd());
+			{
+				pwd = ft_pwd();
+				ft_printf("%s\n", pwd);
+				free(pwd);
+			}
 			else if (!ft_strcmp(arg, "echo"))
 				ft_echo(args);
 			exit(0);
@@ -138,6 +143,7 @@ void	run(t_shell *shell)
 		else if (ft_slstsize(shell->parsed) == 1)
 		{
 			pid = fork();
+			signal_handler();
 			if (pid < 0)
 				ft_error("Fallo el fork() %s\n", 1, strerror(errno));
 			else if (pid == 0)
@@ -148,7 +154,13 @@ void	run(t_shell *shell)
 			else
 			{
 				waitpid(pid, &status, 0);
-				if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0)
+				if (WIFSIGNALED(status))
+				{
+					shell->status = WTERMSIG(status);
+					if (shell->status == 2)
+						shell->status = 130;
+				}
+				else if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0)
 					shell->status = WEXITSTATUS(status);
 			}
 		}
@@ -233,7 +245,13 @@ void	run(t_shell *shell)
 		if (whitelist[k])
 		{
 			waitpid(pids[k], &status, 0);
-			if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0)
+			if (WIFSIGNALED(status))
+			{
+				shell->status = WTERMSIG(status);
+				if (shell->status == 2)
+					shell->status = 130;
+			}
+			else if (WIFEXITED(status) != 0 && WEXITSTATUS(status) != 0)
 				shell->status = WEXITSTATUS(status);
 			else if (WEXITSTATUS(status) == 0)
 				shell->status = 0;

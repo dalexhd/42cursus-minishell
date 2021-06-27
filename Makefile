@@ -226,7 +226,7 @@ test:		## Make minishell test
 			cd ./unittest && ./unit_test.sh && cd ..
 
 leak:		## Run memory leak for valid cub file.
-			@if [ $(shell ./tools/memory_leak.sh $(OUTPUT) $(LEAKS_FLAGS) && cat valgrind_out | grep "definitely lost:" | cut -d : -f 2 | cut -d b  -f 1 | tr -d " " | tr -d ",") ]; then\
+			@if [ $(shell ./tools/memory_leak.sh $(OUTPUT) -c $$FOO $(LEAKS_FLAGS) && cat valgrind_out | grep "definitely lost:" | cut -d : -f 2 | cut -d b  -f 1 | tr -d " " | tr -d ",") ]; then\
 				echo ${BOLD}${UND}${R}🚨 Memory leaks detected${X};\
 				if [ $(USER) = "runner" ]; then\
 					cat valgrind_out;\
