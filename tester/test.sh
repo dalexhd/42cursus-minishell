@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/13 20:16:23 by thallard          #+#    #+#              #
-#    Updated: 2021/06/27 16:25:48 by aborboll         ###   ########.fr        #
+#    Updated: 2021/06/28 21:31:27 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -207,7 +207,7 @@ if [ "$RUN" == "1" ]; then
 						fi
 					fi
 				else
-					if [ "$BASH_RESULT" == "$MINISHELL_RESULT" ] && [ "$BASH_EXIT" == "$MINISHELL_EXIT" ]; then
+					if [ "$BASH_EXIT" == "$MINISHELL_EXIT" ]; then
 						if [ "$SHORT" == "1" ]; then
 							printf "\033[?25l\033[J${GREEN}$i: $line\033[0m\r"
 						else
@@ -222,7 +222,6 @@ if [ "$RUN" == "1" ]; then
 							printf "${G}$MINISHELL_RESULT" | grep -A2 "HEAP SUMMARY:" | cut -d = -f 5 | cut -c 2-;
 							printf "${CYAN}$MINISHELL_RESULT" | grep -A5 "LEAK SUMMARY:" | cut -d = -f 5 | cut -c 2-;
 						else
-							printf "☕ No memory leaks detected$ ☕";
 							printf "${CYAN}$MINISHELL_RESULT" | grep -A4 "HEAP SUMMARY:" | cut -d = -f 5 | cut -c 2-;
 						fi
 						echo "$MINISHELL_RESULT" >> tofix/tofix_tests.txt

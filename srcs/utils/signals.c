@@ -9,7 +9,6 @@ static	void	handle_sigint(int sig)
 static	void	handle_sigquit(int sig)
 {
 	(void)sig;
-	ft_printf("SIG QUIT!\n");
 }
 
 static	void	handle_sigpipe(int sig)
