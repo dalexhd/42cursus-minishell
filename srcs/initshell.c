@@ -19,7 +19,6 @@ void	exec_shell(t_shell *shell, char *cmd)
 {
 	if (ft_strlen(cmd) > 0)
 	{
-		ft_printf("Enter!\n");
 		shell->parsed = NULL;
 		shell->first = false;
 		lsh_split_line(shell, cmd);

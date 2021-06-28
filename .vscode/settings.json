@@ -51,7 +51,8 @@
 		"type_traits": "c",
 		"typeinfo": "c",
 		"complex": "c",
-		"sstream": "c"
+		"sstream": "c",
+		"__threading_support": "c"
 	},
 	"42header.email": "aborboll@student.42.fr",
 	"42header.username": "aborboll",
