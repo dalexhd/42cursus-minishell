@@ -5,21 +5,24 @@ static void	die(char *msg)
 	ft_error("%s\n", 1, msg);
 }
 
-void		ft_printshell(t_shell *shell)
+void	ft_printshell(t_shell *shell)
 {
+	char	*pwd;
 	char	*dir;
 
-	dir = ft_pwd();
+	pwd = ft_pwd();
+	dir = get_current_dir(pwd);
 	if (shell->term.new_line)
 	{
 		ft_fprintf(STDOUT_FILENO,
-			C_GREEN "\n%s " C_GREEN "(%i)❯ " C_X, getCurrentDir(dir), shell->status);
+			C_GREEN "\n%s " C_GREEN "(%i)❯ " C_X, dir, shell->status);
 		shell->term.new_line = false;
 	}
 	else
 		ft_fprintf(STDOUT_FILENO,
-			C_GREEN "%s " C_GREEN "(%i)❯ " C_X, getCurrentDir(dir), shell->status);
+			C_GREEN "%s " C_GREEN "(%i)❯ " C_X, dir, shell->status);
 	free(dir);
+	free(pwd);
 }
 
 void	end_tc(t_shell *shell)
@@ -44,7 +47,7 @@ void	init_tc(t_shell *shell)
 	shell->term.cursor = 11;
 	shell->term.pos = 0;
 	old(shell);
-	ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup("")));
+	ft_hlstadd_front(&shell->term.history, ft_hlstnew(""));
 	shell->term.term_name = getenv("TERM");
 	tgetent(NULL, shell->term.term_name);
 	if (tcgetattr(STDIN_FILENO, &shell->term.termios_raw) == -1)

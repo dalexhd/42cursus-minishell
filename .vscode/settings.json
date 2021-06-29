@@ -52,7 +52,9 @@
 		"typeinfo": "c",
 		"complex": "c",
 		"sstream": "c",
-		"__threading_support": "c"
+		"__config": "c",
+		"__functional_03": "c",
+		"streambuf": "c"
 	},
 	"42header.email": "aborboll@student.42.fr",
 	"42header.username": "aborboll",

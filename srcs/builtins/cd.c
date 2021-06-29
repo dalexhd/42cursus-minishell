@@ -7,7 +7,7 @@ static char	*ft_cd_checker(t_shell *shell, char **dir, char **args)
 	pwd = ft_pwd();
 	if (!args[1])
 	{
-		*dir = ft_getenv(shell, "HOME");
+		*dir = shell->home_dir;
 		if (!*dir)
 		{
 			ft_error("minishell: cd: HOME not set\n", 0);

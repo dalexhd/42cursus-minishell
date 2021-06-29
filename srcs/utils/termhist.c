@@ -3,15 +3,14 @@
 void	new(t_shell *shell)
 {
 	int		input;
-	char	*tmp_dir;
+	char	*new;
 
-	tmp_dir = ft_getenv(shell, "HOME");
-	if (tmp_dir)
+	if (shell->tmp_dir)
 	{
-		input = open(ft_strjoin(tmp_dir, "/.minishell_history"),
-				O_CREAT | O_WRONLY | O_APPEND, 0600);
-		write(input, ft_strjoin(shell->term.line, "\n"),
-			ft_strlen(shell->term.line) + 1);
+		new = ft_strjoin(shell->term.line, "\n");
+		input = open(shell->tmp_dir, O_CREAT | O_WRONLY | O_APPEND, 0600);
+		write(input, new, ft_strlen(shell->term.line) + 1);
+		free(new);
 		close(input);
 	}
 }
@@ -21,21 +20,21 @@ void	old(t_shell *shell)
 	int		test;
 	int		fd;
 	char	*line;
-	char	*tmp_dir;
 
-	tmp_dir = ft_getenv(shell, "HOME");
-	if (tmp_dir)
+	if (shell->tmp_dir)
 	{
-		fd = open(ft_strjoin(tmp_dir, "/.minishell_history"),
+		fd = open(shell->tmp_dir,
 				O_CREAT | O_RDONLY, 0600);
 		test = get_next_line(fd, &line);
 		while (test)
 		{
-			ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup(line)));
+			ft_hlstadd_front(&shell->term.history, ft_hlstnew(line));
 			shell->term.history->original = ft_strdup(line);
 			shell->term.history->copy = ft_strdup(line);
+			free(line);
 			test = get_next_line(fd, &line);
 		}
+		free(line);
 		close(fd);
 	}
 }

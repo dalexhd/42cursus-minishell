@@ -22,7 +22,7 @@ void	newliner(t_shell *shell)
 		shell->term.history->original = ft_strdup(shell->term.line);
 		shell->term.history->copy = ft_strdup(shell->term.line);
 		new (shell);
-		ft_hlstadd_front(&shell->term.history, ft_hlstnew(ft_strdup("")));
+		ft_hlstadd_front(&shell->term.history, ft_hlstnew(""));
 	}
 }
 

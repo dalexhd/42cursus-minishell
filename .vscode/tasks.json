@@ -7,6 +7,22 @@
             "options": {
                 "cwd": "/usr/bin"
             }
+        },
+        {
+            "type": "shell",
+            "label": "valgrind",
+            "command": "cd ${workspaceRoot} && make re && valgrind --leak-check=full ./minishell",
+            "options": {
+                "cwd": "/usr/bin"
+            }
+        },
+        {
+            "type": "shell",
+            "label": "test",
+            "command": "cd ${workspaceRoot} && make re && cd tester && rm minishel || true && bash test.sh --fast",
+            "options": {
+                "cwd": "/usr/bin"
+            }
         }
     ],
     "version": "2.0.0"

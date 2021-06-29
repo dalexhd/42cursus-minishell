@@ -15,7 +15,7 @@ static	void	handle_sigpipe(int sig)
 {
 	(void)sig;
 	ft_fprintf(STDOUT_FILENO, "\n"C_GREEN "%s "C_GREEN "❯ " C_X,
-		getCurrentDir(ft_pwd()));
+		get_current_dir(ft_pwd()));
 }
 
 void	signal_handler(void)

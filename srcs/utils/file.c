@@ -34,7 +34,7 @@ t_bool	has_access(char *path)
 	return (true);
 }
 
-char	*getCurrentDir(char *path)
+char	*get_current_dir(char *path)
 {
 	char	*token;
 	char	*directory;

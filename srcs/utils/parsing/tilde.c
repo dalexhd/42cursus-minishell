@@ -6,8 +6,7 @@ void	parse_tilde(t_shell *shell, char *cmd, int *i, char *line)
 	char	*tmp;
 
 	tmp = ft_strnew(1);
-	env = ft_getenv(shell, "HOME");
-	if (env)
+	if (shell->home_dir)
 		ft_strcat(tmp, env);
 	while (cmd[*i] && !ft_isspace(cmd[*i]))
 	{
