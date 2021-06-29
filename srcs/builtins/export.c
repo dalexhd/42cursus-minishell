@@ -82,9 +82,6 @@ void	ft_export(t_shell *shell, char **args)
 			env = ft_strdup(tokens->content);
 			if (!tokens->next)
 			{
-				ft_error("minishell: export: `%s': not a valid identifier\n",
-					false, args[i]);
-				shell->status = 1;
 				break ;
 			}
 			else if (!valid_export(shell, env, (char **)&tokens->next->content))

@@ -14,8 +14,10 @@ void	ft_exit(char **args)
 			ft_error("minishell: exit: too many arguments\n", 1);
 			return ;
 		}
-		else if ((args[1][0] == '-' && !ft_strevery(&args[1][1], ft_isdigit))
+		else if (((args[1][0] == '-' && !ft_strevery(&args[1][1], ft_isdigit))
 			|| (args[1][0] != '-' && !ft_strevery(args[1], ft_isdigit)))
+			&& ((args[1][0] == '+' && !ft_strevery(&args[1][1], ft_isdigit))
+			|| (args[1][0] != '+' && !ft_strevery(args[1], ft_isdigit))))
 		{
 			ft_error("minishell: exit: %s: numeric argument required\n",
 				0, args[i]);

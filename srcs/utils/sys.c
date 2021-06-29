@@ -128,9 +128,11 @@ void	run(t_shell *shell)
 		while (list->content->args)
 		{
 			if (list->content->args->content)
-				break ;
+				break;
 			list->content->args = list->content->args->next;
 		}
+		if (!list->content->args)
+			break;
 		whitelist[i] = true;
 		if (ft_strcmp(list->content->args->content->cmd, "exit") == 0
 			|| ft_strcmp(list->content->args->content->cmd, "cd") == 0

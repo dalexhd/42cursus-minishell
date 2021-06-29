@@ -16,7 +16,7 @@ static int	quosingle(char c, int quo, int qd)
 
 static int	slowquo(char *cmd, int i)
 {
-	if (cmd[i - 1] != '<' && cmd[i - 1] != '>' && cmd[i - 1] != ' ')
+	if (i > 0 && cmd[i - 1] != '<' && cmd[i - 1] != '>' && cmd[i - 1] != ' ')
 	{
 		cmd = ft_strduplen(cmd, ft_strlen(cmd) + 1);
 		ft_insertchar(cmd, ' ', i);
