@@ -44,7 +44,7 @@ char	*get_current_dir(char *path)
 	if (token == NULL)
 		ft_error("Error getting dir", 1);
 	length = ft_strlen(token);
-	directory = malloc(length);
+	directory = ft_strnew(length);
 	ft_memcpy(directory, token + 1, length);
 	return (directory);
 }

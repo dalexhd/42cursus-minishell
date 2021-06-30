@@ -109,11 +109,11 @@ void	run(t_shell *shell)
 	list = shell->parsed;
 	if (!list)
 		return ;
-	pids = malloc(ft_slstsize(shell->parsed) * sizeof(int) + 1);
-	whitelist = malloc(ft_slstsize(shell->parsed) * sizeof(t_bool) + 1);
-	pipes = (int **) malloc ((ft_slstsize(shell->parsed) - 1) * sizeof(int *));
+	pids = malloc(ft_slstsize(list) * sizeof(int) + 1);
+	whitelist = malloc(ft_slstsize(list) * sizeof(t_bool) + 1);
+	pipes = (int **) malloc ((ft_slstsize(list) - 1) * sizeof(int *));
 	i = 0;
-	while (i < ft_slstsize(shell->parsed) - 1)
+	while (i < ft_slstsize(list) - 1)
 	{
 		pipes[i] = (int *) malloc (2 * sizeof(int));
 		if (pipe(pipes[i]) < 0)
