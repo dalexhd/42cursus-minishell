@@ -11,7 +11,7 @@
         {
             "type": "shell",
             "label": "valgrind",
-            "command": "cd ${workspaceRoot} && make re && valgrind --leak-check=full ./minishell",
+            "command": "cd ${workspaceRoot} && make re && valgrind --leak-check=full --track-origins=yes ./minishell",
             "options": {
                 "cwd": "/usr/bin"
             }

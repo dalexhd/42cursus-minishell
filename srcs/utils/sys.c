@@ -102,7 +102,6 @@ void	run(t_shell *shell)
 	t_bool	*whitelist;
 	int		input;
 	int		i;
-	int		s;
 	int		j;
 	int		k;
 	int		status;
@@ -122,7 +121,6 @@ void	run(t_shell *shell)
 		i++;
 	}
 	i = 0;
-	s = 0;
 	while (list)
 	{
 		while (list->content->args)

@@ -12,6 +12,7 @@
 # include <stdarg.h>
 # include <errno.h>
 # include <sys/stat.h>
+# include <sys/wait.h>
 # include <signal.h>
 # include <term.h>
 # include <termios.h>

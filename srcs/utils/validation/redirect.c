@@ -16,7 +16,6 @@ t_bool	valid_redirects(t_shell *shell, char *cmd, int *i)
 {
 	char	two;
 	int		pos;
-	int		red;
 
 	two = 0;
 	if (cmd[*i] == '<' || cmd[*i] == '>')
@@ -27,9 +26,7 @@ t_bool	valid_redirects(t_shell *shell, char *cmd, int *i)
 		pos = (*i)++;
 		while (cmd[*i] == ' ')
 			(*i)++;
-		if (cmd[*i] != '>' && cmd[*i] != '<')
-			red = 0;
-		else
+		if (cmd[*i] == '>' || cmd[*i] == '<')
 			return (check_error(shell, cmd, pos, two));
 	}
 	return (true);
