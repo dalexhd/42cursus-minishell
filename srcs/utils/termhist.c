@@ -29,8 +29,6 @@ void	old(t_shell *shell)
 		while (test)
 		{
 			ft_hlstadd_front(&shell->term.history, ft_hlstnew(line));
-			shell->term.history->original = ft_strdup(line);
-			shell->term.history->copy = ft_strdup(line);
 			free(line);
 			test = get_next_line(fd, &line);
 		}

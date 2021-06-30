@@ -17,6 +17,21 @@ t_shell	*init_shell(char **envp)
 	return (shell);
 }
 
+void	del_slst(t_parsed *parsed)
+{
+	free(parsed);
+}
+
+void	del_alst(t_args *args)
+{
+	free(args);
+}
+
+void	del_rlst(t_redirect *redirect)
+{
+	free(redirect);
+}
+
 void	exec_shell(t_shell *shell, char *cmd)
 {
 	if (ft_strlen(cmd) > 0)
@@ -28,5 +43,8 @@ void	exec_shell(t_shell *shell, char *cmd)
 		fill_data(shell->parsed);
 		if (shell->status > -1)
 			run(shell);
+		//ft_alstclear(&shell->parsed->content->args, del_alst);
+		//ft_rlstclear(&shell->parsed->content->redirects, del_rlst);
+		//ft_slstclear(&shell->parsed, del_slst);
 	}
 }
