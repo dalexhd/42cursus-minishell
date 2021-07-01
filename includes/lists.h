@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/26 19:27:12 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/07/01 22:02:15 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_redirect
 	t_rstatus	out;
 	t_rstatus	in;
 	t_rstatus	aout;
-	int			fd;
+	//int			fd;
 }				t_redirect;
 
 typedef struct s_flags
@@ -158,7 +158,7 @@ int				ft_alstsize(t_alist *lst);
 t_alist			*ft_alstlast(t_alist *lst);
 void			ft_alstadd_back(t_alist **alst, t_alist *new);
 void			ft_alstdelone(t_alist *lst, void (*del)(t_args *));
-void			ft_alstclear(t_alist **lst);
+void			ft_alstclear(t_alist **lst, void (*del)(t_args *));
 void			ft_alstiter(t_alist *lst, void (*f)(t_args *));
 t_alist			*ft_alstfirst(t_alist *lst);
 

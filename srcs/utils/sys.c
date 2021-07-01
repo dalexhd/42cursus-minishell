@@ -6,6 +6,8 @@ void	exec(t_shell *shell, t_parsed *parsed)
 	char	**args;
 	char	*pwd;
 
+	if (!parsed->args)
+		return ;
 	arg = (char *)parsed->args->content->cmd;
 	args = ft_safesplit(shell, parsed->args);
 	shell->status = 0;
@@ -34,7 +36,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 			exit(0);
 		}
 	}
-	else if (execve(parsed->args->content->bin_path, args, shell->envp) == -1)
+	else if (parsed->args->content->bin_path && execve(parsed->args->content->bin_path, args, shell->envp) == -1)
 	{
 		if (is_directory(parsed->args->content->bin_path))
 			ft_error("minishell: %s: is a directory\n", 126, args[0]);

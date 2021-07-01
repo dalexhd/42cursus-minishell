@@ -4,43 +4,44 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 {
 	t_alist	*args;
 	t_args	*arg;
-	t_args	*argback;
+	int		argbackstatus;
 	t_list	*tmp;
 	int		fl;
 	int		i;
 	char	*new;
+	char	*tmpchar;
 
 	args = NULL;
-	argback = NULL;
-	cmd = fix_cmd(cmd);
-	if (validate_str(shell, cmd))
+	argbackstatus = 0;
+	tmpchar = fix_cmd(cmd);
+	if (validate_str(shell, tmpchar))
 	{
-		tmp = ft_safesplitlist(cmd, ' ', "\"'");
+		tmp = ft_safesplitlist(tmpchar, ' ', "\"'");
 		while (tmp)
 		{
 			arg = (t_args *)malloc(sizeof(t_args));
-			arg->cmd = tmp->content;
+			arg->cmd = ft_strdup(tmp->content);
 			arg->file = NULL;
-			arg->is_builtin = ft_isbuiltin(tmp->content);
+			arg->is_builtin = ft_isbuiltin(arg->cmd);
 			arg->bin_path = NULL;
 			arg->is_literal = 0;
 			if (!arg->is_builtin)
-				arg->bin_path = builtin_bin_path(shell, tmp->content);
+				arg->bin_path = builtin_bin_path(shell, arg->cmd);
 			arg->type = 0;
-			if (ft_strcmp(tmp->content, ">>") == 0)
+			if (ft_strcmp(arg->cmd, ">>") == 0)
 				arg->type = R_AOUT;
-			else if (ft_strcmp(tmp->content, ">") == 0)
+			else if (ft_strcmp(arg->cmd, ">") == 0)
 				arg->type = R_OUT;
-			else if (ft_strcmp(tmp->content, "<") == 0)
+			else if (ft_strcmp(arg->cmd, "<") == 0)
 				arg->type = R_IN;
-			else if (ft_strstr(tmp->content, "-"))
+			else if (ft_strstr(arg->cmd, "-"))
 				arg->type = FLAG;
-			else if (argback && (argback->type == R_IN || argback->type == R_OUT
-					|| argback->type == R_AOUT
+			else if (argbackstatus && (argbackstatus == R_IN || argbackstatus == R_OUT
+					|| argbackstatus == R_AOUT
 				))
 			{
 				arg->type = FILE;
-				arg->file = tmp->content;
+				arg->file = arg->cmd;
 			}
 			else if (arg->is_builtin || arg->bin_path)
 				arg->type = CMD;
@@ -59,15 +60,19 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 					}
 					i++;
 				}
+				free(arg->cmd);
 				arg->cmd = new;
 				arg->bin_path = arg->cmd;
 				arg->type = ARG;
 			}
-			argback = arg;
+			argbackstatus = arg->type;
 			ft_alstadd_back(&args, ft_alstnew(arg));
 			tmp = tmp->next;
 		}
+		if (tmp)
+			ft_lstclear(&tmp, free);
 	}
+	free(tmpchar);
 	return (args);
 }
 /*

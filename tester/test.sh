@@ -6,7 +6,7 @@
 #    By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/13 20:16:23 by thallard          #+#    #+#              #
-#    Updated: 2021/06/29 19:16:00 by aborboll         ###   ########.fr        #
+#    Updated: 2021/07/01 21:05:49 by aborboll         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -192,7 +192,7 @@ if [ "$RUN" == "1" ]; then
 						fi
 						echo $line >> tmp/valid
 					else
-						printf "${RED}$i: [$line]\n"
+						printf "${RED}$i: [$line] "$BASH_EXIT" == "$MINISHELL_EXIT"\n"
 						echo $line >> tofix/tofix_tests.txt
 					fi
 				fi

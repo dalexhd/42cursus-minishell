@@ -23,6 +23,7 @@ int	main(int argc, char **argv, char **envp)
 			exec_shell(shell, commands->content);
 			commands = commands->next;
 		}
+
 	}
 	if (shell->status != 0)
 		exit(shell->status);

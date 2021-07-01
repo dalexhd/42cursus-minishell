@@ -1,18 +1,20 @@
 #include "../../../includes/minishell.h"
 
-void	ft_alstclear(t_alist **lst)
+void	ft_alstclear(t_alist **lst, void (*del)(t_args *))
 {
-	t_alist	*temp;
+	t_alist	*next;
+	t_alist	*new;
 
-	if (*lst)
+	new = *lst;
+	if (new)
 	{
-		while ((*lst)->next != 0)
+		while (new)
 		{
-			temp = *lst;
-			*lst = (*lst)->next;
-			free(temp);
+			next = new->next;
+			del(new->content);
+			free(new);
+			new = next;
 		}
-		free(*lst);
 		*lst = NULL;
 	}
 }

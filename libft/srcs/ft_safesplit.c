@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 10:05:54 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/25 20:43:53 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/07/01 21:41:54 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ t_list	*ft_safesplitlist(char *s, char c, char *set)
 	int		fl;
 	char	*start;
 	t_list	*list;
+	char	*tmp;
 
 	ft_safesplit_init(&fl, &size, &list);
 	start = s;
@@ -35,7 +36,10 @@ t_list	*ft_safesplitlist(char *s, char c, char *set)
 		if (!*s || (*s == c && !fl))
 		{
 			if (size > 0)
-				ft_lstadd_back(&list, ft_lstnew(ft_strcut(start, 0, size)));
+			{
+				tmp = ft_strcut(start, 0, size);
+				ft_lstadd_back(&list, ft_lstnew(tmp));
+			}
 			start += size + 1;
 			size = 0;
 		}

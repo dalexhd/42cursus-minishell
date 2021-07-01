@@ -20,25 +20,31 @@ static int	split(t_redirect *redirect, t_alist *args,
 static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 {
 	t_redirect	*redirect;
-	t_redirect	*tmp;
 
 	while (args)
 	{
-		tmp = (t_redirect *)malloc(sizeof(t_redirect));
-		redirect = tmp;
-		//free(tmp);
-		redirect->in = (t_rstatus){.status = false, .file = NULL};
-		redirect->out = (t_rstatus){.status = false, .file = NULL};
-		redirect->aout = (t_rstatus){.status = false, .file = NULL};
 		if (args->content)
 		{
-			if (args->content->type == R_IN)
-				shell->status = split(redirect, args, parsed, &redirect->in);
-			else if (args->content->type == R_OUT)
-				shell->status = split(redirect, args, parsed, &redirect->out);
-			else if (args->content->type == R_AOUT)
-				shell->status = split(redirect, args, parsed, &redirect->aout);
+			if (args->content->type == R_IN
+				|| args->content->type == R_OUT
+				|| args->content->type == R_AOUT)
+			{
+				redirect = (t_redirect *)malloc(sizeof(t_redirect));
+				redirect->in = (t_rstatus){.status = false, .file = NULL};
+				redirect->out = (t_rstatus){.status = false, .file = NULL};
+				redirect->aout = (t_rstatus){.status = false, .file = NULL};
+				if (args->content->type == R_IN)
+					shell->status = split(redirect, args, parsed, &redirect->in);
+				else if (args->content->type == R_OUT)
+					shell->status = split(redirect, args, parsed, &redirect->out);
+				else if (args->content->type == R_AOUT)
+					shell->status = split(redirect, args, parsed, &redirect->aout);
+			}
 			ft_alstadd_back(&parsed->args, ft_alstnew(args->content));
+		}
+		else
+		{
+			ft_printf("None char!!!!\n");
 		}
 		args = args->next;
 		//free(tmp);
@@ -71,6 +77,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 		else
 			break ;
 	}
+	ft_lstclear(&tokens, free);
 }
 
 void	fill_data(t_slist *list)

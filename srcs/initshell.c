@@ -20,16 +20,25 @@ t_shell	*init_shell(char **envp)
 
 void	del_slst(t_parsed *parsed)
 {
+	//free(parsed->line);
 	free(parsed);
 }
 
 void	del_alst(t_args *args)
 {
+	if (args && args->cmd)
+		free(args->cmd);
 	free(args);
 }
 
 void	del_rlst(t_redirect *redirect)
 {
+	if (redirect->aout.status)
+		free(redirect->aout.file);
+	if (redirect->out.status)
+		free(redirect->out.file);
+	if (redirect->in.status)
+		free(redirect->out.file);
 	free(redirect);
 }
 
@@ -39,10 +48,17 @@ void	exec_shell(t_shell *shell, char *cmd)
 	{
 		shell->parsed = NULL;
 		shell->first = false;
-		lsh_split_line(shell, cmd);
+ 		lsh_split_line(shell, cmd);
 		shell->pipe_count = ft_slstsize(shell->parsed);
 		fill_data(shell->parsed);
 		if (shell->status > -1)
 			run(shell);
+		//free(cmd);
+		if (shell->parsed && shell->parsed->content->args)
+			ft_alstclear(&shell->parsed->content->args, del_alst);
+		if (shell->parsed && shell->parsed->content->redirects)
+			ft_rlstclear(&shell->parsed->content->redirects, del_rlst);
+		if (shell->parsed)
+			ft_slstclear(&shell->parsed, del_slst);
 	}
 }
