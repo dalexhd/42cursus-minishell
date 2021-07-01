@@ -5,6 +5,7 @@ t_shell	*init_shell(char **envp)
 	t_shell	*shell;
 
 	shell = malloc(sizeof(t_shell));
+	bzero(shell, sizeof(t_shell));
 	g_running = true;
 	shell->should_wait = true;
 	shell->envp = envp;
@@ -43,8 +44,5 @@ void	exec_shell(t_shell *shell, char *cmd)
 		fill_data(shell->parsed);
 		if (shell->status > -1)
 			run(shell);
-		//ft_alstclear(&shell->parsed->content->args, del_alst);
-		//ft_rlstclear(&shell->parsed->content->redirects, del_rlst);
-		//ft_slstclear(&shell->parsed, del_slst);
 	}
 }

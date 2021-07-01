@@ -158,7 +158,7 @@ int				ft_alstsize(t_alist *lst);
 t_alist			*ft_alstlast(t_alist *lst);
 void			ft_alstadd_back(t_alist **alst, t_alist *new);
 void			ft_alstdelone(t_alist *lst, void (*del)(t_args *));
-void			ft_alstclear(t_alist **lst, void (*del)(t_args *));
+void			ft_alstclear(t_alist **lst);
 void			ft_alstiter(t_alist *lst, void (*f)(t_args *));
 t_alist			*ft_alstfirst(t_alist *lst);
 

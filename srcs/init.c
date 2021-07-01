@@ -20,10 +20,13 @@ static int	split(t_redirect *redirect, t_alist *args,
 static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 {
 	t_redirect	*redirect;
+	t_redirect	*tmp;
 
 	while (args)
 	{
-		redirect = (t_redirect *)malloc(sizeof(t_redirect));
+		tmp = (t_redirect *)malloc(sizeof(t_redirect));
+		redirect = tmp;
+		//free(tmp);
 		redirect->in = (t_rstatus){.status = false, .file = NULL};
 		redirect->out = (t_rstatus){.status = false, .file = NULL};
 		redirect->aout = (t_rstatus){.status = false, .file = NULL};
@@ -38,6 +41,7 @@ static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 			ft_alstadd_back(&parsed->args, ft_alstnew(args->content));
 		}
 		args = args->next;
+		//free(tmp);
 	}
 }
 

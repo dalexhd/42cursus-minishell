@@ -40,6 +40,7 @@ void	sandman(t_shell *shell)
 		exec_shell(shell, commands->content);
 		commands = commands->next;
 	}
+	//ft_lstclear(&commands, free);
 	tputs(tgetstr("ks", NULL), 1, ft_iputchar);
 	ft_bzero(&shell->term.line, BUFF_SIZE);
 	shell->term.history = ft_hlstfirst(shell->term.history);
