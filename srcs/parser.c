@@ -72,7 +72,6 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 		if (tmp)
 			ft_lstclear(&tmp, free);
 	}
-	free(tmpchar);
 	return (args);
 }
 /*

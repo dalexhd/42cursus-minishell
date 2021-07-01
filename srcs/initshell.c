@@ -53,7 +53,6 @@ void	exec_shell(t_shell *shell, char *cmd)
 		fill_data(shell->parsed);
 		if (shell->status > -1)
 			run(shell);
-		//free(cmd);
 		if (shell->parsed && shell->parsed->content->args)
 			ft_alstclear(&shell->parsed->content->args, del_alst);
 		if (shell->parsed && shell->parsed->content->redirects)
