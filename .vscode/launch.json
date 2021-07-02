@@ -5,14 +5,15 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Launch",
 			"type": "lldb",
 			"request": "launch",
-			"program": "${workspaceRoot}/minishell",
+			"name": "Launch",
+			"program": "${workspaceFolder}/minishell",
 			"args": [
 				"-c",
 				"pwd"
-			]
+			],
+			"cwd": "${workspaceFolder}"
 		}
 	]
 }

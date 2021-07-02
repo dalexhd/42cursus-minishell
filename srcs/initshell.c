@@ -58,6 +58,8 @@ void	exec_shell(t_shell *shell, char *cmd)
 			run(shell);
 		if (shell->parsed && shell->parsed->content->args)
 			ft_alstclear(&shell->parsed->content->args, del_alst);
+		if (shell->mierdecilla)
+			free(shell->mierdecilla);
 		if (shell->parsed && shell->parsed->content->redirects)
 			ft_rlstclear(&shell->parsed->content->redirects, del_rlst);
 		if (shell->parsed)

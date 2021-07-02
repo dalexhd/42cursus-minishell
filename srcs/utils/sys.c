@@ -29,7 +29,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 			{
 				pwd = ft_pwd();
 				ft_printf("%s\n", pwd);
-				free(pwd);
+				ft_strdel(&pwd);
 			}
 			else if (!ft_strcmp(arg, "echo"))
 				ft_echo(args);

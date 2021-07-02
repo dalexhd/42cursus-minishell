@@ -58,6 +58,7 @@ typedef struct s_shell
 	int		status;
 	char	*home_dir;
 	char	*tmp_dir;
+	t_alist	*mierdecilla;
 }				t_shell;
 
 t_shell	*init_shell(char **envp);

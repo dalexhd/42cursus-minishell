@@ -73,7 +73,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 				ft_strdel(&new);
 			}
 			argbackstatus = arg->type;
-			ft_alstadd_back(&args, ft_alstnew(arg));
+			ft_alstadd_back(&args, ( shell->mierdecilla = ft_alstnew(arg) ));
 			tmp = tmp->next;
 		}
 		ft_lstclear(&tmplist, free);

@@ -2,14 +2,12 @@
 
 static	char	*ft_pwd_sec(char *path, size_t size)
 {
-	char		*tmp;
-
-	path = ft_calloc(size, 1);
+	if (path)
+		free(path);
+	path = ft_calloc(size, sizeof(char));
 	if (getcwd(path, size) == NULL && errno == ERANGE)
-		return (ft_pwd_sec(realloc(path, size + PATH_MAX), size + PATH_MAX));
-	tmp = ft_strdup(path);
-	free(path);
-	return (tmp);
+		return (ft_pwd_sec(path, size + PATH_MAX));
+	return (path);
 }
 
 /*
