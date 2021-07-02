@@ -35,10 +35,12 @@ char	*fix_cmd(char *cmd)
 {
 	size_t	i;
 	int		quo[2];
+	char	*tmp;
 
 	i = 0;
 	quo[0] = 0;
 	quo[1] = 0;
+	tmp = cmd;
 	while (i < ft_strlen(cmd))
 	{
 		quo[0] = quodouble(cmd[i], quo[0]);
@@ -51,5 +53,5 @@ char	*fix_cmd(char *cmd)
 		}
 		i++;
 	}
-	return (cmd);
+	return (tmp);
 }

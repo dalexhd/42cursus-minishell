@@ -23,8 +23,9 @@
             "command": "while true ; do leaks minishell ; sleep 1 ; done",
             "options": {
                 "cwd": "/usr/bin"
-            }
-        }
+            },
+            "problemMatcher": []
+        },
         {
             "type": "shell",
             "label": "test",

@@ -28,9 +28,9 @@ void	del_slst(t_parsed *parsed)
 void	del_alst(t_args *args)
 {
 	if (args && args->cmd)
-		free(args->cmd);
+		ft_strdel(&args->cmd);
 	if (args && args->bin_path)
-		free(args->bin_path);
+		ft_strdel(&args->bin_path);
 	free(args);
 }
 

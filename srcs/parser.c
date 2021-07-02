@@ -18,16 +18,15 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	if (validate_str(shell, tmpchar))
 	{
 		tmp = ft_safesplitlist(tmpchar, ' ', "\"'");
+		//free(tmpchar);
 		tmplist = tmp;
+		char *aux;
 		while (tmp)
 		{
 			arg = (t_args *)malloc(sizeof(t_args));
-			//ft_printf("Size of t_args in parse_args %d\n", sizeof(t_args));
-			//ft_printf("tmp content %s and size %d\n", tmp->content, sizeof(tmp->content));
-			arg->cmd = ft_strdup(tmp->content);
-			//free(tmp->content);
-			//tmp->content = NULL;
-			//ft_printf("Size of cmd in parse_args %d existe flag p %p\n", sizeof(arg->cmd), arg->cmd);
+			aux = ft_strdup(tmp->content);
+			arg->cmd = aux;
+			//arg->cmd = ft_strdup(tmp->content);
 			arg->file = NULL;
 			arg->is_builtin = ft_isbuiltin(arg->cmd);
 			arg->bin_path = NULL;
