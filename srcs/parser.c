@@ -22,7 +22,12 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 		while (tmp)
 		{
 			arg = (t_args *)malloc(sizeof(t_args));
+			//ft_printf("Size of t_args in parse_args %d\n", sizeof(t_args));
+			//ft_printf("tmp content %s and size %d\n", tmp->content, sizeof(tmp->content));
 			arg->cmd = ft_strdup(tmp->content);
+			//free(tmp->content);
+			//tmp->content = NULL;
+			//ft_printf("Size of cmd in parse_args %d existe flag p %p\n", sizeof(arg->cmd), arg->cmd);
 			arg->file = NULL;
 			arg->is_builtin = ft_isbuiltin(arg->cmd);
 			arg->bin_path = NULL;
@@ -66,6 +71,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 				arg->cmd = ft_strdup(new);
 				arg->bin_path = ft_strdup(new);
 				arg->type = ARG;
+				ft_strdel(&new);
 			}
 			argbackstatus = arg->type;
 			ft_alstadd_back(&args, ft_alstnew(arg));

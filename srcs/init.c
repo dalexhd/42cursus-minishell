@@ -28,7 +28,9 @@ static int	split(t_redirect *redirect, t_alist *args,
 static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 {
 	t_redirect	*redirect;
+	t_alist		*targs;
 
+	targs = args;
 	while (args)
 	{
 		if (args->content)
@@ -56,6 +58,7 @@ static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 		}
 		args = args->next;
 	}
+	args = targs;
 }
 
 void	lsh_split_line(t_shell *shell, char *line)
@@ -70,6 +73,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 	while (tokens)
 	{
 		parsed = (t_parsed *)malloc(sizeof(t_parsed));
+		//ft_printf("Size of t_parsed in split line %d\n", sizeof(t_parsed));
 		parsed->args = NULL;
 		args = parse_args(shell, tokens->content);
 		if (args)

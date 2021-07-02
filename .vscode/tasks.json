@@ -11,12 +11,20 @@
         {
             "type": "shell",
             "label": "valgrind",
-            "command": "cd ${workspaceRoot} && make fclean && make re && valgrind --leak-check=full --track-origins=yes ./minishell",
+            "command": "cd ${workspaceRoot} && make fclean && make re && valgrind --leak-check=full --track-origins=yes --verbose --trace-children=yes --track-fds=yes ./minishell",
             "options": {
                 "cwd": "/usr/bin"
             },
             "problemMatcher": []
         },
+        {
+            "type": "shell",
+            "label": "leaks",
+            "command": "while true ; do leaks minishell ; sleep 1 ; done",
+            "options": {
+                "cwd": "/usr/bin"
+            }
+        }
         {
             "type": "shell",
             "label": "test",
