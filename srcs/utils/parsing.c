@@ -17,7 +17,7 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 				&& !ft_strcmp(list->content->cmd, "$?"))
 				tokens[i] = ft_itoa(shell->status);
 			else
-				tokens[i] = list->content->cmd;
+				tokens[i] = ft_strdup(list->content->cmd);
 			i++;
 		}
 		list = list->next;

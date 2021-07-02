@@ -28,7 +28,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			arg->bin_path = NULL;
 			arg->is_literal = 0;
 			if (!arg->is_builtin)
-				arg->bin_path = builtin_bin_path(shell, arg->cmd);
+				arg->bin_path = builtin_bin_path(shell, ft_strdup(arg->cmd));
 			arg->type = 0;
 			if (ft_strcmp(arg->cmd, ">>") == 0)
 				arg->type = R_AOUT;
@@ -62,9 +62,9 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 					}
 					i++;
 				}
-				free(arg->cmd);
-				arg->cmd = new;
-				arg->bin_path = arg->cmd;
+				ft_strdel(&arg->cmd);
+				arg->cmd = ft_strdup(new);
+				arg->bin_path = ft_strdup(new);
 				arg->type = ARG;
 			}
 			argbackstatus = arg->type;

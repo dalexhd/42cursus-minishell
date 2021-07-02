@@ -47,6 +47,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 		else
 			ft_error("minishell: %s: command not found\n", 127, args[0]);
 	}
+	ft_split_del(args);
 }
 
 static int	renegado(int **pipes, int j)
