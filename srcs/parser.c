@@ -6,6 +6,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	t_args	*arg;
 	int		argbackstatus;
 	t_list	*tmp;
+	t_list	*tmplist;
 	int		fl;
 	int		i;
 	char	*new;
@@ -17,6 +18,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	if (validate_str(shell, tmpchar))
 	{
 		tmp = ft_safesplitlist(tmpchar, ' ', "\"'");
+		tmplist = tmp;
 		while (tmp)
 		{
 			arg = (t_args *)malloc(sizeof(t_args));
@@ -69,8 +71,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			ft_alstadd_back(&args, ft_alstnew(arg));
 			tmp = tmp->next;
 		}
-		if (tmp)
-			ft_lstclear(&tmp, free);
+		ft_lstclear(&tmplist, free);
 	}
 	return (args);
 }

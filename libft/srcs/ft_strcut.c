@@ -14,15 +14,11 @@
 
 char	*ft_strcut(char *str, int from, int to)
 {
-	char	*cut;
 	char	*begin;
 
 	if (from >= to)
 		return (" ");
-	cut = ft_calloc(sizeof(char), (to - from) + 1);
-	begin = cut;
-	if (!cut)
-		return (" ");
-	ft_memcpy(cut, str + from, to);
+	begin = ft_calloc(sizeof(char), (to - from) + 1);
+	ft_memcpy(begin, str + from, to);
 	return (begin);
 }

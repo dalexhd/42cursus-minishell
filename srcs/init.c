@@ -11,7 +11,15 @@ static int	split(t_redirect *redirect, t_alist *args,
 		return (2);
 	}
 	status->file = ft_strdup(args->next->content->file);
+	if (args && args->content->cmd)
+		ft_strdel(&args->content->cmd);
+	if (args && args->content->bin_path)
+		ft_strdel(&args->content->bin_path);
 	args->content = NULL;
+	if (args->next && args->next->content->cmd)
+		ft_strdel(&args->next->content->cmd);
+	if (args->next && args->next->content->bin_path)
+		ft_strdel(&args->next->content->bin_path);
 	args->next->content = NULL;
 	ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
 	return (0);
@@ -47,17 +55,18 @@ static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 			ft_printf("None char!!!!\n");
 		}
 		args = args->next;
-		//free(tmp);
 	}
 }
 
 void	lsh_split_line(t_shell *shell, char *line)
 {
 	t_list		*tokens;
+	t_list		*tokens_tmp;
 	t_parsed	*parsed;
 	t_alist		*args;
 
 	tokens = ft_safesplitlist(line, '|', "\"'");
+	tokens_tmp = tokens;
 	while (tokens)
 	{
 		parsed = (t_parsed *)malloc(sizeof(t_parsed));
@@ -77,7 +86,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 		else
 			break ;
 	}
-	ft_lstclear(&tokens, free);
+	ft_lstclear(&tokens_tmp, free);
 }
 
 void	fill_data(t_slist *list)

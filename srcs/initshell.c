@@ -28,6 +28,8 @@ void	del_alst(t_args *args)
 {
 	if (args && args->cmd)
 		free(args->cmd);
+	if (args && args->bin_path)
+		free(args->bin_path);
 	free(args);
 }
 

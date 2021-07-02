@@ -67,6 +67,7 @@ t_bool	valid_export(t_shell *shell, char *str, char **val)
 void	ft_export(t_shell *shell, char **args)
 {
 	t_list	*tokens;
+	t_list	*tokens_tmp;
 	char	*env;
 	char	*value;
 	size_t	i;
@@ -79,11 +80,10 @@ void	ft_export(t_shell *shell, char **args)
 		while (args[i])
 		{
 			tokens = ft_safesplitlist(args[i], '=', "\"'");
+			tokens_tmp = tokens;
 			env = ft_strdup(tokens->content);
 			if (!tokens->next)
-			{
 				break ;
-			}
 			else if (!valid_export(shell, env, (char **)&tokens->next->content))
 				break ;
 			else if (tokens->next)
@@ -91,6 +91,7 @@ void	ft_export(t_shell *shell, char **args)
 				value = ft_strdup(tokens->next->content);
 				ft_export_internal(shell, env, value);
 			}
+			ft_lstclear(&tokens_tmp, free);
 			i++;
 		}
 	}

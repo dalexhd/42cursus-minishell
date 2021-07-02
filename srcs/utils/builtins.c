@@ -17,7 +17,6 @@ char	*builtin_bin_path(t_shell *shell, char *builtin)
 	int		i;
 	char	*path;
 	char	*path_env;
-	char	*tmp;
 
 	if (file_exists(builtin))
 		return (builtin);
@@ -27,9 +26,7 @@ char	*builtin_bin_path(t_shell *shell, char *builtin)
 	i = 0;
 	while (folders[i] != NULL)
 	{
-		tmp = ft_strjoin("/", builtin);
-		path = ft_strjoin(folders[i], tmp);
-		free(tmp);
+		path = ft_strjoin_free(ft_strdup(folders[i]), ft_strjoin("/", builtin));
 		if (file_exists(path))
 		{
 			ft_split_del(folders);
