@@ -5,7 +5,9 @@ void	exec(t_shell *shell, t_parsed *parsed)
 	char	*arg;
 	char	**args;
 	char	*pwd;
+	t_bool	force_exit;
 
+	force_exit = false;
 	if (!parsed->args)
 		return ;
 	arg = (char *)parsed->args->content->cmd;
@@ -23,6 +25,7 @@ void	exec(t_shell *shell, t_parsed *parsed)
 			ft_unset(shell, args);
 		else
 		{
+			force_exit = true;
 			if (!ft_strcmp(arg, "env"))
 				ft_env(shell);
 			else if (!ft_strcmp(arg, "pwd"))
@@ -33,7 +36,6 @@ void	exec(t_shell *shell, t_parsed *parsed)
 			}
 			else if (!ft_strcmp(arg, "echo"))
 				ft_echo(args);
-			exit(0);
 		}
 	}
 	else if (parsed->args->content->bin_path && execve(parsed->args->content->bin_path, args, shell->envp) == -1)
@@ -48,8 +50,12 @@ void	exec(t_shell *shell, t_parsed *parsed)
 			ft_error("minishell: %s: command not found\n", 127, args[0]);
 	}
 	ft_split_del(args);
+	if (force_exit)
+	{
+		clear_cmd(shell);
+		exit(0);
+	}
 }
-
 static int	renegado(int **pipes, int j)
 {
 	close(pipes[j][1]);

@@ -28,10 +28,6 @@ int	main(int argc, char **argv, char **envp)
 		ft_lstclear(&commands_tmp, free);
 	}
 	if (shell->status != 0)
-	{
-		system("leaks minishell");
-		while (1){};
 		exit(shell->status);
-	}
 	return (0);
 }

@@ -45,6 +45,18 @@ void	del_rlst(t_redirect *redirect)
 	free(redirect);
 }
 
+void	clear_cmd(t_shell *shell)
+{
+	if (shell->parsed && shell->parsed->content->args)
+		ft_alstclear(&shell->parsed->content->args, del_alst);
+	if (shell->mierdecilla)
+		free(shell->mierdecilla);
+	if (shell->parsed && shell->parsed->content->redirects)
+		ft_rlstclear(&shell->parsed->content->redirects, del_rlst);
+	if (shell->parsed)
+		ft_slstclear(&shell->parsed, del_slst);
+}
+
 void	exec_shell(t_shell *shell, char *cmd)
 {
 	if (ft_strlen(cmd) > 0)
@@ -56,13 +68,6 @@ void	exec_shell(t_shell *shell, char *cmd)
 		fill_data(shell->parsed);
 		if (shell->status > -1)
 			run(shell);
-		if (shell->parsed && shell->parsed->content->args)
-			ft_alstclear(&shell->parsed->content->args, del_alst);
-		if (shell->mierdecilla)
-			free(shell->mierdecilla);
-		if (shell->parsed && shell->parsed->content->redirects)
-			ft_rlstclear(&shell->parsed->content->redirects, del_rlst);
-		if (shell->parsed)
-			ft_slstclear(&shell->parsed, del_slst);
+		clear_cmd(shell);
 	}
 }

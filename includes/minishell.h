@@ -67,6 +67,7 @@ void	signal_handler(void);
 char	*parse_line(t_shell *shell, t_args *arg, char *cmd);
 void	fill_data(t_slist *list);
 void	lsh_split_line(t_shell *shell, char *line);
+void	clear_cmd(t_shell *shell);
 /*
 ** Define builtins
 */
