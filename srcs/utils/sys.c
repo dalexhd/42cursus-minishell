@@ -23,20 +23,16 @@ void	exec(t_shell *shell, t_parsed *parsed)
 			ft_export(shell, args);
 		else if (!ft_strcmp(arg, "unset"))
 			ft_unset(shell, args);
-		else
+		else if (!ft_strcmp(arg, "env"))
+			ft_env(shell);
+		else if (!ft_strcmp(arg, "pwd"))
 		{
-			force_exit = true;
-			if (!ft_strcmp(arg, "env"))
-				ft_env(shell);
-			else if (!ft_strcmp(arg, "pwd"))
-			{
-				pwd = ft_pwd();
-				ft_printf("%s\n", pwd);
-				ft_strdel(&pwd);
-			}
-			else if (!ft_strcmp(arg, "echo"))
-				ft_echo(args);
+			pwd = ft_pwd();
+			ft_printf("%s\n", pwd);
+			ft_strdel(&pwd);
 		}
+		else if (!ft_strcmp(arg, "echo"))
+			ft_echo(args);
 	}
 	else if (parsed->args->content->bin_path && execve(parsed->args->content->bin_path, args, shell->envp) == -1)
 	{
@@ -141,10 +137,7 @@ void	run(t_shell *shell)
 		if (!list->content->args)
 			break;
 		whitelist[i] = true;
-		if (ft_strcmp(list->content->args->content->cmd, "exit") == 0
-			|| ft_strcmp(list->content->args->content->cmd, "cd") == 0
-			|| ft_strcmp(list->content->args->content->cmd, "export") == 0
-			|| ft_strcmp(list->content->args->content->cmd, "unset") == 0)
+		if (list->content->args->content->is_builtin)
 		{
 			exec(shell, list->content);
 			whitelist[i] = false;

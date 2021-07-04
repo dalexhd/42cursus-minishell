@@ -15,6 +15,7 @@ void	newliner(t_shell *shell)
 {
 	if (*shell->term.line)
 	{
+		free(shell->term.history->copy);
 		shell->term.history->copy = ft_strdup(shell->term.history->original);
 		shell->term.history = ft_hlstfirst(shell->term.history);
 		free(shell->term.history->original);

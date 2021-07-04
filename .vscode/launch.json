@@ -27,13 +27,13 @@
 			]
 		},
 		{
-			"type": "gdb",
+			"type": "lldb",
 			"request": "launch",
 			"name": "Launch",
 			"program": "${workspaceFolder}/minishell",
 			"args": [
 				"-c",
-				"pwd"
+				"echo hola > test"
 			],
 			"cwd": "${workspaceFolder}"
 		}

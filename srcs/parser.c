@@ -20,13 +20,10 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 		tmp = ft_safesplitlist(tmpchar, ' ', "\"'");
 		//free(tmpchar);
 		tmplist = tmp;
-		char *aux;
 		while (tmp)
 		{
 			arg = (t_args *)malloc(sizeof(t_args));
-			aux = ft_strdup(tmp->content);
-			arg->cmd = aux;
-			//arg->cmd = ft_strdup(tmp->content);
+			arg->cmd = ft_strdup(tmp->content);
 			arg->file = NULL;
 			arg->is_builtin = ft_isbuiltin(arg->cmd);
 			arg->bin_path = NULL;

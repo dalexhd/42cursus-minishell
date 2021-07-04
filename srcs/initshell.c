@@ -29,8 +29,6 @@ void	del_alst(t_args *args)
 {
 	if (args && args->cmd)
 		ft_strdel(&args->cmd);
-	if (args && args->bin_path)
-		ft_strdel(&args->bin_path);
 	free(args);
 }
 

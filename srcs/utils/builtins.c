@@ -19,7 +19,7 @@ char	*builtin_bin_path(t_shell *shell, char *builtin)
 	char	*path_env;
 
 	if (file_exists(builtin))
-		return (builtin);
+		return (ft_strdup(builtin));
 	path_env = ft_getenv(shell, "PATH");
 	folders = ft_split(path_env, ':');
 	free(path_env);
