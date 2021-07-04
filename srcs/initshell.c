@@ -20,8 +20,8 @@ t_shell	*init_shell(char **envp)
 
 void	del_slst(t_parsed *parsed)
 {
-	//if (parsed->line)
-	//	free(parsed->line);
+	if (parsed->line)
+		free(parsed->line);
 	free(parsed);
 }
 

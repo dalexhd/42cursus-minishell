@@ -18,6 +18,9 @@ void	ft_split_del(char **ptr)
 
 	i = 0;
 	while (ptr[i])
-		free(ptr[i++]);
+	{
+		ft_strdel(&ptr[i]);
+		i++;
+	}
 	free(ptr);
 }

@@ -11,7 +11,7 @@
         {
             "type": "shell",
             "label": "valgrind",
-            "command": "cd ${workspaceRoot} && make fclean && make re && valgrind --leak-check=full --track-origins=yes --verbose --trace-children=yes --track-fds=yes ./minishell",
+            "command": "cd ${workspaceRoot} && make fclean && make re && valgrind --leak-check=full --track-origins=yes --verbose ./minishell",
             "options": {
                 "cwd": "/usr/bin"
             },

@@ -7,7 +7,7 @@ PID					=	.pid
 CC					=	@gcc
 SH					=	@bash
 RM					=	@/bin/rm -rf
-FLAGS				=	-Wextra -Wall -Werror -g3
+FLAGS				=	-Wextra -Wall -Werror -g
 
 HEADER_DIR			=	includes/
 OBJ_DIR				=	obj/

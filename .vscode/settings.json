@@ -78,7 +78,9 @@
 		"__memory": "c",
 		"ratio": "c",
 		"limits": "c",
-		"stdexcept": "c"
+		"stdexcept": "c",
+		"*.tcc": "c",
+		"cstdbool": "c"
 	},
 	"42header.email": "aborboll@student.42.fr",
 	"42header.username": "aborboll",
