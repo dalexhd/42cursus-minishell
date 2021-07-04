@@ -32,7 +32,7 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			arg->bin_path = NULL;
 			arg->is_literal = 0;
 			if (!arg->is_builtin)
-				arg->bin_path = builtin_bin_path(shell, ft_strdup(arg->cmd));
+				arg->bin_path = builtin_bin_path(shell, arg->cmd);
 			arg->type = 0;
 			if (ft_strcmp(arg->cmd, ">>") == 0)
 				arg->type = R_AOUT;

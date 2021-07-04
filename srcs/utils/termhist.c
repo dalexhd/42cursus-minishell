@@ -26,6 +26,8 @@ void	old(t_shell *shell)
 		fd = open(shell->tmp_dir,
 				O_CREAT | O_RDONLY, 0600);
 		test = get_next_line(fd, &line);
+		if (!test)
+			ft_hlstadd_front(&shell->term.history, ft_hlstnew(""));
 		while (test)
 		{
 			ft_hlstadd_front(&shell->term.history, ft_hlstnew(line));

@@ -1,5 +1,15 @@
 #include "includes/minishell.h"
 
+void	shell_clear(t_shell *shell)
+{
+	if (shell->home_dir)
+		free(shell->home_dir);
+	if (shell->tmp_dir)
+		free(shell->tmp_dir);
+	ft_hlstclear(&shell->term.history, free);
+	free(shell);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	*shell;
@@ -27,6 +37,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		ft_lstclear(&commands_tmp, free);
 	}
+	shell_clear(shell);
 	if (shell->status != 0)
 		exit(shell->status);
 	return (0);
