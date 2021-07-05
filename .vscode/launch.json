@@ -5,13 +5,13 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "(gdb) Iniciar",
+			"name": "(gdb) Child fork",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/minishell",
 			"args": [
 				"-c",
-				"pwd"
+				"echo hola | cat -e"
 			],
 			"stopAtEntry": false,
 			"cwd": "${fileDirname}",
@@ -22,6 +22,28 @@
 				{
 					"description": "Habilitar la impresión con sangría para gdb",
 					"text": "-gdb-set follow-fork-mode child",
+					"ignoreFailures": true
+				}
+			]
+		},
+		{
+			"name": "(gdb) Parent Fork",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/minishell",
+			"args": [
+				"-c",
+				"echo hola > test"
+			],
+			"stopAtEntry": false,
+			"cwd": "${fileDirname}",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Habilitar la impresión con sangría para gdb",
+					"text": "-gdb-set follow-fork-mode parent",
 					"ignoreFailures": true
 				}
 			]
