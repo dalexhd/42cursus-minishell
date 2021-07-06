@@ -2,7 +2,6 @@
 
 static void	fill_redirect(t_rstatus *status, t_alist *args)
 {
-	status->file = ft_strdup(args->content->file);
 	if (args->content->type == R_IN)
 	{
 		status->fd = open(status->file, O_RDONLY, 0600);
@@ -26,7 +25,7 @@ static void	fill_redirect(t_rstatus *status, t_alist *args)
 	}
 }
 
-static int	split(t_alist *args, t_rstatus *status)
+static int	split(t_redirect *redirect,  t_alist *args, t_parsed *parsed, t_rstatus *status)
 {
 	status->status = true;
 	if (!args->next)
@@ -35,7 +34,7 @@ static int	split(t_alist *args, t_rstatus *status)
 			false);
 		return (2);
 	}
-	args->content->file = ft_strdup(args->next->content->file);
+	status->file = ft_strdup(args->next->content->file);
 	fill_redirect(status, args);
 	if (args && args->content->cmd)
 		ft_strdel(&args->content->cmd);
@@ -46,12 +45,14 @@ static int	split(t_alist *args, t_rstatus *status)
 	if (args->next && args->next->content->bin_path)
 		ft_strdel(&args->next->content->bin_path);
 	args->next = args->next->next;
+	ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
 	return (0);
 }
 
 static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 {
 	t_alist		*targs;
+	t_redirect	*redirect;
 
 	targs = args;
 	while (args)
@@ -61,12 +62,16 @@ static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 			if (args->content->type == R_IN || args->content->type == R_OUT
 				|| args->content->type == R_AOUT)
 			{
+				redirect = (t_redirect *)malloc(sizeof(t_redirect));
+				redirect->in = (t_rstatus){.status = false, .file = NULL};
+				redirect->out = (t_rstatus){.status = false, .file = NULL};
+				redirect->aout = (t_rstatus){.status = false, .file = NULL};
 				if (args->content->type == R_IN)
-					shell->status = split(args, &args->content->redirect->in);
+					shell->status = split(redirect, args, parsed, &redirect->in);
 				else if (args->content->type == R_OUT)
-					shell->status = split(args, &args->content->redirect->out);
+					shell->status = split(redirect, args, parsed, &redirect->out);
 				else if (args->content->type == R_AOUT)
-					shell->status = split(args, &args->content->redirect->aout);
+					shell->status = split(redirect, args, parsed, &redirect->aout);
 			}
 			ft_alstadd_back(&parsed->args, ft_alstnew(args->content));
 		}
@@ -97,6 +102,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 			parsed->flags = (t_flags){
 				.has_stdin = !!tokens->prev, .has_stdout = !!tokens->next
 			};
+			parsed->redirects = NULL;
 			args_loop(shell, args, parsed);
 			ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
 			tokens = tokens->next;

@@ -82,16 +82,6 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	return (args);
 }
 
-t_alist	*parse_args(t_shell *shell, char *cmd)
-{
-	t_alist	*args;
-	args = (t_alist *)malloc(sizeof(t_alist));
-	args = shell->parsed->content->args;
-	//Aqui es donde tenemos q rellenar el contenido nuevo.
-	free(shell->parsed->content->args);
-	return (args);
-}
-
 char	*quotes_trim(char *cmd)
 {
 	int		i;

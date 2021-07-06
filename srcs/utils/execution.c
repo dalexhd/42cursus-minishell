@@ -8,20 +8,22 @@ static	void	dup_close(int old, int new)
 		ft_error("Could not close: %s\n", false, strerror(errno));
 }
 
-static	void	redirect_dup_close(t_alist *args, int type)
+static	void	redirect_dup_close(t_rlist *red)
 {
 	t_redirect	*redirect;
 
-	redirect = args->content->redirect;
+	if (!red)
+		return ;
+	redirect = red->content;
 	if (redirect->out.status || redirect->in.status || redirect->aout.status)
 	{
-		if (type == R_IN && redirect->in.status && redirect->in.fd != 0)
+		if (redirect->in.status && redirect->in.fd != 0)
 			dup_close(redirect->in.fd, 0);
-		else if (type == R_OUT && redirect->out.status && redirect->out.fd != 1)
+		else if (redirect->out.status && redirect->out.fd != 1)
 			dup_close(redirect->out.fd, 1);
 	}
-	if (args->next)
-		redirect_dup_close(args->next, type);
+	if (red->next)
+		redirect_dup_close(red->next);
 }
 
 void	ft_exec_child(t_shell *shell, t_slist *parsed, int *fd, int prepipe)
@@ -31,10 +33,9 @@ void	ft_exec_child(t_shell *shell, t_slist *parsed, int *fd, int prepipe)
 	redirect = parsed->content->args->content->redirect;
 	if (prepipe)
 		dup_close(prepipe, 0);
-	redirect_dup_close(parsed->content->args, R_IN);
+	redirect_dup_close(parsed->content->redirects);
 	if (parsed->next)
 		dup_close(fd[1], 1);
-	redirect_dup_close(parsed->content->args, R_OUT);
 	if (parsed->next)
 		close(fd[0]);
 	if (!(redirect->out.status || redirect->in.status || redirect->aout.status))
@@ -45,6 +46,11 @@ void	ft_exec_child(t_shell *shell, t_slist *parsed, int *fd, int prepipe)
 	}
 }
 
+static size_t	mascachapas(t_redirect *red)
+{
+	return (red->in.status || red->out.status || red->aout.status);
+}
+
 void	ft_exec_cmd(t_shell *shell, t_slist *parsed, int prepipe)
 
 {
@@ -53,6 +59,11 @@ void	ft_exec_cmd(t_shell *shell, t_slist *parsed, int prepipe)
 	int		status;
 
 	status = 0;
+	if (mascachapas(parsed->content->args->content->redirect))
+	{
+		ft_exec_cmd(shell, parsed->next, prepipe);
+		return ;
+	}
 	if (parsed->next && pipe(fd) < 0)
 		ft_error("bad pipe openning", 1);
 	pid = fork();
@@ -66,8 +77,6 @@ void	ft_exec_cmd(t_shell *shell, t_slist *parsed, int prepipe)
 		ft_error("Close error: %s\n", 1, strerror(errno));
 	if (parsed->next)
 		ft_exec_cmd(shell, parsed->next, fd[0]);
-	if (pid == 0)
-		exit (0);
 	if (waitpid(pid, &status, 0) < 0)
 		ft_error("Waitpid error: %s\n", 1, strerror(errno));
 	if (!parsed->next && WIFSIGNALED(status))
@@ -87,7 +96,7 @@ void	run(t_shell *shell)
 	if (ft_slstsize(shell->parsed) == 1
 		&& shell->parsed->content->args->content->is_builtin)
 	{
-		redirect_dup_close(shell->parsed->content->args, R_OUT);
+		redirect_dup_close(shell->parsed->content->redirects);
 		ft_exec_builtin(shell, shell->parsed);
 	}
 	else if (shell->parsed)

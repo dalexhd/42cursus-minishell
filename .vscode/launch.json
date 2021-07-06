@@ -55,7 +55,7 @@
 			"program": "${workspaceFolder}/minishell",
 			"args": [
 				"-c",
-				"echo hola > test"
+				"> test ls"
 			],
 			"cwd": "${workspaceFolder}"
 		}
