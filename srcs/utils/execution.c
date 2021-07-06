@@ -26,11 +26,16 @@ static	void	redirect_dup_close(t_rlist *red)
 		redirect_dup_close(red->next);
 }
 
+
+/* static size_t	mascachapas(t_rlist *redirect)
+{
+	if (!redirect)
+		return false;
+	return (redirect->content->in.status || redirect->content->out.status || redirect->content->aout.status);
+} */
+
 void	ft_exec_child(t_shell *shell, t_slist *parsed, int *fd, int prepipe)
 {
-	t_redirect	*redirect;
-
-	redirect = parsed->content->args->content->redirect;
 	if (prepipe)
 		dup_close(prepipe, 0);
 	redirect_dup_close(parsed->content->redirects);
@@ -38,18 +43,11 @@ void	ft_exec_child(t_shell *shell, t_slist *parsed, int *fd, int prepipe)
 		dup_close(fd[1], 1);
 	if (parsed->next)
 		close(fd[0]);
-	if (!(redirect->out.status || redirect->in.status || redirect->aout.status))
-	{
-		if (parsed->content->args->content->is_builtin)
-			exit(ft_exec_builtin(shell, parsed));
-		ft_exec_bin(shell, parsed);
-	}
+	if (parsed->content->args->content->is_builtin)
+		exit(ft_exec_builtin(shell, parsed));
+	ft_exec_bin(shell, parsed);
 }
 
-static size_t	mascachapas(t_redirect *red)
-{
-	return (red->in.status || red->out.status || red->aout.status);
-}
 
 void	ft_exec_cmd(t_shell *shell, t_slist *parsed, int prepipe)
 
@@ -59,11 +57,6 @@ void	ft_exec_cmd(t_shell *shell, t_slist *parsed, int prepipe)
 	int		status;
 
 	status = 0;
-	if (mascachapas(parsed->content->args->content->redirect))
-	{
-		ft_exec_cmd(shell, parsed->next, prepipe);
-		return ;
-	}
 	if (parsed->next && pipe(fd) < 0)
 		ft_error("bad pipe openning", 1);
 	pid = fork();

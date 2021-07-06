@@ -52,6 +52,10 @@ void	ft_exec_bin(t_shell *shell, t_slist *parsed)
 	t_args	*args;
 	char	**args_split;
 
+	while (parsed->content->args->content->type != CMD)
+	{
+		parsed->content->args = parsed->content->args->next;
+	}
 	args = parsed->content->args->content;
 	args_split = ft_safesplit(shell, parsed->content->args);
 	if (!args_split[0])
