@@ -89,6 +89,8 @@ char	*ft_getenv(t_shell *shell, char *env);
 ** Define utils
 */
 t_bool	ft_isbuiltin(char *builtin);
+int		ft_exec_builtin(t_shell *shell, t_slist *parsed);
+void	ft_exec_bin(t_shell *shell, t_slist *parsed);
 t_bool	file_exists(char *filename);
 t_bool	is_directory(char *path);
 t_bool	has_access(char *path);

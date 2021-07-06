@@ -10,9 +10,9 @@ static	char	*ft_pwd_sec(char *path, size_t size)
 	return (path);
 }
 
-/*
-* Get current path directory
-*/
+/**
+ * Get current path directory
+**/
 char	*ft_pwd(void)
 {
 	return (ft_pwd_sec(NULL, PATH_MAX));

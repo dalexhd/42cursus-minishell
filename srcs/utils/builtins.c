@@ -11,6 +11,70 @@ t_bool	ft_isbuiltin(char *builtin)
 		|| !ft_strcmp(builtin, "echo"));
 }
 
+/**
+ * Here we exec the builtin
+ *
+**/
+int	ft_exec_builtin(t_shell *shell, t_slist *parsed)
+{
+	char	**args;
+	char	*pwd;
+
+	args = ft_safesplit(shell, parsed->content->args);
+	if (!ft_strcmp(parsed->content->args->content->cmd, "cd"))
+		ft_cd(shell, args);
+	else if (!ft_strcmp(parsed->content->args->content->cmd, "exit"))
+		ft_exit(args);
+	else if (!ft_strcmp(parsed->content->args->content->cmd, "export"))
+		ft_export(shell, args);
+	else if (!ft_strcmp(parsed->content->args->content->cmd, "unset"))
+		ft_unset(shell, args);
+	else if (!ft_strcmp(parsed->content->args->content->cmd, "env"))
+		ft_env(shell);
+	else if (!ft_strcmp(parsed->content->args->content->cmd, "pwd"))
+	{
+		pwd = ft_pwd();
+		ft_printf("%s\n", pwd);
+		ft_strdel(&pwd);
+		shell->status = 0;
+	}
+	else if (!ft_strcmp(parsed->content->args->content->cmd, "echo"))
+		ft_echo(args);
+	return (shell->status);
+}
+
+/**
+ * Here we exec the system builtin
+ *
+**/
+void	ft_exec_bin(t_shell *shell, t_slist *parsed)
+{
+	t_args	*args;
+	char	**args_split;
+
+	args = parsed->content->args->content;
+	args_split = ft_safesplit(shell, parsed->content->args);
+	if (!args_split[0])
+	{
+		ft_split_del(args_split);
+		exit(0);
+	}
+	if (args->bin_path
+		&& execve(args->bin_path, args_split, shell->envp) == -1)
+	{
+		ft_split_del(args_split);
+		if (is_directory(args->bin_path))
+			ft_error("minishell: %s: is a directory\n", 126, args->cmd);
+		else if (!has_access(args->bin_path))
+			ft_error("minishell: %s: Permission denied\n", 126, args->cmd);
+		else if (ft_strncmp(args->bin_path, "./", 2) == 0)
+			ft_error("minishell: %s: No such file or directory\n", 127,
+				args->cmd);
+		else
+			ft_error("minishell: %s: command not found\n", 127, args->cmd);
+	}
+}
+
 char	*builtin_bin_path(t_shell *shell, char *builtin)
 {
 	char	**folders;

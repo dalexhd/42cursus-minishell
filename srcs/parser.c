@@ -12,13 +12,13 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 	char	*new;
 	char	*tmpchar;
 
+	args = (t_alist *)malloc(sizeof(t_alist));
 	args = NULL;
 	argbackstatus = 0;
 	tmpchar = fix_cmd(cmd);
 	if (validate_str(shell, tmpchar))
 	{
 		tmp = ft_safesplitlist(tmpchar, ' ', "\"'");
-		//free(tmpchar);
 		tmplist = tmp;
 		while (tmp)
 		{
@@ -28,6 +28,10 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 			arg->is_builtin = ft_isbuiltin(arg->cmd);
 			arg->bin_path = NULL;
 			arg->is_literal = 0;
+			arg->redirect = (t_redirect *)malloc(sizeof(t_redirect));
+			arg->redirect->in = (t_rstatus){.fd = 0, .file = NULL, .status = false};
+			arg->redirect->out = (t_rstatus){.fd = 1, .file = NULL, .status = false};
+			arg->redirect->aout = (t_rstatus){.fd = 0, .file = NULL, .status = false};
 			if (!arg->is_builtin)
 				arg->bin_path = builtin_bin_path(shell, arg->cmd);
 			arg->type = 0;
@@ -70,26 +74,14 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 				ft_strdel(&new);
 			}
 			argbackstatus = arg->type;
-			ft_alstadd_back(&args, ( shell->mierdecilla = ft_alstnew(arg) ));
+			ft_alstadd_back(&args, (shell->mierdecilla = ft_alstnew(arg)));
 			tmp = tmp->next;
 		}
 		ft_lstclear(&tmplist, free);
 	}
 	return (args);
 }
-/*
-static char	*partial_trim(char *tmp, char *cmd, int i, int j)
-{
-	if (i != 0)
-		tmp = ft_strcut(cmd, 0, i);
-	else
-		tmp = ft_strdup("");
-	tmp = ft_strcat(tmp, ft_strcut(cmd, i + 1, j + 1));
-	if (j != 0)
-		tmp = ft_strcat(tmp, ft_strcut(cmd, j,	ft_strlen(cmd) - 1));
-	return (tmp);
-}
-*/
+
 char	*quotes_trim(char *cmd)
 {
 	int		i;

@@ -11,7 +11,7 @@
 			"program": "${workspaceFolder}/minishell",
 			"args": [
 				"-c",
-				"echo hola | cat -e"
+				"ls > test"
 			],
 			"stopAtEntry": false,
 			"cwd": "${fileDirname}",
@@ -33,7 +33,7 @@
 			"program": "${workspaceFolder}/minishell",
 			"args": [
 				"-c",
-				"echo hola > test"
+				"ls > test"
 			],
 			"stopAtEntry": false,
 			"cwd": "${fileDirname}",

@@ -29,18 +29,21 @@ void	del_alst(t_args *args)
 {
 	if (args && args->cmd)
 		ft_strdel(&args->cmd);
+	if (args)
+	{
+		if (args->redirect->in.status)
+			ft_strdel(&args->redirect->in.file);
+		if (args->redirect->out.status)
+			ft_strdel(&args->redirect->out.file);
+		if (args->redirect->aout.status)
+			ft_strdel(&args->redirect->aout.file);
+		free(args->redirect);
+	}
+	if (args && args->bin_path)
+		ft_strdel(&args->bin_path);
+	if (args && args->file)
+		ft_strdel(&args->file);
 	free(args);
-}
-
-void	del_rlst(t_redirect *redirect)
-{
-	if (redirect->aout.status)
-		free(redirect->aout.file);
-	if (redirect->out.status)
-		free(redirect->out.file);
-	if (redirect->in.status)
-		free(redirect->out.file);
-	free(redirect);
 }
 
 void	clear_cmd(t_shell *shell)
@@ -49,8 +52,6 @@ void	clear_cmd(t_shell *shell)
 		ft_alstclear(&shell->parsed->content->args, del_alst);
 	if (shell->mierdecilla)
 		free(shell->mierdecilla);
-	if (shell->parsed && shell->parsed->content->redirects)
-		ft_rlstclear(&shell->parsed->content->redirects, del_rlst);
 	if (shell->parsed)
 		ft_slstclear(&shell->parsed, del_slst);
 }
@@ -59,9 +60,11 @@ void	exec_shell(t_shell *shell, char *cmd)
 {
 	if (ft_strlen(cmd) > 0)
 	{
+		shell->is_cmd = true;
 		shell->parsed = NULL;
 		shell->first = false;
- 		lsh_split_line(shell, cmd);
+		shell->mierdecilla = NULL;
+		lsh_split_line(shell, cmd);
 		shell->pipe_count = ft_slstsize(shell->parsed);
 		fill_data(shell->parsed);
 		if (shell->status > -1)

@@ -82,9 +82,8 @@ void	ft_export(t_shell *shell, char **args)
 			tokens = ft_safesplitlist(args[i], '=', "\"'");
 			tokens_tmp = tokens;
 			env = ft_strdup(tokens->content);
-			if (!tokens->next)
-				break ;
-			else if (!valid_export(shell, env, (char **)&tokens->next->content))
+			if (!tokens->next
+				|| !valid_export(shell, env, (char **)&tokens->next->content))
 				break ;
 			else if (tokens->next)
 			{

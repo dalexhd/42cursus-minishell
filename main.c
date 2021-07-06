@@ -1,13 +1,19 @@
 #include "includes/minishell.h"
 
-void	shell_clear(t_shell *shell)
+static int	shell_clear(t_shell *shell)
 {
+	int	status;
+
+	status = shell->status;
 	if (shell->home_dir)
 		free(shell->home_dir);
 	if (shell->tmp_dir)
 		free(shell->tmp_dir);
 	ft_hlstclear(&shell->term.history, free);
 	free(shell);
+	if (status != 0)
+		exit(status);
+	return (0);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -27,7 +33,6 @@ int	main(int argc, char **argv, char **envp)
 	}
 	else
 	{
-		shell->is_cmd = true;
 		commands = ft_safesplitlist(argv[2], ';', "\"'");
 		commands_tmp = commands;
 		while (commands)
@@ -37,8 +42,5 @@ int	main(int argc, char **argv, char **envp)
 		}
 		ft_lstclear(&commands_tmp, free);
 	}
-	shell_clear(shell);
-	if (shell->status != 0)
-		exit(shell->status);
-	return (0);
+	return (shell_clear(shell));
 }

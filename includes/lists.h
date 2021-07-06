@@ -23,13 +23,13 @@ typedef struct s_srstatus
 {
 	t_bool	status;
 	char	*file;
+	int		fd;
 }				t_rstatus;
 typedef struct s_redirect
 {
 	t_rstatus	out;
 	t_rstatus	in;
 	t_rstatus	aout;
-	//int			fd;
 }				t_redirect;
 
 typedef struct s_flags
@@ -55,6 +55,7 @@ typedef struct s_args
 	t_bool		is_builtin;
 	char		*bin_path;
 	t_bool		is_literal;
+	t_redirect	*redirect;
 }				t_args;
 
 typedef struct s_alist

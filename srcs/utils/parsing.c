@@ -11,7 +11,10 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 	i = 0;
 	while (list)
 	{
-		if (list->content)
+		if (list->content && !(list->content->type == R_IN
+				|| list->content->type == R_OUT
+				|| list->content->type == R_AOUT)
+		)
 		{
 			if (!list->content->is_literal
 				&& !ft_strcmp(list->content->cmd, "$?"))

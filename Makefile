@@ -7,7 +7,7 @@ PID					=	.pid
 CC					=	@gcc
 SH					=	@bash
 RM					=	@/bin/rm -rf
-FLAGS				=	-Wextra -Wall -Werror -g3
+FLAGS				=	-Wextra -Wall -Werror -g3 -fsanitize=address
 
 HEADER_DIR			=	includes/
 OBJ_DIR				=	obj/
@@ -45,7 +45,7 @@ SRCS				=	init.c				parser.c		initshell.c		fix_cmd.c
 BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
 						builtins/unset.c	builtins/exit.c
 
-UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/sys.c		utils/termcaps.c \
+UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/execution.c		utils/termcaps.c \
 						utils/parsing.c		utils/parsing/dollar.c			utils/parsing/tilde.c			\
 						utils/validation/quotes.c			utils/validation/redirect.c		utils/control.c	\
 						utils/termtext.c	utils/termhist.c
