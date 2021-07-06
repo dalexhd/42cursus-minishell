@@ -66,6 +66,8 @@ void	ft_exec_cmd(t_shell *shell, t_slist *parsed, int prepipe)
 		ft_error("Close error: %s\n", 1, strerror(errno));
 	if (parsed->next)
 		ft_exec_cmd(shell, parsed->next, fd[0]);
+	if (pid == 0)
+		exit (0);
 	if (waitpid(pid, &status, 0) < 0)
 		ft_error("Waitpid error: %s\n", 1, strerror(errno));
 	if (!parsed->next && WIFSIGNALED(status))
