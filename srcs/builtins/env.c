@@ -23,8 +23,7 @@ char	*ft_getenv(t_shell *shell, char *env)
 	while (shell->envp[i] != 0)
 	{
 		if (ft_strncmp(shell->envp[i], env, ft_strlen(env)) == 0)
-			return (ft_substr(shell->envp[i], ft_strlen(env) + 1,
-					ft_strlen(shell->envp[i])));
+			return (&shell->envp[i][ft_strlen(env) + 1]);
 		i++;
 	}
 	return (NULL);

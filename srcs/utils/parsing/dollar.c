@@ -10,9 +10,8 @@ static t_bool	ft_isenv(int c)
 	return (false);
 }
 
-void	parse_dollar(t_shell *shell, char **cmd, int *i, char *line)
+void	parse_dollar(t_shell *shell, char **cmd, int *i, char **line)
 {
-	char	*env;
 	char	*tmp;
 	char	*aux;
 
@@ -34,8 +33,7 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char *line)
 	(*i)--;
 	ft_strdel(&aux);
 	aux = ft_getenv(shell, tmp);
-	env = ft_strdup(aux);
-	if (env)
-		ft_strcat(line, env);
+	if (aux)
+		*line = ft_strjoin_free(*line, ft_strdup(aux));
 	//TODO: echo $USER $9999USER $8888USER $7777USER
 }

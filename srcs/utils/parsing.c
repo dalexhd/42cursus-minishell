@@ -64,14 +64,16 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 			ft_strncat(res, &cmd[i + 1], 1);
 			i++;
 		}
-		else if (/*!arg->is_literal && */cmd[i] == '$'
+		else if (cmd[i] == '$'
 			&& (ft_isalpha(cmd[i + 1]) || cmd[i + 1] == '_'))
-			parse_dollar(shell, &cmd, &i, res);
+			parse_dollar(shell, &cmd, &i, &res);
 		else if (cmd[i] == '~')
 			parse_tilde(shell, cmd, &i, res);
 		else
 			ft_strncat(res, &cmd[i], 1);
 		i++;
 	}
-	return (ft_strdup(res));
+	res = ft_strdup(res);
+	ft_strdel(&cmd);
+	return (res);
 }

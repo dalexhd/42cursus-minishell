@@ -8,13 +8,15 @@ static	void	dup_close(int old, int new)
 		ft_error("Could not close: %s\n", false, strerror(errno));
 }
 
- static	void	redirect_dup_close(t_rlist *redirect)
+static	void	redirect_dup_close(t_rlist *redirect)
 {
 	if (has_redirect(redirect))
 	{
-		if (redirect->content->in.status && redirect->content->in.fd != 0)
+		if (redirect->content->in.status
+			&& redirect->content->in.fd != 0)
 			dup_close(redirect->content->in.fd, 0);
-		else if (redirect->content->out.status && redirect->content->out.fd != 1)
+		else if (redirect->content->out.status
+			&& redirect->content->out.fd != 1)
 			dup_close(redirect->content->out.fd, 1);
 	}
 	else
@@ -36,7 +38,6 @@ void	ft_exec_child(t_shell *shell, t_slist *parsed, int *fd, int prepipe)
 		exit(ft_exec_builtin(shell, parsed));
 	ft_exec_bin(shell, parsed->content->args);
 }
-
 
 void	ft_exec_cmd(t_shell *shell, t_slist *parsed, int prepipe)
 
@@ -75,13 +76,17 @@ void	ft_exec_cmd(t_shell *shell, t_slist *parsed, int prepipe)
 */
 void	run(t_shell *shell)
 {
+	int	tmp_std;
+
 	while (!shell->parsed->content->args->content)
 		shell->parsed->content->args = shell->parsed->content->args->next;
 	if (ft_slstsize(shell->parsed) == 1
 		&& shell->parsed->content->args->content->is_builtin)
 	{
+		tmp_std = dup(1);
 		redirect_dup_close(shell->parsed->content->redirects);
 		ft_exec_builtin(shell, shell->parsed);
+		dup_close(tmp_std, 1);
 	}
 	else if (shell->parsed)
 		ft_exec_cmd(shell, shell->parsed, 0);

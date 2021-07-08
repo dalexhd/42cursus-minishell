@@ -3,28 +3,34 @@
 void	ft_exit(char **args)
 {
 	size_t	i;
+	t_llong	exit_code;
+	char	*arg;
 
 	i = 1;
 	if (!args[1])
 		g_running = false;
-	while (args[i])
+	arg = ft_strtrim(args[1], " ");
+	while (1)
 	{
-		if (args[i + 1])
-		{
-			ft_error("minishell: exit: too many arguments\n", 1);
-			return ;
-		}
-		else if (((args[1][0] == '-' && !ft_strevery(&args[1][1], ft_isdigit))
-			|| (args[1][0] != '-' && !ft_strevery(args[1], ft_isdigit)))
-			&& ((args[1][0] == '+' && !ft_strevery(&args[1][1], ft_isdigit))
-			|| (args[1][0] != '+' && !ft_strevery(args[1], ft_isdigit))))
+
+		if (((arg[0] == '-' && (!arg[1] || !ft_strevery(&arg[1], ft_isdigit)))
+				|| (arg[0] != '-' && !ft_strevery(arg, ft_isdigit)))
+			&& ((arg[0] == '+' && (!arg[1] || !ft_strevery(&arg[1], ft_isdigit)))
+				|| (arg[0] != '+' && !ft_strevery(arg, ft_isdigit))))
 		{
 			ft_error("minishell: exit: %s: numeric argument required\n",
 				0, args[i]);
-			exit(255);
+			exit(2);
+		}
+		else if (args[i + 1])
+		{
+			ft_error("minishell: exit: too many arguments\n", 1);
+			break ;
 		}
 		else
-			exit(ft_atoi(args[1]));
-		i++;
+		{
+			exit_code = ft_atoll(arg);
+			exit(exit_code);
+		}
 	}
 }

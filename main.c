@@ -5,8 +5,6 @@ static int	shell_clear(t_shell *shell)
 	int	status;
 
 	status = shell->status;
-	if (shell->home_dir)
-		free(shell->home_dir);
 	if (shell->tmp_dir)
 		free(shell->tmp_dir);
 	ft_hlstclear(&shell->term.history, free);

@@ -50,31 +50,29 @@ int	ft_exec_builtin(t_shell *shell, t_slist *parsed)
 void	ft_exec_bin(t_shell *shell, t_alist *args)
 {
 	char	**args_split;
+	t_args	*arg;
 
-	if (args->content->type != CMD)
-	{
-		ft_exec_bin(shell, args->next);
-		return ;
-	}
+	arg = args->content;
 	args_split = ft_safesplit(shell, args);
 	if (!args_split[0])
 	{
 		ft_split_del(args_split);
 		exit(0);
 	}
-	if (args->content->bin_path
-		&& execve(args->content->bin_path, args_split, shell->envp) == -1)
+	if (arg->bin_path
+		&& execve(arg->bin_path, args_split, shell->envp) == -1)
 	{
 		ft_split_del(args_split);
-		if (is_directory(args->content->bin_path))
-			ft_error("minishell: %s: is a directory\n", 126, args->content->cmd);
-		else if (!has_access(args->content->bin_path))
-			ft_error("minishell: %s: Permission denied\n", 126, args->content->cmd);
-		else if (ft_strncmp(args->content->bin_path, "./", 2) == 0)
+		if (is_directory(arg->bin_path))
+			ft_error("minishell: %s: is a directory\n", 126, arg->cmd);
+		else if (!has_access(arg->bin_path))
+			ft_error("minishell: %s: Permission denied\n", 126, arg->cmd);
+		else if (ft_strncmp(arg->bin_path, "./", 2) == 0
+			|| ft_strncmp(arg->bin_path, "/", 1) == 0)
 			ft_error("minishell: %s: No such file or directory\n", 127,
-				args->content->cmd);
+				arg->cmd);
 		else
-			ft_error("minishell: %s: command not found\n", 127, args->content->cmd);
+			ft_error("minishell: %s: command not found\n", 127, arg->cmd);
 	}
 }
 
@@ -89,7 +87,6 @@ char	*builtin_bin_path(t_shell *shell, char *builtin)
 		return (ft_strdup(builtin));
 	path_env = ft_getenv(shell, "PATH");
 	folders = ft_split(path_env, ':');
-	free(path_env);
 	i = 0;
 	while (folders[i] != NULL)
 	{

@@ -20,7 +20,7 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	if (!res)
 		return (0);
 	res = ft_strcat(ft_strcpy(res, s1), s2);
-	free(s1);
-	free(s2);
+	ft_strdel(&s1);
+	ft_strdel(&s2);
 	return (res);
 }

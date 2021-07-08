@@ -5,16 +5,12 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "(gdb) Child fork",
+			"name": "(terminal + gdb) Child fork",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/minishell",
-			"args": [
-				"-c",
-				"ls > test"
-			],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -27,7 +23,7 @@
 			]
 		},
 		{
-			"name": "(gdb) Parent Fork",
+			"name": "(gdb) Child fork",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/minishell",
@@ -36,7 +32,47 @@
 				"ls > test"
 			],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Habilitar la impresión con sangría para gdb",
+					"text": "-gdb-set follow-fork-mode child",
+					"ignoreFailures": true
+				}
+			]
+		},
+		{
+			"name": "(tarminal + gdb) Parent Fork",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/minishell",
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Habilitar la impresión con sangría para gdb",
+					"text": "-gdb-set follow-fork-mode parent",
+					"ignoreFailures": true
+				}
+			]
+		},
+		{
+			"name": "(gdb) Parent Fork",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/minishell",
+			"args": [
+				"-c",
+				"echo $PWD"
+			],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
