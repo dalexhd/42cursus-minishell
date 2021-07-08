@@ -40,11 +40,12 @@ static int	split(t_redirect *redirect,  t_alist *args, t_parsed *parsed, t_rstat
 		ft_strdel(&args->content->cmd);
 	if (args && args->content->bin_path)
 		ft_strdel(&args->content->bin_path);
+	args->content = NULL;
 	if (args->next && args->next->content->cmd)
 		ft_strdel(&args->next->content->cmd);
 	if (args->next && args->next->content->bin_path)
 		ft_strdel(&args->next->content->bin_path);
-	args->next = args->next->next;
+	args->next->content = NULL;
 	ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
 	return (0);
 }

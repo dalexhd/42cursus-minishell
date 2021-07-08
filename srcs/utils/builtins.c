@@ -47,35 +47,34 @@ int	ft_exec_builtin(t_shell *shell, t_slist *parsed)
  * Here we exec the system builtin
  *
 **/
-void	ft_exec_bin(t_shell *shell, t_slist *parsed)
+void	ft_exec_bin(t_shell *shell, t_alist *args)
 {
-	t_args	*args;
 	char	**args_split;
 
-	while (parsed->content->args->content->type != CMD)
+	if (args->content->type != CMD)
 	{
-		parsed->content->args = parsed->content->args->next;
+		ft_exec_bin(shell, args->next);
+		return ;
 	}
-	args = parsed->content->args->content;
-	args_split = ft_safesplit(shell, parsed->content->args);
+	args_split = ft_safesplit(shell, args);
 	if (!args_split[0])
 	{
 		ft_split_del(args_split);
 		exit(0);
 	}
-	if (args->bin_path
-		&& execve(args->bin_path, args_split, shell->envp) == -1)
+	if (args->content->bin_path
+		&& execve(args->content->bin_path, args_split, shell->envp) == -1)
 	{
 		ft_split_del(args_split);
-		if (is_directory(args->bin_path))
-			ft_error("minishell: %s: is a directory\n", 126, args->cmd);
-		else if (!has_access(args->bin_path))
-			ft_error("minishell: %s: Permission denied\n", 126, args->cmd);
-		else if (ft_strncmp(args->bin_path, "./", 2) == 0)
+		if (is_directory(args->content->bin_path))
+			ft_error("minishell: %s: is a directory\n", 126, args->content->cmd);
+		else if (!has_access(args->content->bin_path))
+			ft_error("minishell: %s: Permission denied\n", 126, args->content->cmd);
+		else if (ft_strncmp(args->content->bin_path, "./", 2) == 0)
 			ft_error("minishell: %s: No such file or directory\n", 127,
-				args->cmd);
+				args->content->cmd);
 		else
-			ft_error("minishell: %s: command not found\n", 127, args->cmd);
+			ft_error("minishell: %s: command not found\n", 127, args->content->cmd);
 	}
 }
 

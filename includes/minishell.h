@@ -90,7 +90,7 @@ char	*ft_getenv(t_shell *shell, char *env);
 */
 t_bool	ft_isbuiltin(char *builtin);
 int		ft_exec_builtin(t_shell *shell, t_slist *parsed);
-void	ft_exec_bin(t_shell *shell, t_slist *parsed);
+void	ft_exec_bin(t_shell *shell, t_alist *args);
 t_bool	file_exists(char *filename);
 t_bool	is_directory(char *path);
 t_bool	has_access(char *path);
@@ -102,6 +102,7 @@ char	*clean_str(t_shell *shell, t_args *arg, char *line);
 t_alist	*parse_args(t_shell *shell, char *cmd);
 char	**ft_safesplit(t_shell *shell, t_alist *list);
 void	debug_log(char *string);
+t_bool	has_redirect(t_rlist *redirect);
 
 /*
 ** Parsing
