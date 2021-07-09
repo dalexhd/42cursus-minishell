@@ -35,18 +35,25 @@ static	void	ft_internal_unset(t_shell *shell, char *arg)
 	i = 0;
 	if (ft_strcmp(arg, "HOME") == 0)
 		shell->home_dir = NULL;
-	while (shell->envp[i] != 0)
+	if (ft_strcmp(arg, "OLDPWD") == 0)
+		ft_export_internal(shell, "OLDPWD", ft_getenv(shell, "HOME"));
+	else if (ft_strcmp(arg, "PWD") == 0)
+		ft_export_internal(shell, "PWD", ft_getenv(shell, "HOME"));
+	else
 	{
-		if (ft_strncmp(shell->envp[i], ft_strjoin(arg, "="),
-				ft_strlen(arg) + 1) != 0)
+		while (shell->envp[i] != 0)
 		{
-			tmp[u] = shell->envp[i];
-			u++;
+			if (ft_strncmp(shell->envp[i], ft_strjoin(arg, "="),
+					ft_strlen(arg) + 1) != 0)
+			{
+				tmp[u] = shell->envp[i];
+				u++;
+			}
+			i++;
 		}
-		i++;
+		shell->envp = tmp;
+		shell->envp[u] = NULL;
 	}
-	shell->envp = tmp;
-	shell->envp[u] = NULL;
 }
 
 void	ft_unset(t_shell *shell, char **args)

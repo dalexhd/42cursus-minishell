@@ -24,5 +24,4 @@ echo test | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -
 ls -la | grep "."
 whereis grep > tmp/file ; cat tmp/file ; ls -la tmp/file | grep "grep"
 whereis grep > tmp/file ; cat tmp/file ; ls -la tmp/file
-ls -la > tmp/file ; cat < tmp/file tmp/doesntexist 2>/dev/null
 ls -la > tmp/file ; cat < tmp/file tmp/doesntexist
