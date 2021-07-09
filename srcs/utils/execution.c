@@ -76,10 +76,12 @@ void	ft_exec_cmd(t_shell *shell, t_slist *parsed, int prepipe)
 */
 void	run(t_shell *shell)
 {
-	int	tmp_std;
+	int		tmp_std;
+	t_slist	*tmp;
 
-	while (!shell->parsed->content->args->content)
-		shell->parsed->content->args = shell->parsed->content->args->next;
+	tmp = shell->parsed;
+	filter_readable_args(&shell->parsed);
+
 	if (ft_slstsize(shell->parsed) == 1
 		&& shell->parsed->content->args->content->is_builtin)
 	{
@@ -90,4 +92,5 @@ void	run(t_shell *shell)
 	}
 	else if (shell->parsed)
 		ft_exec_cmd(shell, shell->parsed, 0);
+	shell->parsed = tmp;
 }

@@ -32,14 +32,6 @@ typedef struct s_redirect
 	t_rstatus	aout;
 }				t_redirect;
 
-typedef struct s_flags
-{
-	t_bool		has_stdin;
-	t_bool		has_stdout;
-	t_bool		has_pipe;
-	t_redirect	redirect;
-}				t_flags;
-
 typedef struct s_rlist
 {
 	t_redirect		*content;
@@ -56,6 +48,7 @@ typedef struct s_args
 	char		*bin_path;
 	t_bool		is_literal;
 	t_redirect	*redirect;
+	t_bool		readable;
 }				t_args;
 
 typedef struct s_alist
@@ -77,7 +70,6 @@ typedef struct s_parsed
 	t_alist		*args;
 	char		*line;
 	pid_t		pid;
-	t_flags		flags;
 	t_rlist		*redirects;
 }				t_parsed;
 

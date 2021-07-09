@@ -66,7 +66,6 @@ void	exec_shell(t_shell *shell, char *cmd)
 		shell->mierdecilla = NULL;
 		lsh_split_line(shell, cmd);
 		shell->pipe_count = ft_slstsize(shell->parsed);
-		fill_data(shell->parsed);
 		if (shell->status > -1)
 			run(shell);
 		clear_cmd(shell);

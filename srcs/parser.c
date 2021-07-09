@@ -1,20 +1,79 @@
 #include "../includes/minishell.h"
 
-t_alist	*parse_args(t_shell *shell, char *cmd)
+static	void	parse_type(t_shell *shell, t_alist *args, t_args *arg)
 {
-	t_alist	*args;
-	t_args	*arg;
-	int		argbackstatus;
-	t_list	*tmp;
-	t_list	*tmplist;
 	int		fl;
 	int		i;
 	char	*new;
+
+	arg->type = 0;
+	if (ft_strcmp(arg->cmd, ">>") == 0)
+		arg->type = R_AOUT;
+	else if (ft_strcmp(arg->cmd, ">") == 0)
+		arg->type = R_OUT;
+	else if (ft_strcmp(arg->cmd, "<") == 0)
+		arg->type = R_IN;
+	else if (ft_strstr(arg->cmd, "-"))
+		arg->type = FLAG;
+	else if (args && arg_has_red(ft_alstlast(args)))
+	{
+		arg->type = FILE;
+		arg->file = ft_strdup(arg->cmd);
+	}
+	else if (arg->is_builtin || arg->bin_path)
+		arg->type = CMD;
+	else
+	{
+		arg->cmd = parse_line(shell, arg, arg->cmd);
+		new = ft_strnew(ft_strlen(arg->cmd));
+		fl = 0;
+		i = 0;
+		while (arg->cmd[i])
+		{
+			if (arg->cmd[i] != DEL)
+			{
+				new[fl] = arg->cmd[i];
+				fl++;
+			}
+			i++;
+		}
+		ft_strdel(&arg->cmd);
+		arg->cmd = ft_strdup(new);
+		arg->bin_path = ft_strdup(new);
+		arg->type = ARG;
+		ft_strdel(&new);
+	}
+}
+
+static	t_args	*parse_arg(t_shell *shell, t_alist *args, t_list *value)
+{
+	t_args		*arg;
+
+	arg = (t_args *)malloc(sizeof(t_args));
+	arg->cmd = ft_strdup(value->content);
+	arg->readable = true;
+	arg->file = NULL;
+	arg->bin_path = NULL;
+	arg->is_builtin = ft_isbuiltin(arg->cmd);
+	arg->is_literal = false;
+	arg->redirect = (t_redirect *)malloc(sizeof(t_redirect));
+	arg->redirect->in = (t_rstatus){.fd = 0, .file = NULL, .status = false};
+	arg->redirect->out = (t_rstatus){.fd = 1, .file = NULL, .status = false};
+	arg->redirect->aout = (t_rstatus){.fd = 0, .file = NULL, .status = false};
+	if (!arg->is_builtin)
+		arg->bin_path = builtin_bin_path(shell, arg->cmd);
+	parse_type(shell, args, arg);
+	return (arg);
+}
+
+void	parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
+{
+	t_args	*arg;
+	t_list	*tmp;
+	t_list	*tmplist;
 	char	*tmpchar;
 
-	args = (t_alist *)malloc(sizeof(t_alist));
-	args = NULL;
-	argbackstatus = 0;
+	(*parsed)->args = NULL;
 	tmpchar = fix_cmd(cmd);
 	if (validate_str(shell, tmpchar))
 	{
@@ -22,64 +81,12 @@ t_alist	*parse_args(t_shell *shell, char *cmd)
 		tmplist = tmp;
 		while (tmp)
 		{
-			arg = (t_args *)malloc(sizeof(t_args));
-			arg->cmd = ft_strdup(tmp->content);
-			arg->file = NULL;
-			arg->is_builtin = ft_isbuiltin(arg->cmd);
-			arg->bin_path = NULL;
-			arg->is_literal = 0;
-			arg->redirect = (t_redirect *)malloc(sizeof(t_redirect));
-			arg->redirect->in = (t_rstatus){.fd = 0, .file = NULL, .status = false};
-			arg->redirect->out = (t_rstatus){.fd = 1, .file = NULL, .status = false};
-			arg->redirect->aout = (t_rstatus){.fd = 0, .file = NULL, .status = false};
-			if (!arg->is_builtin)
-				arg->bin_path = builtin_bin_path(shell, arg->cmd);
-			arg->type = 0;
-			if (ft_strcmp(arg->cmd, ">>") == 0)
-				arg->type = R_AOUT;
-			else if (ft_strcmp(arg->cmd, ">") == 0)
-				arg->type = R_OUT;
-			else if (ft_strcmp(arg->cmd, "<") == 0)
-				arg->type = R_IN;
-			else if (ft_strstr(arg->cmd, "-"))
-				arg->type = FLAG;
-			else if (argbackstatus && (argbackstatus == R_IN || argbackstatus == R_OUT
-					|| argbackstatus == R_AOUT
-				))
-			{
-				arg->type = FILE;
-				arg->file = arg->cmd;
-			}
-			else if (arg->is_builtin || arg->bin_path)
-				arg->type = CMD;
-			else
-			{
-				arg->cmd = parse_line(shell, arg, arg->cmd);
-				new = ft_strnew(ft_strlen(arg->cmd));
-				fl = 0;
-				i = 0;
-				while (arg->cmd[i])
-				{
-					if (arg->cmd[i] != DEL)
-					{
-						new[fl] = arg->cmd[i];
-						fl++;
-					}
-					i++;
-				}
-				ft_strdel(&arg->cmd);
-				arg->cmd = ft_strdup(new);
-				arg->bin_path = ft_strdup(new);
-				arg->type = ARG;
-				ft_strdel(&new);
-			}
-			argbackstatus = arg->type;
-			ft_alstadd_back(&args, (shell->mierdecilla = ft_alstnew(arg)));
+			arg = parse_arg(shell, (*parsed)->args, tmp);
+			ft_alstadd_back(&(*parsed)->args, ft_alstnew(arg));
 			tmp = tmp->next;
 		}
 		ft_lstclear(&tmplist, free);
 	}
-	return (args);
 }
 
 char	*quotes_trim(char *cmd)

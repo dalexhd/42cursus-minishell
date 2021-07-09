@@ -40,6 +40,7 @@ int	ft_exec_builtin(t_shell *shell, t_slist *parsed)
 	}
 	else if (!ft_strcmp(parsed->content->args->content->cmd, "echo"))
 		ft_echo(args);
+	ft_split_del(args);
 	return (shell->status);
 }
 

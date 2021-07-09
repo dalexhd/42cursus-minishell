@@ -65,7 +65,6 @@ t_shell		*init_shell(char **envp);
 void		exec_shell(t_shell *shell, char *cmd);
 void		signal_handler(void);
 char		*parse_line(t_shell *shell, t_args *arg, char *cmd);
-void		fill_data(t_slist *list);
 void		lsh_split_line(t_shell *shell, char *line);
 void		clear_cmd(t_shell *shell);
 /*
@@ -100,10 +99,12 @@ char		*get_current_dir(char *path);
 void		exec(t_shell *shell, t_parsed *parsed);
 void		run(t_shell *shell);
 char		*clean_str(t_shell *shell, t_args *arg, char *line);
-t_alist		*parse_args(t_shell *shell, char *cmd);
+void		parse_args(t_shell *shell, t_parsed **parsed, char *cmd);
 char		**ft_safesplit(t_shell *shell, t_alist *list);
 void		debug_log(char *string);
 t_bool		has_redirect(t_rlist *redirect);
+t_bool		arg_has_red(t_alist *arg);
+void		filter_readable_args(t_slist **parsed);
 
 /*
 ** Parsing

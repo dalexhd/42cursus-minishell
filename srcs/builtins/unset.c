@@ -56,7 +56,9 @@ void	ft_unset(t_shell *shell, char **args)
 	e = 1;
 	while (args[e])
 	{
+		shell->status = 0;
 		ft_internal_unset(shell, args[e]);
 		e++;
 	}
 }
+
