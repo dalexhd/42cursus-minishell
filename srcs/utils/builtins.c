@@ -24,7 +24,7 @@ int	ft_exec_builtin(t_shell *shell, t_slist *parsed)
 	if (!ft_strcmp(parsed->content->args->content->cmd, "cd"))
 		ft_cd(shell, args);
 	else if (!ft_strcmp(parsed->content->args->content->cmd, "exit"))
-		ft_exit(args);
+		ft_exit(shell, args);
 	else if (!ft_strcmp(parsed->content->args->content->cmd, "export"))
 		ft_export(shell, args);
 	else if (!ft_strcmp(parsed->content->args->content->cmd, "unset"))

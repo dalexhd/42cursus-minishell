@@ -58,7 +58,7 @@ void	clear_cmd(t_shell *shell)
 
 void	exec_shell(t_shell *shell, char *cmd)
 {
-	if (ft_strlen(cmd) > 0)
+	if (g_running && ft_strlen(cmd) > 0)
 	{
 		shell->is_cmd = true;
 		shell->parsed = NULL;
