@@ -20,7 +20,7 @@ void	ft_exit(t_shell *shell, char **args)
 		ft_error("minishell: exit: %s: numeric argument required\n",
 			0, args[i]);
 		g_running = false;
-		shell->status = 255;
+		shell->status = 2;
 	}
 	else if (args[i + 1])
 	{

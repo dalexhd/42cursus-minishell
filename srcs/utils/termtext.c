@@ -27,23 +27,31 @@ void	newliner(t_shell *shell)
 	}
 }
 
-void	sandman(t_shell *shell)
+void			sandman(t_shell *shell)
 {
-	t_list	*commands;
-	t_list	*commands_tmp;
+	t_aslist	*commands;
+	t_aslist	*commands_tmp;
 
 	newliner(shell);
 	free(shell->term.history->copy);
 	shell->term.history->copy = ft_strdup(shell->term.history->original);
 	ft_putchar_fd('\n', STDOUT_FILENO);
-	commands = ft_safesplitlist(shell->term.line, ';', "\"'");
-	commands_tmp = commands;
-	while (commands)
+	if (shell->term.line[0] == ';')
 	{
-		exec_shell(shell, commands->content);
-		commands = commands->next;
+		ft_error("minishell: syntax error near unexpected token `;'\n", 0);
+		shell->status = 1;
 	}
-	ft_lstclear(&commands_tmp, free);
+	else
+	{
+		commands = ft_safesplitlist(shell->term.line, ';', "\"'", false);
+		commands_tmp = commands;
+		while (commands)
+		{
+			exec_shell(shell, commands->content->arg);
+			commands = commands->next;
+		}
+		ft_aslstclear(&commands_tmp, free);
+	}
 	tputs(tgetstr("ks", NULL), 1, ft_iputchar);
 	ft_bzero(&shell->term.line, BUFF_SIZE);
 	shell->term.history = ft_hlstfirst(shell->term.history);

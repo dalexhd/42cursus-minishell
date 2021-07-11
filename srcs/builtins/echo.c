@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int	ft_echo(char **args)
+int	ft_echo(t_shell *shell, char **args)
 {
 	size_t	i;
 	int		u;
@@ -25,7 +25,8 @@ int	ft_echo(char **args)
 		if (u != -1)
 		{
 			skip_new_line = true;
-			while (args[i + 1] && !ft_strcmp(args[i + 1], "-n"))
+			while (args[i + 1] && (!ft_strncmp(args[i + 1], "-n", 2)
+				&& args[i + 1][ft_strlen(args[i + 1]) - 1] == 'n'))
 				i++;
 			args = &args[1];
 		}
@@ -40,5 +41,6 @@ int	ft_echo(char **args)
 			ft_printf("%s\n", args[i]);
 		i++;
 	}
+	shell->status = 0;
 	return (0);
 }

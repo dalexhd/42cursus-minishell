@@ -41,8 +41,7 @@ STR					= 	ft_strcat.c				ft_strncat.c			ft_strstr.c				ft_strchr.c				\
 						ft_strjoin_free.c		ft_strto.c				ft_putchar.c			ft_putstr.c				\
 						ft_strevery.c			ft_putchar_fd.c			ft_strendswith.c		ft_countchars.c			\
 						ft_putnbr_fd.c			ft_putstr_fd.c			ft_putendl_fd.c			ft_countnumbers.c		\
-						ft_iputchar.c			ft_safesplit.c			ft_strcut.c				ft_strduplen.c			\
-						ft_insertchar.c
+						ft_iputchar.c			ft_strcut.c				ft_strduplen.c			ft_insertchar.c
 
 UTILS				=	ft_isalnum.c			ft_isalpha.c			ft_isascii.c			ft_isdigit.c			\
 						ft_isspace.c			ft_isprint.c			ft_numlen.c				ft_max.c				\

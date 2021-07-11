@@ -39,7 +39,7 @@ int	ft_exec_builtin(t_shell *shell, t_slist *parsed)
 		shell->status = 0;
 	}
 	else if (!ft_strcmp(parsed->content->args->content->cmd, "echo"))
-		ft_echo(args);
+		ft_echo(shell, args);
 	ft_split_del(args);
 	return (shell->status);
 }
@@ -64,8 +64,10 @@ void	ft_exec_bin(t_shell *shell, t_alist *args)
 		&& execve(arg->bin_path, args_split, shell->envp) == -1)
 	{
 		ft_split_del(args_split);
-		if (is_directory(arg->bin_path))
-			ft_error("minishell: %s: is a directory\n", 126, arg->cmd);
+		if (ft_strcmp(arg->bin_path, ".") && is_directory(arg->bin_path))
+			ft_error("minishell: %s: Is a directory\n", 126, arg->cmd);
+		else if (!ft_strcmp(arg->bin_path, "."))
+			ft_error("minishell: %s: filename argument required\n.: usage: . filename [arguments]\n", 2, arg->cmd);
 		else if (!has_access(arg->bin_path))
 			ft_error("minishell: %s: Permission denied\n", 126, arg->cmd);
 		else if (ft_strncmp(arg->bin_path, "./", 2) == 0

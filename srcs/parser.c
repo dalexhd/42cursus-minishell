@@ -7,13 +7,13 @@ static	void	parse_type(t_shell *shell, t_alist *args, t_args *arg)
 	char	*new;
 
 	arg->type = 0;
-	if (ft_strcmp(arg->cmd, ">>") == 0)
+	if (arg->quot_type == N_QUOT && ft_strcmp(arg->cmd, ">>") == 0)
 		arg->type = R_AOUT;
-	else if (ft_strcmp(arg->cmd, ">") == 0)
+	else if (arg->quot_type == N_QUOT && ft_strcmp(arg->cmd, ">") == 0)
 		arg->type = R_OUT;
-	else if (ft_strcmp(arg->cmd, "<") == 0)
+	else if (arg->quot_type == N_QUOT && ft_strcmp(arg->cmd, "<") == 0)
 		arg->type = R_IN;
-	else if (ft_strstr(arg->cmd, "-"))
+	else if (arg->cmd[1] == '-')
 		arg->type = FLAG;
 	else if (args && arg_has_red(ft_alstlast(args)))
 	{
@@ -28,6 +28,8 @@ static	void	parse_type(t_shell *shell, t_alist *args, t_args *arg)
 		new = ft_strnew(ft_strlen(arg->cmd));
 		fl = 0;
 		i = 0;
+		if (ft_strlen(arg->cmd) == 1 && arg->cmd[0] == DEL)
+			return ;
 		while (arg->cmd[i])
 		{
 			if (arg->cmd[i] != DEL)
@@ -45,17 +47,19 @@ static	void	parse_type(t_shell *shell, t_alist *args, t_args *arg)
 	}
 }
 
-static	t_args	*parse_arg(t_shell *shell, t_alist *args, t_list *value)
+static	t_args	*parse_arg(t_shell *shell, t_alist *args, t_aslist *value)
 {
 	t_args		*arg;
 
 	arg = (t_args *)malloc(sizeof(t_args));
-	arg->cmd = ft_strdup(value->content);
+	arg->cmd = remove_cmd_quotes(ft_strdup(value->content->arg));
 	arg->readable = true;
 	arg->file = NULL;
 	arg->bin_path = NULL;
 	arg->is_builtin = ft_isbuiltin(arg->cmd);
 	arg->is_literal = false;
+	arg->quot_type = get_quote_type(value->content->arg);
+	arg->spaced = !value->content->concat;
 	arg->redirect = (t_redirect *)malloc(sizeof(t_redirect));
 	arg->redirect->in = (t_rstatus){.fd = 0, .file = NULL, .status = false};
 	arg->redirect->out = (t_rstatus){.fd = 1, .file = NULL, .status = false};
@@ -66,102 +70,33 @@ static	t_args	*parse_arg(t_shell *shell, t_alist *args, t_list *value)
 	return (arg);
 }
 
-void	parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
+void			parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
 {
-	t_args	*arg;
-	t_list	*tmp;
-	t_list	*tmplist;
-	char	*tmpchar;
+	t_args		*arg;
+	t_aslist	*tmp;
+	t_aslist	*tmplist;
+	char		*tmpchar;
 
 	(*parsed)->args = NULL;
 	tmpchar = fix_cmd(cmd);
-	if (validate_str(shell, tmpchar))
+ 	if (validate_str(shell, tmpchar))
 	{
-		tmp = ft_safesplitlist(tmpchar, ' ', "\"'");
+		tmp = ft_safesplitlist(tmpchar, ' ', "\"'", true);
 		tmplist = tmp;
 		while (tmp)
 		{
 			arg = parse_arg(shell, (*parsed)->args, tmp);
-			ft_alstadd_back(&(*parsed)->args, ft_alstnew(arg));
+			if (arg->cmd[0] != DEL)
+				ft_alstadd_back(&(*parsed)->args, ft_alstnew(arg));
 			tmp = tmp->next;
 		}
-		ft_lstclear(&tmplist, free);
-	}
-}
-
-char	*quotes_trim(char *cmd)
-{
-	int		i;
-	char	out;
-	t_bool	flag;
-
-	i = 0;
-	out = 0;
-	while (i < (int)ft_strlen(cmd))
-	{
-		flag = true;
-		if (i > 0 && cmd[i - 1] == '\\')
-			flag = false;
-		if (/*(cmd[i] != '\\') &&  */flag && (cmd[i] == '\'' || cmd[i] == '"'))
-		{
-			out = cmd[i];
-			cmd[i] = DEL;
-			if (out == '"')
-			{
-				while (cmd[i])
-				{
-					if (cmd[i] == out && cmd[i - 1] != '\\')
-						break ;
-					i++;
-				}
-				if (cmd[i] == out)
-					cmd[i] = DEL;
-			}
-			else if (out == '\'')
-			{
-				cmd[i++] = DEL;
-				while (cmd[i])
-				{
-					flag = true;
-					if (i > 0 && cmd[i - 1] == '\\')
-						flag = false;
-					if (cmd[i] == out && cmd[i - 1] != '\\')
-						break ;
-					else if (!flag && cmd[i] != out && cmd[i] != '"')
-					{
-						cmd = ft_strdup(ft_strjoin(ft_strjoin(ft_strduplen(cmd, i - 1), "\\\\"), cmd + i));
-						i += 2;
-					}
-					i++;
-				}
-				if (cmd[i] == out)
-					cmd[i] = DEL;
-			}
-		}
-		out = 0;
-		i++;
-	}
-	i = 0;
-	int j = 0;
-	char *tmp = ft_strdup(cmd);
-	while (i < (int)ft_strlen(cmd))
-	{
-		if (cmd[i] != DEL)
-		{
-			tmp[j] = cmd[i];
-			j++;
-		}
-		i++;
-	}
-	tmp[j] = 0;
-	free(cmd);
-	cmd = ft_strdup(tmp);
-	return (tmp);
+		ft_aslstclear(&tmplist, free);
+ 	}
 }
 
 char	*parse_line(t_shell *shell, t_args *arg, char *cmd)
 {
 	if (cmd)
-		return (clean_str(shell, arg, ft_strdup(quotes_trim(cmd))));
+		return (clean_str(shell, arg, ft_strdup(cmd)));
 	return (cmd);
 }

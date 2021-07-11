@@ -12,6 +12,12 @@ readonly MINISHELL_PROMPT="minishell $ "
 readonly SCRIPT_FILE="$0"
 readonly LOG_FILE_NAME="result.log"
 
+if [ "$(uname)" == "Darwin" ]; then
+    SED_STRING="\"\""
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    SED_STRING=""
+fi
+
 source scripts/helper.sh
 
 build_executable () {
@@ -29,15 +35,15 @@ execute_shell () {
 replace_stderr () {
 	grep "bash: -c" ${BASH_STDERR_FILE} > /dev/null
 	if [ $? -eq 0 ]; then
-		sed -i "" -e 's/bash: -c: line [0-9]*:/minishell:/g' -e '2d' ${BASH_STDERR_FILE}
+		sed -i $SED_STRING -e 's/bash: -c: line [0-9]*:/minishell:/g' -e '2d' ${BASH_STDERR_FILE}
 	else
-		sed -i "" -e 's/bash: line [0-9]*:/bash:/g' ${BASH_STDERR_FILE}
-		sed -i "" -e 's/bash:/minishell:/g' ${BASH_STDERR_FILE}
+		sed -i $SED_STRING -e 's/bash: line [0-9]*:/bash:/g' ${BASH_STDERR_FILE}
+		sed -i $SED_STRING -e 's/bash:/minishell:/g' ${BASH_STDERR_FILE}
 	fi
 	if [ $cflag -eq 0 ]; then
-		sed -i "" -e '/minishell: `.*exit/d' -e '/minishell: syntax error: unexpected end of file/d' ${BASH_STDERR_FILE}
+		sed -i $SED_STRING -e '/minishell: `.*exit/d' -e '/minishell: syntax error: unexpected end of file/d' ${BASH_STDERR_FILE}
 	fi
-	sed -i "" -e "s/${MINISHELL_PROMPT}//g" -e "/^exit$/d" ${MINISHELL_STDERR_FILE}
+	sed -i $SED_STRING -e "s/${MINISHELL_PROMPT}//g" -e "/^exit$/d" ${MINISHELL_STDERR_FILE}
 }
 
 assert () {

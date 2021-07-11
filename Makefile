@@ -7,7 +7,7 @@ PID					=	.pid
 CC					=	@gcc
 SH					=	@bash
 RM					=	@/bin/rm -rf
-FLAGS				=	-Wextra -Wall -Werror -g3 -fsanitize=address
+FLAGS				=	-Wextra -Wall -Werror -g3
 
 HEADER_DIR			=	includes/
 OBJ_DIR				=	obj/
@@ -17,6 +17,7 @@ SHELL_LISTS_DIR		=	shell/
 REDIRECTS_LISTS_DIR	=	redirects/
 HISTORY_LISTS_DIR	=	history/
 ARGS_LISTS_DIR		=	args/
+ARG_LISTS_DIR		=	arg/
 UTILS_DIR			=	utils/
 SRC_DIR				=	srcs/
 PARSING_DIR			=	parsing/
@@ -46,9 +47,10 @@ BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builti
 						builtins/unset.c	builtins/exit.c
 
 UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/execution.c		utils/termcaps.c \
-						utils/parsing.c		utils/parsing/dollar.c			utils/parsing/tilde.c			\
-						utils/validation/quotes.c			utils/validation/redirect.c		utils/control.c	\
-						utils/termtext.c	utils/termhist.c	utils/redirection.c		utils/args.c
+						utils/parsing.c		utils/parsing/cmd.c			utils/parsing/tilde.c			\
+						utils/parsing/dollar.c	utils/validation/quotes.c			utils/validation/redirect.c	\
+						utils/control.c	utils/termtext.c	utils/termhist.c	utils/redirection.c		utils/args.c \
+						utils/validation/pipe.c
 
 SHELL_LISTS			=	lists/shell/ft_slstadd_back.c		lists/shell/ft_slstadd_front.c	lists/shell/ft_slstclear.c	\
 						lists/shell/ft_slstdelone.c			lists/shell/ft_slstiter.c		lists/shell/ft_slstlast.c	\
@@ -66,7 +68,11 @@ ARGS_LISTS			=	lists/args/ft_alstadd_back.c		lists/args/ft_alstadd_front.c		list
 						lists/args/ft_alstdelone.c			lists/args/ft_alstfirst.c			lists/args/ft_alstlast.c	\
 						lists/args/ft_alstnew.c				lists/args/ft_alstsize.c
 
-LISTS				=	$(SHELL_LISTS) $(REDIRECTS_LISTS) $(HISTORY_LISTS) $(ARGS_LISTS)
+SARG_LISTS			=	lists/arg/ft_aslstadd_back.c		lists/arg/ft_aslstadd_front.c		lists/arg/ft_aslstclear.c	\
+						lists/arg/ft_aslstdelone.c			lists/arg/ft_aslstfirst.c			lists/arg/ft_aslstlast.c	\
+						lists/arg/ft_aslstnew.c				lists/arg/ft_aslstsize.c
+
+LISTS				=	$(SHELL_LISTS) $(REDIRECTS_LISTS) $(HISTORY_LISTS) $(ARGS_LISTS) $(SARG_LISTS)
 
 SOURCES				=	$(SRCS) $(BUILTINS) $(UTILS) $(LISTS)
 
@@ -152,6 +158,7 @@ $(OBJ_DIR):
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(HISTORY_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(ARGS_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(ARGS_LISTS_DIR)
+			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(ARG_LISTS_DIR)
 
 # Normal objects
 $(NAME): $(OBJ_DIR) $(OBJS)

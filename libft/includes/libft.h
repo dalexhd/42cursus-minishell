@@ -130,7 +130,6 @@ t_bool			ft_strendswith(const char *haystack, const char *needle);
 size_t			ft_countchars(char const *str, char c);
 t_llong			ft_atoll(const char *str);
 size_t			ft_countnumbers(char const *str);
-t_list			*ft_safesplitlist(char *s, char c, char *set);
 char			*ft_strcut(char *str, int from, int to);
 char			*ft_insertchar(char *s, char c, size_t pos);
 #endif

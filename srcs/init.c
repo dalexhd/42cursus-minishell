@@ -33,7 +33,8 @@ static int	split(t_redirect *redirect, t_alist *args,
 	{
 		ft_error("minishell: syntax error near unexpected token `newline'\n",
 			false);
-		return (2);
+		parsed->valid = false;
+		return (1);
 	}
 	status->file = ft_strdup(args->next->content->file);
 	fill_redirect(status, args);
@@ -73,17 +74,25 @@ static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 
 void	lsh_split_line(t_shell *shell, char *line)
 {
-	t_list		*tokens;
-	t_list		*tokens_tmp;
+	t_aslist	*tokens;
+	t_aslist	*tokens_tmp;
 	t_parsed	*parsed;
 
-	tokens = ft_safesplitlist(line, '|', "\"'");
+	if (line[0] == '|')
+	{
+		ft_error("minishell: syntax error near unexpected token `|'\n", 0);
+		shell->status = 1;
+		return ;
+	}
+	tokens = ft_safesplitlist(line, '|', "\"'", false);
 	tokens_tmp = tokens;
 	while (tokens)
 	{
 		parsed = (t_parsed *)malloc(sizeof(t_parsed));
+		parsed->valid = true;
+		parsed->line = NULL;
 		ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
-		parse_args(shell, &parsed, tokens->content);
+		parse_args(shell, &parsed, tokens->content->arg);
 		if (shell->parsed->content->args)
 		{
 			parsed->line = ft_strdup(line);
@@ -94,5 +103,5 @@ void	lsh_split_line(t_shell *shell, char *line)
 		else
 			break ;
 	}
-	ft_lstclear(&tokens_tmp, free);
+	ft_aslstclear(&tokens_tmp, free);
 }

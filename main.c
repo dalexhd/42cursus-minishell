@@ -14,11 +14,11 @@ static int	shell_clear(t_shell *shell)
 	return (0);
 }
 
-int	main(int argc, char **argv, char **envp)
+int				main(int argc, char **argv, char **envp)
 {
-	t_shell	*shell;
-	t_list	*commands;
-	t_list	*commands_tmp;
+	t_shell		*shell;
+	t_aslist	*commands;
+	t_aslist	*commands_tmp;
 
 	shell = init_shell(envp);
 	signal_handler();
@@ -31,14 +31,23 @@ int	main(int argc, char **argv, char **envp)
 	}
 	else
 	{
-		commands = ft_safesplitlist(argv[2], ';', "\"'");
-		commands_tmp = commands;
-		while (commands)
+		if (argv[2][0] == ';')
 		{
-			exec_shell(shell, commands->content);
-			commands = commands->next;
+			ft_error("minishell: syntax error near unexpected token `;'\n", 0);
+			shell->status = 1;
 		}
-		ft_lstclear(&commands_tmp, free);
+		else
+		{
+			commands = ft_safesplitlist(argv[2], ';', "\"'", false);
+			commands_tmp = commands;
+			while (commands)
+			{
+				exec_shell(shell, commands->content->arg);
+				commands = commands->next;
+			}
+			ft_aslstclear(&commands_tmp, free);
+		}
+
 	}
 	return (shell_clear(shell));
 }

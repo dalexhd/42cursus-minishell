@@ -16,9 +16,9 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char **line)
 	char	*aux;
 
 	tmp = ft_strnew(1);
-	if (ft_isdigit(ft_strdup(*cmd)[*i + 1]))
+	if (ft_isdigit((*cmd)[*i + 1]))
 	{
-		*(cmd) += 2;
+		*cmd = ft_strcut(*cmd, 2, ft_strlen(*cmd));
 		(*i)--;
 		return ;
 	}
@@ -34,6 +34,9 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char **line)
 	ft_strdel(&aux);
 	aux = ft_getenv(shell, tmp);
 	if (aux)
-		*line = ft_strjoin_free(*line, ft_strdup(aux));
-	//TODO: echo $USER $9999USER $8888USER $7777USER
+			*line = ft_strjoin_free(*line, ft_strdup(aux));
+	else if (ft_isdigit(tmp[0]))
+		*line = ft_strjoin_free(*line, ft_strcut(tmp, 2, ft_strlen(tmp)));
+	else
+		*line[ft_strlen(*line)] = DEL;
 }

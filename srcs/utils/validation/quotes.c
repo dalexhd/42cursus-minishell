@@ -15,6 +15,7 @@ static t_bool	check_error(t_shell *shell, char *cmd, int *pos, char one)
 		ft_error("minishell: Unmaching opening quotes at col %d: %s\n",
 			0, *pos, cmd + *pos);
 		shell->status = 2;
+		shell->parsed->content->valid = false;
 		return (false);
 	}
 	return (true);
@@ -27,6 +28,8 @@ t_bool	valid_quotes(t_shell *shell, char *cmd, int *i)
 
 	if ((cmd[*i] == '\'' || cmd[*i] == '"') && cmd[*i])
 	{
+		if (* i > 0 && cmd[*i - 1] == '\\')
+			return (true);
 		one = cmd[*i];
 		pos = (*i)++;
 		quotes(cmd, i, one);

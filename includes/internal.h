@@ -25,6 +25,13 @@
 # define R_AOUT 7
 
 /*
+** Define args types
+*/
+# define D_QUOT 1
+# define S_QUOT 2
+# define N_QUOT 3
+
+/*
 ** Define chars
 */
 # define DEL 127

@@ -70,7 +70,7 @@ void		clear_cmd(t_shell *shell);
 /*
 ** Define builtins
 */
-int			ft_echo(char **args);
+int			ft_echo(t_shell *shell, char **args);
 char		*ft_pwd(void);
 void		ft_env(t_shell *shell);
 void		ft_cd(t_shell *shell, char **args);
@@ -105,12 +105,15 @@ void		debug_log(char *string);
 t_bool		has_redirect(t_rlist *redirect);
 t_bool		arg_has_red(t_alist *arg);
 void		filter_readable_args(t_slist **parsed);
+int			get_quote_type(char *cmd);
+t_aslist	*ft_safesplitlist(char *s, char c, char *set, t_bool force_set);
 
 /*
 ** Parsing
 */
 void		parse_dollar(t_shell *shell, char **cmd, int *i, char **line);
-void		parse_tilde(t_shell *shell, char *cmd, int *i, char *line);
+void		parse_tilde(t_shell *shell, char *cmd, int *i, char **line);
+char		*remove_cmd_quotes(char *cmd);
 
 /*
 ** Vallidation
@@ -119,6 +122,7 @@ char		*fix_cmd(char *cmdi);
 t_bool		valid_quotes(t_shell *shell, char *cmd, int *i);
 t_bool		valid_redirects(t_shell *shell, char *cmd, int *i);
 t_bool		validate_str(t_shell *shell, char *cmd);
+t_bool		valid_commas(t_shell *shell, char *cmd, int *i);
 
 /*
 ** Define termcaps utils

@@ -64,8 +64,8 @@ echo $USER $USER9999 $USER8888 $USER7777
 echo $USER $USER9999 $USER8888 $USER7777 "$USER"
 echo "$USER=12$USER"
 echo "$9USER" "'$USER=12$SOMETHING'"
-echo $PWD/file
-echo "$PWD/file"
+echo $HOME/file
+echo "$HOME/file"
 echo "text" "text$USER" ... "$USER"
 echo $PWD; echo $OLDPWD; cd .; pwd; echo $PWD; echo $OLDPWD
 echo $PWD; echo $OLDPWD; cd ..; pwd; echo $PWD; echo $OLDPWD

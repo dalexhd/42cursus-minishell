@@ -47,9 +47,18 @@ typedef struct s_args
 	t_bool		is_builtin;
 	char		*bin_path;
 	t_bool		is_literal;
+	int			quot_type;
+	t_bool		spaced;
 	t_redirect	*redirect;
 	t_bool		readable;
 }				t_args;
+
+typedef struct s_asrg
+{
+	char		*arg;
+	t_bool		concat;
+	char		next;
+}				t_asrg;
 
 typedef struct s_alist
 {
@@ -70,6 +79,7 @@ typedef struct s_parsed
 	t_alist		*args;
 	char		*line;
 	pid_t		pid;
+	t_bool		valid;
 	t_rlist		*redirects;
 }				t_parsed;
 
@@ -93,6 +103,13 @@ typedef struct s_slist
 	struct s_slist	*next;
 	struct s_slist	*prev;
 }				t_slist;
+
+typedef struct s_aslist
+{
+	t_asrg			*content;
+	struct s_aslist	*next;
+	struct s_aslist	*prev;
+}				t_aslist;
 
 /*
 ** Shell lists
@@ -154,5 +171,18 @@ void			ft_alstdelone(t_alist *lst, void (*del)(t_args *));
 void			ft_alstclear(t_alist **lst, void (*del)(t_args *));
 void			ft_alstiter(t_alist *lst, void (*f)(t_args *));
 t_alist			*ft_alstfirst(t_alist *lst);
+
+/*
+** Single Arguments lists
+*/
+t_aslist		*ft_aslstnew(t_asrg *content);
+void			ft_aslstadd_front(t_aslist **alst, t_aslist *new);
+int				ft_aslstsize(t_aslist *lst);
+t_aslist		*ft_aslstlast(t_aslist *lst);
+void			ft_aslstadd_back(t_aslist **alst, t_aslist *new);
+void			ft_aslstdelone(t_aslist *lst, void (*del)(t_asrg *));
+void			ft_aslstclear(t_aslist **lst, void (*del)(void *));
+void			ft_aslstiter(t_aslist *lst, void (*f)(t_asrg *));
+t_aslist		*ft_aslstfirst(t_aslist *lst);
 
 #endif
