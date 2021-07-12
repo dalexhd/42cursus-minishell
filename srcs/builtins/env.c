@@ -15,9 +15,9 @@ void	ft_env(t_shell *shell)
 /*
 * Get an environment variable
 */
-char	*ft_getenv(t_shell *shell, char *env)
+char		*ft_getenv(t_shell *shell, char *env)
 {
-	int	i;
+	int		i;
 	char	*tmp;
 
 	tmp = ft_strjoin(env, "=");

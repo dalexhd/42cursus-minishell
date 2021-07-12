@@ -81,7 +81,6 @@ void	run(t_shell *shell)
 
 	tmp = shell->parsed;
 	filter_readable_args(&shell->parsed);
-
 	if (ft_slstsize(shell->parsed) == 1
 		&& shell->parsed->content->args->content->is_builtin)
 	{

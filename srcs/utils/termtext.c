@@ -27,7 +27,7 @@ void	newliner(t_shell *shell)
 	}
 }
 
-void			sandman(t_shell *shell)
+void	sandman(t_shell *shell)
 {
 	t_aslist	*commands;
 	t_aslist	*commands_tmp;

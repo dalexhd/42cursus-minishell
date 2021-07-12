@@ -5,35 +5,32 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 	int		size;
 	int		i;
 	char	**tokens;
+	t_args	*c;
 
 	size = ft_alstsize(list);
-	tokens = (char **)malloc(sizeof(char *) * (size + 1));
+	tokens = ft_calloc(size + 1, sizeof(char *));
 	i = 0;
 	while (list)
 	{
-		if (list->content && !(list->content->type == R_IN
-				|| list->content->type == R_OUT
-				|| list->content->type == R_AOUT)
-		)
+		c = list->content;
+		if (c && !(c->type == R_IN || c->type == R_OUT || c->type == R_AOUT))
 		{
-			if (!list->content->is_literal
-				&& !ft_strncmp(list->content->cmd, "$?", 2))
+			if (!c->is_literal && !ft_strncmp(c->cmd, "$?", 2))
 				tokens[i] = ft_itoa(shell->status);
 			else
 			{
-				if (i > 1 && list->prev->content->type != FLAG && !list->content->spaced)
+				if (i > 1 && list->prev->content->type != FLAG && !c->spaced)
 				{
-					tokens[i - 1] = ft_strjoin_free(tokens[i - 1], ft_strdup(list->content->cmd));
+					tokens[i - 1] = ft_strjoin_free(tokens[i - 1], ft_strdup(c->cmd));
 					i--;
 				}
 				else
-					tokens[i] = ft_strdup(list->content->cmd);
+					tokens[i] = ft_strdup(c->cmd);
 			}
 			i++;
 		}
 		list = list->next;
 	}
-	tokens[i] = NULL;
 	return (tokens);
 }
 
@@ -48,7 +45,7 @@ t_bool	validate_str(t_shell *shell, char *cmd)
 	{
 		if (!valid_redirects(shell, cmd, &i)
 			|| !valid_quotes(shell, cmd, &i)
-			|| !valid_commas(shell, cmd, &i))
+			|| !valid_commas(shell, cmd))
 		{
 			status = false;
 			break ;
@@ -58,7 +55,7 @@ t_bool	validate_str(t_shell *shell, char *cmd)
 	return (status);
 }
 
-char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
+char	*clean_str(t_shell *shell, t_args *arg, char *c)
 {
 	int		i;
 	char	*res;
@@ -66,31 +63,37 @@ char	*clean_str(t_shell *shell, t_args *arg, char *cmd)
 
 	if (arg)
 		i = 0;
-	res = ft_strnew(ft_strlen(cmd) + 1);
+	res = ft_strnew(ft_strlen(c) + 1);
 	i = 0;
-	while (i < (int)ft_strlen(cmd))
+	while (i < (int)ft_strlen(c))
 	{
-		if (cmd[i] == '\\' && ft_strchr("\\$\"n", cmd[i + 1]))
+		if (arg->quot_type == N_QUOT && c[i] == '\\')
 		{
-			ft_strncat(res, &cmd[i + 1], 1);
+			ft_strncat(res, &c[i + (ft_strchr("`\\", c[i + 1]) == NULL)], 1);
 			i++;
 		}
-		else if (arg->quot_type != S_QUOT && cmd[i] == '$'
-			&& (ft_isalnum(cmd[i + 1]) || cmd[i + 1] == '_'))
-			parse_dollar(shell, &cmd, &i, &res);
-		else if (arg->quot_type == N_QUOT && cmd[i] == '~')
-			parse_tilde(shell, cmd, &i, &res);
-		else if (!ft_strncmp(&cmd[i], "$?", 2))
+		else if (arg->quot_type == S_QUOT && c[i] == '\\' && c[i + 1] == '\'')
+			c[i + 1] = DEL;
+		else if ((arg->quot_type != D_QUOT && c[i] == '\\' && c[i + 1] == '\\')
+			|| (arg->quot_type == D_QUOT && c[i] == '\\'
+				&& ft_strchr("\"\\$`\\", c[i + 1])))
+			c[i] = DEL;
+		else if (arg->quot_type != S_QUOT && c[i] == '$'
+			&& (ft_isalnum(c[i + 1]) || c[i + 1] == '_'))
+			parse_dollar(shell, &c, &i, &res);
+		else if (arg->quot_type == N_QUOT && c[i] == '~')
+			parse_tilde(shell, c, &i, &res);
+		else if (!ft_strncmp(&c[i], "$?", 2))
 		{
 			status = ft_itoa(shell->status);
 			ft_strncat(res, status, ft_strlen(status));
 			i++;
 		}
 		else
-			ft_strncat(res, &cmd[i], 1);
+			ft_strncat(res, &c[i], 1);
 		i++;
 	}
 	res = ft_strdup(res);
-	ft_strdel(&cmd);
+	ft_strdel(&c);
 	return (res);
 }

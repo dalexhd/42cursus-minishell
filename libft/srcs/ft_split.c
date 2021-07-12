@@ -18,7 +18,7 @@ char	**ft_split(char const *s, char c)
 	t_uint	j;
 	char	**words;
 
-	words = (char **)malloc(sizeof(char *) * (ft_countwords(s, c) + 1));
+	words = ft_calloc(ft_countwords(s, c) + 1, sizeof(char *));
 	if (s == NULL || !words)
 		return (NULL);
 	j = 0;
@@ -35,6 +35,5 @@ char	**ft_split(char const *s, char c)
 		else
 			s++;
 	}
-	words[j] = NULL;
 	return (words);
 }

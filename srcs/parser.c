@@ -70,7 +70,7 @@ static	t_args	*parse_arg(t_shell *shell, t_alist *args, t_aslist *value)
 	return (arg);
 }
 
-void			parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
+void	parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
 {
 	t_args		*arg;
 	t_aslist	*tmp;
@@ -79,7 +79,7 @@ void			parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
 
 	(*parsed)->args = NULL;
 	tmpchar = fix_cmd(cmd);
- 	if (validate_str(shell, tmpchar))
+	if (validate_str(shell, tmpchar))
 	{
 		tmp = ft_safesplitlist(tmpchar, ' ', "\"'", true);
 		tmplist = tmp;
@@ -91,7 +91,7 @@ void			parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
 			tmp = tmp->next;
 		}
 		ft_aslstclear(&tmplist, free);
- 	}
+	}
 }
 
 char	*parse_line(t_shell *shell, t_args *arg, char *cmd)

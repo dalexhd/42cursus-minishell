@@ -14,7 +14,7 @@ void	ft_export_internal(t_shell *shell, char *env, char *value)
 	{
 		ft_error("minishell: export: `%s': not a valid identifier\n",
 			false, env);
-			shell->status = 1;
+		shell->status = 1;
 		return ;
 	}
 	while (shell->envp[i] != 0)
@@ -46,7 +46,7 @@ t_bool	valid_export(t_shell *shell, char *str, char **val)
 	t_bool	status;
 	char	*bef;
 
-	if (ft_isdigit(str[0]) || !(ft_isalnum(str[0]) || str[0] == '_'))
+	if (ft_isdigit(str[0]) || !(ft_isalnum(str[0]) || str[0] == '_' || str[0] == '\\'))
 	{
 		ft_error("minishell: export: `%s=%s': not a valid identifier\n",
 			false, str, *val);
@@ -60,7 +60,7 @@ t_bool	valid_export(t_shell *shell, char *str, char **val)
 	i = 1;
 	while (i < ft_strlen(str))
 	{
-		if (!(ft_isalnum(str[i]) || str[i] == '_'))
+		if (!ft_isalnum(str[i]) && str[i] != '_' && str[i])
 		{
 			if (str[i + 1] == '\0' && str[i] == '+')
 			{
@@ -130,7 +130,10 @@ void		ft_export(t_shell *shell, char **args)
 			tokens_tmp = tokens;
 			env = ft_strdup(tokens->content->arg);
 			if (!tokens->next)
-				ft_export_internal(shell, env, "");
+			{
+				if (valid_export(shell, env, &value))
+					ft_export_internal(shell, env, "");
+			}
 			else
 			{
 				value = ft_strdup(tokens->next->content->arg);

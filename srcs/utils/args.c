@@ -28,7 +28,6 @@ int	get_quote_type(char *cmd)
 		return (N_QUOT);
 }
 
-
 static	int	filtering_args(t_alist **tmp, t_alist *args)
 {
 	if (!args)
@@ -102,45 +101,3 @@ t_aslist		*ft_safesplitlist(char *s, char c, char *set, t_bool force_set)
 	}
 	return (list);
 }
-
-/* t_aslist		*ft_safesplitlist(char *s, char c, char *set, t_bool force_set)
-{
-	int			size;
-	int			fl;
-	char		*start;
-	t_aslist	*list;
-	t_asrg		*arg;
-	char		*tmp2;
-	char		*tmp;
-
-	ft_safesplit_init(&fl, &size, &list);
-	start = s;
-	while (1)
-	{
-		if (ft_strchr(set, *s) && (!fl || fl & 1 << (ft_strchr(set, *s) - set)))
-			fl ^= 1 << (ft_strchr(set, *s) - set);
-		if ((!*s || (((force_set && ft_strchr(set, *s) && s[1] != c) || *s == c) && !fl))
-			|| (fl && force_set && ft_strchr(set, *s) && s[1] != c))
-		{
-			if (size > 0)
-			{
-				tmp = ft_calloc(sizeof(char), size + (!fl && ft_strchr(set, *s)) + 1);
-				ft_memcpy(tmp, start, size + (!fl && ft_strchr(set, *s)));
-				arg = (t_asrg *)malloc(sizeof(t_asrg));
-				tmp2 = ft_strchr(tmp, *s) ? &ft_strchr(tmp, *s)[0] : "";
-				arg->arg = ft_strjoin(tmp2, tmp);
-				arg->next = s[0];
-				arg->concat = list && ft_aslstlast(list) && ft_aslstlast(list)->content->next != c;
-				ft_aslstadd_back(&list, ft_aslstnew(arg));
-			}
-			start += size + 1;
-			size = 0;
-		}
-		else
-			size++;
-		if (!*s)
-			break ;
-		s++;
-	}
-	return (list);
-} */

@@ -57,7 +57,7 @@ void	ft_cd(t_shell *shell, char **args)
 	pwd = ft_cd_checker(shell, &dir, args);
 	if (!pwd)
 		return ;
-	if (chdir(dir) == -1)
+	if (ft_strlen(dir) > 0 && chdir(dir) == -1)
 	{
 		ft_strdel(&pwd);
 		ft_error("minishell: cd: %s: %s\n", 0, dir, strerror(errno));

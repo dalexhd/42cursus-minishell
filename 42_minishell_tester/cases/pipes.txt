@@ -11,8 +11,8 @@ cd .. | pwd
 ifconfig | grep ":"
 ifconfig | grep nothing
 whoami | grep $USER
-whoami | grep $USER > tmp/file; cat tmp/file
-whoami | cat -e | cat -e > tmp/file ; cat tmp/file ; echo $USER
+whoami | grep $USER > file; cat file
+whoami | cat -e | cat -e > file ; cat file ; echo $USER
 cat Makefile | grep "FLAGS"
 cat Makefile | cat -e | cat -e
 cat Makefile | grep "FLAGS" | grep "FLAGS" | cat -e
@@ -22,6 +22,6 @@ echo test | cat -e | cat -e | cat -e
 whereis ls | cat -e | cat -e > test
 echo test | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e
 ls -la | grep "."
-whereis grep > tmp/file ; cat tmp/file ; ls -la tmp/file | grep "grep"
-whereis grep > tmp/file ; cat tmp/file ; ls -la tmp/file
-ls -la > tmp/file ; cat < tmp/file tmp/doesntexist
+whereis grep > file ; cat file ; ls -la file | grep "grep"
+whereis grep > file ; cat file ; ls -la file
+ls -la > file ; cat < file doesntexist

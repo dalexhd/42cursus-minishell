@@ -1,9 +1,7 @@
 #include "../../../includes/minishell.h"
 
-t_bool	valid_commas(t_shell *shell, char *cmd, int *i)
+t_bool	valid_commas(t_shell *shell, char *cmd)
 {
-	(void)i;
-
 	if (cmd[0] == ';')
 	{
 		ft_error("minishell: syntax error near unexpected token `;'\n", 0);

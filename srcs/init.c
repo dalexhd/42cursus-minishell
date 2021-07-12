@@ -11,7 +11,7 @@ static void	fill_redirect(t_rstatus *status, t_alist *args)
 	}
 	else if (args->content->type == R_OUT)
 	{
-		status->fd = open(status->file, O_TRUNC | O_WRONLY | O_CREAT, 0600);
+		status->fd = open(status->file, O_TRUNC | O_WRONLY | O_CREAT, 0644);
 		if (status->fd < 0)
 			ft_error("minishell: %s: %s\n", false, status->file,
 				strerror(errno));

@@ -1,6 +1,6 @@
 #include "../../../includes/minishell.h"
 
-static	void handle_double(char *cmd, char out, int *i)
+static	void	handle_double(char *cmd, char out, int *i)
 {
 	while (cmd[*i])
 	{
@@ -12,14 +12,14 @@ static	void handle_double(char *cmd, char out, int *i)
 		cmd[*i] = DEL;
 }
 
-static	void handle_single(char *cmd, t_bool *flag, char out, int *i)
+static	void	handle_single(char *cmd, t_bool *flag, char out, int *i)
 {
 	while (cmd[*i])
 	{
 		*flag = true;
 		if (*i > 0 && cmd[*i - 1] == '\\')
-			flag = false;
-		if (cmd[*i] == out && cmd[*i - 1] != '\\')
+			*flag = false;
+		if (cmd[*i] == out)
 			break ;
 		else if (!flag && cmd[*i] != out && cmd[*i] != '"')
 		{
@@ -32,7 +32,7 @@ static	void handle_single(char *cmd, t_bool *flag, char out, int *i)
 		cmd[*i] = DEL;
 }
 
-static	char *ret_cmd(char *cmd)
+static	char	*ret_cmd(char *cmd)
 {
 	int		j;
 	int		i;

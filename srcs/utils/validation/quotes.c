@@ -28,8 +28,11 @@ t_bool	valid_quotes(t_shell *shell, char *cmd, int *i)
 
 	if ((cmd[*i] == '\'' || cmd[*i] == '"') && cmd[*i])
 	{
-		if (* i > 0 && cmd[*i - 1] == '\\')
+		if (*i > 0 && cmd[*i - 1] == '\\')
+		{
+			(*i)++;
 			return (true);
+		}
 		one = cmd[*i];
 		pos = (*i)++;
 		quotes(cmd, i, one);

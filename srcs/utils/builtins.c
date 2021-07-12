@@ -89,6 +89,13 @@ char	*builtin_bin_path(t_shell *shell, char *builtin)
 	if (file_exists(builtin))
 		return (ft_strdup(builtin));
 	path_env = ft_getenv(shell, "PATH");
+	if (!path_env)
+	{
+		ft_error("minishell: %s: No such file or directory\n", 0, builtin);
+		shell->status = 127;
+		shell->parsed->content->valid = false;
+		return (ft_strdup(builtin));
+	}
 	folders = ft_split(path_env, ':');
 	i = 0;
 	while (folders[i] != NULL)

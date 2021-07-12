@@ -1,20 +1,28 @@
 #include "../includes/minishell.h"
 
-/*
-* Unset an environment variable
-*/
-
 t_bool	valid_unset(t_shell *shell, char *val)
 {
+	size_t	i;
+
 	if (ft_isdigit(val[0]) || !(ft_isalnum(val[0]) || val[0] == '_'))
 	{
-		ft_error("minishell: unset: `%s': not a valid identifier\n",
-			false, val);
+		ft_error("minishell: unset: `%s': not a valid identifier\n", 0, val);
 		if (val[0] == '+')
 			shell->status = 1;
 		else
 			shell->status = 2;
 		return (false);
+	}
+	i = 1;
+	while (i < ft_strlen(val))
+	{
+		if (!(ft_isalnum(val[i]) || val[i] == '_'))
+		{
+			ft_error("minishell: unset: `%s': not a valid identifier\n", 0, val);
+			shell->status = 1;
+			return (false);
+		}
+		i++;
 	}
 	return (true);
 }
@@ -27,35 +35,30 @@ static	void	ft_internal_unset(t_shell *shell, char *arg)
 
 	i = 0;
 	u = 0;
-	if (!arg)
+	if (!arg || !valid_unset(shell, arg))
 		return ;
 	while (shell->envp[i] != 0)
 		i++;
-	tmp = (char **)malloc(sizeof(char *) * (i) + 1);
+	tmp = calloc(i + 1, sizeof(char *));
 	i = 0;
 	if (ft_strcmp(arg, "HOME") == 0)
 		shell->home_dir = NULL;
-	if (ft_strcmp(arg, "OLDPWD") == 0)
-		ft_export_internal(shell, "OLDPWD", ft_getenv(shell, "HOME"));
-	else if (ft_strcmp(arg, "PWD") == 0)
-		ft_export_internal(shell, "PWD", ft_getenv(shell, "HOME"));
 	else
 	{
 		while (shell->envp[i] != 0)
 		{
 			if (ft_strncmp(shell->envp[i], ft_strjoin(arg, "="),
 					ft_strlen(arg) + 1) != 0)
-			{
-				tmp[u] = shell->envp[i];
-				u++;
-			}
+				tmp[u++] = shell->envp[i];
 			i++;
 		}
 		shell->envp = tmp;
-		shell->envp[u] = NULL;
 	}
 }
 
+/*
+** Unset an environment variable
+*/
 void	ft_unset(t_shell *shell, char **args)
 {
 	int		e;
@@ -68,4 +71,3 @@ void	ft_unset(t_shell *shell, char **args)
 		e++;
 	}
 }
-

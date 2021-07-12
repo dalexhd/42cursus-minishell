@@ -45,7 +45,8 @@ char	*fix_cmd(char *cmd)
 	{
 		quo[0] = quodouble(cmd[i], quo[0]);
 		quo[1] = quosingle(cmd[i], quo[1], quo[0]);
-		while (quo[0] && quo[1] && cmd[i + 1] != '\'' && cmd[i + 1] != '"')
+		while (quo[0] && quo[1] && cmd[i + 1] != '\0'
+			&& cmd[i + 1] != '\'' && cmd[i + 1] != '"')
 			i++;
 		if ((!quo[0] && !quo[1]) && (cmd[i] == '<' || cmd[i] == '>'))
 		{

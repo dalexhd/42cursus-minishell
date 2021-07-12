@@ -98,7 +98,7 @@ char		*builtin_bin_path(t_shell *shell, char *builtin);
 char		*get_current_dir(char *path);
 void		exec(t_shell *shell, t_parsed *parsed);
 void		run(t_shell *shell);
-char		*clean_str(t_shell *shell, t_args *arg, char *line);
+char		*clean_str(t_shell *shell, t_args *arg, char *c);
 void		parse_args(t_shell *shell, t_parsed **parsed, char *cmd);
 char		**ft_safesplit(t_shell *shell, t_alist *list);
 void		debug_log(char *string);
@@ -122,7 +122,7 @@ char		*fix_cmd(char *cmdi);
 t_bool		valid_quotes(t_shell *shell, char *cmd, int *i);
 t_bool		valid_redirects(t_shell *shell, char *cmd, int *i);
 t_bool		validate_str(t_shell *shell, char *cmd);
-t_bool		valid_commas(t_shell *shell, char *cmd, int *i);
+t_bool		valid_commas(t_shell *shell, char *cmd);
 
 /*
 ** Define termcaps utils

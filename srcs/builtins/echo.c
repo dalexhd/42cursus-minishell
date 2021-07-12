@@ -26,7 +26,7 @@ int	ft_echo(t_shell *shell, char **args)
 		{
 			skip_new_line = true;
 			while (args[i + 1] && (!ft_strncmp(args[i + 1], "-n", 2)
-				&& args[i + 1][ft_strlen(args[i + 1]) - 1] == 'n'))
+					&& args[i + 1][ft_strlen(args[i + 1]) - 1] == 'n'))
 				i++;
 			args = &args[1];
 		}
