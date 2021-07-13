@@ -89,19 +89,14 @@ void	lsh_split_line(t_shell *shell, char *line)
 	while (tokens)
 	{
 		parsed = (t_parsed *)malloc(sizeof(t_parsed));
-		parsed->valid = true;
-		parsed->line = NULL;
 		ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
 		parse_args(shell, &parsed, tokens->content->arg);
 		if (shell->parsed->content->args)
 		{
 			parsed->line = ft_strdup(line);
-			parsed->redirects = NULL;
 			args_loop(shell, parsed->args, parsed);
 			tokens = tokens->next;
 		}
-		else
-			break ;
 	}
 	ft_aslstclear(&tokens_tmp, free);
 }

@@ -10,6 +10,16 @@ static t_bool	ft_isenv(int c)
 	return (false);
 }
 
+static	void	parse_aux(char *aux, char **line, char *tmp)
+{
+	if (aux)
+		*line = ft_strjoin_free(*line, ft_strdup(aux));
+	else if (ft_isdigit(tmp[0]))
+		*line = ft_strjoin_free(*line, ft_strcut(tmp, 2, ft_strlen(tmp)));
+	else
+		*line[ft_strlen(*line)] = DEL;
+}
+
 void	parse_dollar(t_shell *shell, char **cmd, int *i, char **line)
 {
 	char	*tmp;
@@ -32,11 +42,5 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char **line)
 	}
 	(*i)--;
 	ft_strdel(&aux);
-	aux = ft_getenv(shell, tmp);
-	if (aux)
-		*line = ft_strjoin_free(*line, ft_strdup(aux));
-	else if (ft_isdigit(tmp[0]))
-		*line = ft_strjoin_free(*line, ft_strcut(tmp, 2, ft_strlen(tmp)));
-	else
-		*line[ft_strlen(*line)] = DEL;
+	parse_aux(ft_getenv(shell, tmp), line, tmp);
 }
