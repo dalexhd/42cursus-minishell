@@ -6,22 +6,19 @@ static void	fill_redirect(t_rstatus *status, t_alist *args)
 	{
 		status->fd = open(status->file, O_RDONLY, 0600);
 		if (status->fd < 0)
-			ft_error("minishell: %s: %s\n", false, status->file,
-				strerror(errno));
+			ft_error(ERR_RED, false, status->file, strerror(errno));
 	}
 	else if (args->content->type == R_OUT)
 	{
 		status->fd = open(status->file, O_TRUNC | O_WRONLY | O_CREAT, 0644);
 		if (status->fd < 0)
-			ft_error("minishell: %s: %s\n", false, status->file,
-				strerror(errno));
+			ft_error(ERR_RED, false, status->file, strerror(errno));
 	}
 	else if (args->content->type == R_AOUT)
 	{
 		status->fd = open(status->file, O_WRONLY | O_CREAT | O_APPEND, 0600);
 		if (status->fd < 0)
-			ft_error("minishell: %s: %s\n", false, status->file,
-				strerror(errno));
+			ft_error(ERR_RED, false, status->file, strerror(errno));
 	}
 }
 
@@ -31,8 +28,7 @@ static int	split(t_redirect *redirect, t_alist *args,
 	status->status = true;
 	if (!args->next)
 	{
-		ft_error("minishell: syntax error near unexpected token `newline'\n",
-			false);
+		ft_error(ERR_UT, false, "newline");
 		parsed->valid = false;
 		return (1);
 	}
@@ -80,8 +76,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 
 	if (line[0] == '|')
 	{
-		ft_error("minishell: syntax error near unexpected token `|'\n", 0);
-		shell->status = 1;
+		sh_error(shell, ERR_UT, 1, "|");
 		return ;
 	}
 	tokens = ft_safesplitlist(line, '|', "\"'", false);

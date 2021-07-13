@@ -12,9 +12,7 @@ static t_bool	check_error(t_shell *shell, char *cmd, int *pos, char one)
 {
 	if (one == '\'' || one == '"')
 	{
-		ft_error("minishell: Unmaching opening quotes at col %d: %s\n",
-			0, *pos, cmd + *pos);
-		shell->status = 2;
+		sh_error(shell, ERR_UQ, 2, *pos, cmd + *pos);
 		shell->parsed->content->valid = false;
 		return (false);
 	}

@@ -34,10 +34,7 @@ void	sandman(t_shell *shell)
 	shell->term.history->copy = ft_strdup(shell->term.history->original);
 	ft_putchar_fd('\n', STDOUT_FILENO);
 	if (shell->term.line[0] == ';')
-	{
-		ft_error("minishell: syntax error near unexpected token `;'\n", 0);
-		shell->status = 1;
-	}
+		sh_error(shell, ERR_UT, 1, ";");
 	else
 		parse_commands(shell, shell->term.line);
 	tputs(tgetstr("ks", NULL), 1, ft_iputchar);

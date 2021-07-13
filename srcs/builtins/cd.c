@@ -10,13 +10,12 @@ static char	*ft_cd_checker(t_shell *shell, char **dir, char **args)
 		*dir = shell->home_dir;
 		if (!*dir)
 		{
-			ft_error("minishell: cd: HOME not set\n", 0);
-			shell->status = 1;
+			sh_error(shell, "minishell: cd: HOME not set\n", 1);
 			return (NULL);
 		}
+		return (pwd);
 	}
-	else
-		*dir = args[1];
+	*dir = args[1];
 	return (pwd);
 }
 
@@ -32,8 +31,7 @@ void	ft_cd_internal(t_shell *shell, char *dir)
 	if (chdir(dir) == -1)
 	{
 		ft_strdel(&pwd);
-		ft_error("minishell: cd: %s: %s\n", 0, dir, strerror(errno));
-		shell->status = 1;
+		sh_error(shell, "minishell: cd: %s: %s\n", 1, dir, strerror(errno));
 		return ;
 	}
 	ft_export_internal(shell, "OLDPWD", pwd);
@@ -50,8 +48,8 @@ void	ft_cd(t_shell *shell, char **args)
 
 	if (args[1] && args[2])
 	{
-		ft_error("minishell: cd: too many arguments\n", 0);
-		shell->status = 1;
+		sh_error(shell, "minishell: cd: too many arguments\n", 1,
+			dir, strerror(errno));
 		return ;
 	}
 	pwd = ft_cd_checker(shell, &dir, args);
@@ -60,8 +58,7 @@ void	ft_cd(t_shell *shell, char **args)
 	if (ft_strlen(dir) > 0 && chdir(dir) == -1)
 	{
 		ft_strdel(&pwd);
-		ft_error("minishell: cd: %s: %s\n", 0, dir, strerror(errno));
-		shell->status = 1;
+		sh_error(shell, "minishell: cd: %s: %s\n", 1, dir, strerror(errno));
 		return ;
 	}
 	ft_export_internal(shell, "OLDPWD", pwd);

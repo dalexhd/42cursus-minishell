@@ -4,9 +4,7 @@ static t_bool	check_error(t_shell *shell, char *cmd, int pos, char one)
 {
 	if (one == '<' || one == '>')
 	{
-		ft_error("minishell: syntax error near redirect: %s\n",
-			0, cmd + (pos));
-		shell->status = 1;
+		sh_error(shell, ERR_RED_N, 1, cmd + (pos));
 		shell->parsed->content->valid = false;
 		return (false);
 	}

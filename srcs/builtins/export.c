@@ -12,9 +12,8 @@ void	ft_export_internal(t_shell *shell, char *env, char *value)
 	skip = false;
 	if (ft_isdigit(env[0]) || !(ft_isalnum(env[0]) || env[0] == '_'))
 	{
-		ft_error("minishell: export: `%s': not a valid identifier\n",
-			false, env);
-		shell->status = 1;
+		sh_error(shell, "minishell: export: `%s': not a valid identifier\n",
+			1, env);
 		return ;
 	}
 	while (shell->envp[i] != 0)
@@ -48,12 +47,8 @@ t_bool	valid_export(t_shell *shell, char *str, char **val)
 
 	if (ft_isdigit(str[0]) || !(ft_isalnum(str[0]) || str[0] == '_' || str[0] == '\\'))
 	{
-		ft_error("minishell: export: `%s=%s': not a valid identifier\n",
-			false, str, *val);
-		if (str[0] == '+')
-			shell->status = 1;
-		else
-			shell->status = 2;
+		sh_error(shell, "minishell: export: `%s=%s': not a valid identifier\n",
+			(str[0] != '+') + 1, str, *val);
 		return (false);
 	}
 	status = true;
@@ -72,9 +67,8 @@ t_bool	valid_export(t_shell *shell, char *str, char **val)
 				break ;
 			}
 			status = false;
-			ft_error("minishell: export: `%s=%s': not a valid identifier\n",
-				false, str, *val);
-			shell->status = 1;
+			sh_error(shell, "minishell: export: `%s=%s': not a valid identifier\n",
+				1, str, *val);
 			break ;
 		}
 		i++;
@@ -101,7 +95,7 @@ void	ft_print_declare(t_shell *shell)
 	}
 }
 
-void		ft_export(t_shell *shell, char **args)
+void	ft_export(t_shell *shell, char **args)
 {
 	t_aslist	*tokens;
 	t_aslist	*tokens_tmp;
@@ -122,9 +116,7 @@ void		ft_export(t_shell *shell, char **args)
 			tokens = ft_safesplitlist(args[i], '=', "\"'", false);
 			if (!tokens)
 			{
-				ft_error("minishell: export: `=': not a valid identifier\n",
-					false);
-				shell->status = 1;
+				sh_error(shell, "minishell: export: `=': not a valid identifier\n", 1);
 				break ;
 			}
 			tokens_tmp = tokens;

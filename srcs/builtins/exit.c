@@ -15,16 +15,10 @@ void	ft_exit(t_shell *shell, char **args)
 						|| !ft_strevery(&arg[1], ft_isdigit)))
 				|| (arg[0] != '+' && !ft_strevery(arg, ft_isdigit))))
 		|| ((ft_strcmp(arg, "-1") && number == -1) || ft_strlen(arg) > 19))
-	{
-		ft_error("minishell: exit: %s: numeric argument required\n",
-			0, args[i]);
-		shell->status = 2;
-	}
+		sh_error(shell, "minishell: exit: %s: numeric argument required %s\n",
+			2, args[i], "asdsad");
 	else if (args[i + 1])
-	{
-		ft_error("minishell: exit: too many arguments\n", 0);
-		shell->status = 1;
-	}
+		sh_error(shell, "minishell: exit: too many arguments\n", 1);
 	g_running = false;
 	shell->status = number;
 }

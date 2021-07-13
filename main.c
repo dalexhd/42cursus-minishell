@@ -30,10 +30,7 @@ int	main(int argc, char **argv, char **envp)
 	else
 	{
 		if (argv[2][0] == ';')
-		{
-			ft_error("minishell: syntax error near unexpected token `;'\n", 0);
-			shell->status = 1;
-		}
+			sh_error(shell, ERR_UT, 1, ";");
 		else
 			parse_commands(shell, argv[2]);
 	}

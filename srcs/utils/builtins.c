@@ -51,31 +51,29 @@ int	ft_exec_builtin(t_shell *shell, t_slist *parsed)
 void	ft_exec_bin(t_shell *shell, t_alist *args)
 {
 	char	**args_split;
-	t_args	*arg;
+	t_args	*a;
 
-	arg = args->content;
+	a = args->content;
 	args_split = ft_safesplit(shell, args);
 	if (!args_split[0])
 	{
 		ft_split_del(args_split);
 		exit(0);
 	}
-	if (arg->bin_path
-		&& execve(arg->bin_path, args_split, shell->envp) == -1)
+	if (a->bin_path && execve(a->bin_path, args_split, shell->envp) == -1)
 	{
 		ft_split_del(args_split);
-		if (ft_strcmp(arg->bin_path, ".") && is_directory(arg->bin_path))
-			ft_error("minishell: %s: Is a directory\n", 126, arg->cmd);
-		else if (!ft_strcmp(arg->bin_path, "."))
-			ft_error("minishell: %s: filename argument required\n.: usage: . filename [arguments]\n", 2, arg->cmd);
-		else if (!has_access(arg->bin_path))
-			ft_error("minishell: %s: Permission denied\n", 126, arg->cmd);
-		else if (ft_strncmp(arg->bin_path, "./", 2) == 0
-			|| ft_strncmp(arg->bin_path, "/", 1) == 0)
-			ft_error("minishell: %s: No such file or directory\n", 127,
-				arg->cmd);
+		if (ft_strcmp(a->bin_path, ".") && is_directory(a->bin_path))
+			ft_error(ERR_I_DIR, 126, a->cmd);
+		else if (!ft_strcmp(a->bin_path, "."))
+			ft_error(ERR_FA""ERR_FAU, 2, a->cmd);
+		else if (!has_access(a->bin_path))
+			ft_error(ERR_P_DEN, 126, a->cmd);
+		else if (ft_strncmp(a->bin_path, "./", 2) == 0
+			|| ft_strncmp(a->bin_path, "/", 1) == 0)
+			ft_error(ERR_N_FILE_DIR, 127, a->cmd);
 		else
-			ft_error("minishell: %s: command not found\n", 127, arg->cmd);
+			ft_error(ERR_C, 127, a->cmd);
 	}
 }
 
@@ -91,14 +89,13 @@ char	*builtin_bin_path(t_shell *shell, char *builtin)
 	path_env = ft_getenv(shell, "PATH");
 	if (!path_env)
 	{
-		ft_error("minishell: %s: No such file or directory\n", 0, builtin);
-		shell->status = 127;
+		sh_error(shell, ERR_N_FILE_DIR, 127, builtin);
 		shell->parsed->content->valid = false;
 		return (ft_strdup(builtin));
 	}
 	folders = ft_split(path_env, ':');
 	i = 0;
-	while (folders[i] != NULL)
+	while (folders[i])
 	{
 		path = ft_strjoin_free(ft_strdup(folders[i]), ft_strjoin("/", builtin));
 		if (file_exists(path))
