@@ -14,11 +14,9 @@ static int	shell_clear(t_shell *shell)
 	return (0);
 }
 
-int				main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_shell		*shell;
-	t_aslist	*commands;
-	t_aslist	*commands_tmp;
 
 	shell = init_shell(envp);
 	signal_handler();
@@ -37,17 +35,7 @@ int				main(int argc, char **argv, char **envp)
 			shell->status = 1;
 		}
 		else
-		{
-			commands = ft_safesplitlist(argv[2], ';', "\"'", false);
-			commands_tmp = commands;
-			while (commands)
-			{
-				exec_shell(shell, commands->content->arg);
-				commands = commands->next;
-			}
-			ft_aslstclear(&commands_tmp, free);
-		}
-
+			parse_commands(shell, argv[2]);
 	}
 	return (shell_clear(shell));
 }

@@ -114,6 +114,7 @@ t_aslist	*ft_safesplitlist(char *s, char c, char *set, t_bool force_set);
 void		parse_dollar(t_shell *shell, char **cmd, int *i, char **line);
 void		parse_tilde(t_shell *shell, char *cmd, int *i, char **line);
 char		*remove_cmd_quotes(char *cmd);
+void		parse_commands(t_shell *shell, char *line);
 
 /*
 ** Vallidation

@@ -94,6 +94,21 @@ void	parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
 	}
 }
 
+void	parse_commands(t_shell *shell, char *line)
+{
+	t_aslist	*commands;
+	t_aslist	*commands_tmp;
+
+	commands = ft_safesplitlist(line, ';', "\"'", false);
+	commands_tmp = commands;
+	while (commands)
+	{
+		exec_shell(shell, commands->content->arg);
+		commands = commands->next;
+	}
+	ft_aslstclear(&commands_tmp, free);
+}
+
 char	*parse_line(t_shell *shell, t_args *arg, char *cmd)
 {
 	if (cmd)
