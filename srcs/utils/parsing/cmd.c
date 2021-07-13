@@ -2,6 +2,7 @@
 
 static	void	handle_double(char *cmd, char out, int *i)
 {
+	cmd[*i] = DEL;
 	while (cmd[*i])
 	{
 		if (cmd[*i] == out && cmd[*i - 1] != '\\')
@@ -14,6 +15,9 @@ static	void	handle_double(char *cmd, char out, int *i)
 
 static	void	handle_single(char *cmd, t_bool *flag, char out, int *i)
 {
+	char		*tmp;
+
+	cmd[*i] = DEL;
 	while (cmd[*i])
 	{
 		*flag = true;
@@ -23,7 +27,8 @@ static	void	handle_single(char *cmd, t_bool *flag, char out, int *i)
 			break ;
 		else if (!flag && cmd[*i] != out && cmd[*i] != '"')
 		{
-			cmd = ft_strdup(ft_strjoin(ft_strjoin(ft_strduplen(cmd, *i - 1), "\\\\"), cmd + *i));
+			tmp = ft_strjoin(ft_strduplen(cmd, *i - 1), "\\\\");
+			cmd = ft_strdup(ft_strjoin_free(tmp, cmd + *i));
 			*i += 2;
 		}
 		(*i)++;
@@ -59,29 +64,25 @@ static	char	*ret_cmd(char *cmd)
 char	*remove_cmd_quotes(char *cmd)
 {
 	int		i;
-	char	out;
 	int		fl;
 
 	i = 0;
-	out = 0;
 	fl = 0;
 	while (i < (int)ft_strlen(cmd))
 	{
-		if (ft_strchr("\"'", cmd[i]) && (!fl || fl & 1 << (ft_strchr("\"'", cmd[i]) - "\"'")))
+		if (ft_strchr("\"'", cmd[i])
+			&& (!fl || fl & 1 << (ft_strchr("\"'", cmd[i]) - "\"'")))
 			fl ^= 1 << (ft_strchr("\"'", cmd[i]) - "\"'");
 		if (i > 0 && cmd[i - 1] == '\\')
 			fl = 0;
 		if (cmd[i] != '\\' && fl && (cmd[i] == '\'' || cmd[i] == '"'))
 		{
-			out = cmd[i];
-			cmd[i] = DEL;
-			if (out == '"')
-				handle_double(cmd, out, &i);
-			else if (out == '\'')
-				handle_single(cmd, &fl, out, &i);
+			if (cmd[i] == '"')
+				handle_double(cmd, cmd[i], &i);
+			else if (cmd[i] == '\'')
+				handle_single(cmd, &fl, cmd[i], &i);
 			fl = 0;
 		}
-		out = 0;
 		i++;
 	}
 	return (ret_cmd(cmd));
