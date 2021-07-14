@@ -90,8 +90,8 @@ void	lsh_split_line(t_shell *shell, char *line)
 		{
 			parsed->line = ft_strdup(line);
 			args_loop(shell, parsed->args, parsed);
-			tokens = tokens->next;
 		}
+		tokens = tokens->next;
 	}
 	ft_aslstclear(&tokens_tmp, free);
 }
