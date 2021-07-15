@@ -1,11 +1,35 @@
 #include "../includes/minishell.h"
 
-static	void	parse_type(t_shell *shell, t_alist *args, t_args *arg)
+static void	parse_typo(t_shell *shell, t_args *arg)
 {
-	int		fl;
 	int		i;
+	int		fl;
 	char	*new;
 
+	arg->cmd = parse_line(shell, arg, arg->cmd);
+	new = ft_strnew(ft_strlen(arg->cmd));
+	fl = 0;
+	i = 0;
+	if (ft_strlen(arg->cmd) == 1 && arg->cmd[0] == DEL)
+		return ;
+	while (arg->cmd[i])
+	{
+		if (arg->cmd[i] != DEL)
+		{
+			new[fl] = arg->cmd[i];
+			fl++;
+		}
+		i++;
+	}
+	ft_strdel(&arg->cmd);
+	arg->cmd = ft_strdup(new);
+	arg->bin_path = ft_strdup(new);
+	arg->type = ARG;
+	ft_strdel(&new);
+}
+
+static	void	parse_type(t_shell *shell, t_alist *args, t_args *arg)
+{
 	arg->type = 0;
 	if (arg->quot_type == N_QUOT && ft_strcmp(arg->cmd, ">>") == 0)
 		arg->type = R_AOUT;
@@ -24,30 +48,11 @@ static	void	parse_type(t_shell *shell, t_alist *args, t_args *arg)
 		arg->type = CMD;
 	else
 	{
-		arg->cmd = parse_line(shell, arg, arg->cmd);
-		new = ft_strnew(ft_strlen(arg->cmd));
-		fl = 0;
-		i = 0;
-		if (ft_strlen(arg->cmd) == 1 && arg->cmd[0] == DEL)
-			return ;
-		while (arg->cmd[i])
-		{
-			if (arg->cmd[i] != DEL)
-			{
-				new[fl] = arg->cmd[i];
-				fl++;
-			}
-			i++;
-		}
-		ft_strdel(&arg->cmd);
-		arg->cmd = ft_strdup(new);
-		arg->bin_path = ft_strdup(new);
-		arg->type = ARG;
-		ft_strdel(&new);
+		parse_typo(shell, arg);
 	}
 }
 
-static	t_args	*parse_arg(t_shell *shell, t_alist *args, t_aslist *value)
+t_args	*parse_arg(t_shell *shell, t_alist *args, t_aslist *value)
 {
 	t_args		*arg;
 
@@ -68,50 +73,4 @@ static	t_args	*parse_arg(t_shell *shell, t_alist *args, t_aslist *value)
 		arg->bin_path = builtin_bin_path(shell, arg->cmd);
 	parse_type(shell, args, arg);
 	return (arg);
-}
-
-void	parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
-{
-	t_args		*arg;
-	t_aslist	*tmp;
-	t_aslist	*tmplist;
-	char		*tmpchar;
-
-	(*parsed)->args = NULL;
-	tmpchar = fix_cmd(cmd);
-	if (validate_str(shell, tmpchar))
-	{
-		tmp = ft_safesplitlist(tmpchar, ' ', "\"'", true);
-		tmplist = tmp;
-		while (tmp)
-		{
-			arg = parse_arg(shell, (*parsed)->args, tmp);
-			if (arg->cmd[0] != DEL)
-				ft_alstadd_back(&(*parsed)->args, ft_alstnew(arg));
-			tmp = tmp->next;
-		}
-		ft_aslstclear(&tmplist, free);
-	}
-}
-
-void	parse_commands(t_shell *shell, char *line)
-{
-	t_aslist	*commands;
-	t_aslist	*commands_tmp;
-
-	commands = ft_safesplitlist(line, ';', "\"'", false);
-	commands_tmp = commands;
-	while (commands)
-	{
-		exec_shell(shell, commands->content->arg);
-		commands = commands->next;
-	}
-	ft_aslstclear(&commands_tmp, free);
-}
-
-char	*parse_line(t_shell *shell, t_args *arg, char *cmd)
-{
-	if (cmd)
-		return (clean_str(shell, arg, ft_strdup(cmd)));
-	return (cmd);
 }

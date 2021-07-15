@@ -41,7 +41,7 @@ VER					=	$(shell lsb_release -sr)
 
 # Mandatory part
 
-SRCS				=	init.c				parser.c		initshell.c		fix_cmd.c
+SRCS				=	init.c				parser.c		sub_parser.c		initshell.c		fix_cmd.c
 
 BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
 						builtins/unset.c	builtins/exit.c
