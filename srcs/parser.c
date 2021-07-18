@@ -12,6 +12,10 @@ static void	parse_typo(t_shell *shell, t_args *arg)
 	i = 0;
 	if (ft_strlen(arg->cmd) == 1 && arg->cmd[0] == DEL)
 		return ;
+	if (arg->cmd[0] == '\0')
+		arg->readable = false;
+	if (arg->cmd[i] == '\0')
+		new[fl] = '\0';
 	while (arg->cmd[i])
 	{
 		if (arg->cmd[i] != DEL)

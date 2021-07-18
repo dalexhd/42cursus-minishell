@@ -16,6 +16,8 @@ static	void	parse_aux(char *aux, char **line, char *tmp)
 		*line = ft_strjoin_free(*line, ft_strdup(aux));
 	else if (ft_isdigit(tmp[0]))
 		*line = ft_strjoin_free(*line, ft_strcut(tmp, 2, ft_strlen(tmp)));
+	else if (!aux)
+		*line = ft_strjoin_free(*line, ft_strdup("\177"));
 }
 
 void	parse_dollar(t_shell *shell, char **cmd, int *i, char **line)

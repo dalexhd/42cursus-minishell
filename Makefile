@@ -7,7 +7,7 @@ PID					=	.pid
 CC					=	@gcc
 SH					=	@bash
 RM					=	@/bin/rm -rf
-FLAGS				=	-Wextra -Wall -Werror -g3
+FLAGS				=	-Wextra -Wall -g3
 
 HEADER_DIR			=	includes/
 OBJ_DIR				=	obj/
@@ -50,7 +50,7 @@ UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/execution.c		util
 						utils/parsing.c		utils/parsing/cmd.c			utils/parsing/tilde.c			\
 						utils/parsing/dollar.c	utils/validation/quotes.c			utils/validation/redirect.c	\
 						utils/control.c	utils/termtext.c	utils/termhist.c	utils/redirection.c		utils/args.c \
-						utils/validation/pipe.c		utils/error.c
+						utils/validation/pipe.c		utils/error.c	utils/split.c
 
 SHELL_LISTS			=	lists/shell/ft_slstadd_back.c		lists/shell/ft_slstadd_front.c	lists/shell/ft_slstclear.c	\
 						lists/shell/ft_slstdelone.c			lists/shell/ft_slstiter.c		lists/shell/ft_slstlast.c	\

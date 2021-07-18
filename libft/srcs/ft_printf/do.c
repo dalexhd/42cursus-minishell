@@ -18,7 +18,6 @@ static void	do_char_1(t_info *info)
 
 	sarg = (char)va_arg(info->args[0], int);
 	info->res = ft_strnew(1);
-	sarg = (char)va_arg(info->args[0], int);
 	if (sarg)
 		info->res[0] = sarg;
 	else

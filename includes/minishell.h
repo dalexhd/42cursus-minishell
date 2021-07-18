@@ -108,6 +108,7 @@ t_bool		arg_has_red(t_alist *arg);
 void		filter_readable_args(t_slist **parsed);
 int			get_quote_type(char *cmd);
 t_aslist	*ft_safesplitlist(char *s, char c, char *set, t_bool force_set);
+t_aslist	*ft_safesplitlist_new(char *s, char c, char *set, t_bool force_set);
 void		sh_error(t_shell *shell, char *s, int force, ...);
 
 /*

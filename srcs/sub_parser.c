@@ -11,13 +11,19 @@ void	parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
 	tmpchar = fix_cmd(cmd);
 	if (validate_str(shell, tmpchar))
 	{
-		tmp = ft_safesplitlist(tmpchar, ' ', "\"'", true);
+		tmp = ft_safesplitlist_new(tmpchar, ' ', "\"'", true);
 		tmplist = tmp;
 		while (tmp)
 		{
 			arg = parse_arg(shell, (*parsed)->args, tmp);
-			if (arg->cmd[0] != DEL)
-				ft_alstadd_back(&(*parsed)->args, ft_alstnew(arg));
+			if ((*parsed)->args && ft_alstlast((*parsed)->args)->prev && arg->cmd[0] == DEL)
+			{
+				arg->readable = false;
+				arg->spaced = ft_alstlast((*parsed)->args)->content->spaced;
+			}
+			if ((*parsed)->args && ft_alstlast((*parsed)->args) && !ft_alstlast((*parsed)->args)->content->readable)
+				arg->spaced = ft_alstlast((*parsed)->args)->content->spaced;
+			ft_alstadd_back(&(*parsed)->args, ft_alstnew(arg));
 			tmp = tmp->next;
 		}
 		ft_aslstclear(&tmplist, free);
