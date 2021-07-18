@@ -69,7 +69,7 @@
 			"program": "${workspaceFolder}/minishell",
 			"args": [
 				"-c",
-				"echo hola mundo \"adios\"\"mundo\" \"'$HOME''$PWD'\""
+				"    "
 			],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",

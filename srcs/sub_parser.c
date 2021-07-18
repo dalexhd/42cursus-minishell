@@ -37,7 +37,8 @@ void	parse_commands(t_shell *shell, char *line)
 
 	commands = ft_safesplitlist(line, ';', "\"'", false);
 	commands_tmp = commands;
-	while (commands)
+	shell->force_stop = false;
+	while (commands && !shell->force_stop)
 	{
 		exec_shell(shell, commands->content->arg);
 		commands = commands->next;

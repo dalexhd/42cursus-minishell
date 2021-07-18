@@ -6,6 +6,7 @@ static t_bool	check_error(t_shell *shell, char *cmd, int pos, char one)
 	{
 		sh_error(shell, ERR_RED_N, 1, cmd + (pos));
 		shell->parsed->content->valid = false;
+		shell->force_stop = true;
 		return (false);
 	}
 	return (true);

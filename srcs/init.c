@@ -64,7 +64,7 @@ static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)
 				shell->status = split(red, args, parsed, &red->aout);
 		}
 	}
-	if (args->next)
+	if (args && args->next)
 		args_loop(shell, args->next, parsed);
 }
 
@@ -74,11 +74,8 @@ void	lsh_split_line(t_shell *shell, char *line)
 	t_aslist	*tokens_tmp;
 	t_parsed	*parsed;
 
-	if (line[0] == '|')
-	{
-		sh_error(shell, ERR_UT, 1, "|");
+	if (!valid_pipes(shell, line))
 		return ;
-	}
 	tokens = ft_safesplitlist(line, '|', "\"'", false);
 	tokens_tmp = tokens;
 	while (tokens)

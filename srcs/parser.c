@@ -7,6 +7,14 @@ static void	parse_typo(t_shell *shell, t_args *arg)
 	char	*new;
 
 	arg->cmd = parse_line(shell, arg, arg->cmd);
+	arg->is_builtin = ft_isbuiltin(arg->cmd);
+	if (!arg->is_builtin)
+		arg->bin_path = builtin_bin_path(shell, arg->cmd);
+	if (arg->is_builtin || arg->bin_path)
+	{
+		arg->type = CMD;
+		return ;
+	}
 	new = ft_strnew(ft_strlen(arg->cmd));
 	fl = 0;
 	i = 0;

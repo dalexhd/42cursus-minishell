@@ -47,7 +47,7 @@ run_all_tests () {
 }
 
 run_tests () {
-	while read -r line; do
+	while IFS= read -r line; do
 		test_cmd=$(echo "$line" | cut -d ',' -f 1)
 		setup_cmd=$(echo "$line" | cut -d ',' -f 2- -s)
 		execute_shell "$test_cmd" "$setup_cmd"

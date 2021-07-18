@@ -17,7 +17,7 @@ char	*ft_strcut(char *str, int from, int to)
 	char	*begin;
 
 	if (from >= to)
-		return (" ");
+		return (ft_strdup(" "));
 	begin = ft_calloc(sizeof(char), (to - from) + 1);
 	ft_memcpy(begin, str + from, to);
 	return (begin);

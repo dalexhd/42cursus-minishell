@@ -1,0 +1,15 @@
+cd
+cd
+cd | pwd
+cd | pwd
+cd
+cd     | pwd
+; ; ;
+;;;
+; ;;
+export BASHCMD=bash ; $BASHCMD -c "echo it\'s working!"
+||
+echo | |
+echo something > > file ; cat < file
+echo something > file ; ls -la >> file ; cat file ; pwd
+echo "text" > file >> file1 ; cat file file1 ; rm -f file file1

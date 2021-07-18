@@ -55,6 +55,7 @@ typedef struct s_shell
 	t_bool	is_cmd;
 	t_slist	*parsed;
 	t_term	term;
+	t_bool	force_stop;
 	int		status;
 	char	*home_dir;
 	char	*tmp_dir;
@@ -127,6 +128,7 @@ t_bool		valid_quotes(t_shell *shell, char *cmd, int *i);
 t_bool		valid_redirects(t_shell *shell, char *cmd, int *i);
 t_bool		validate_str(t_shell *shell, char *cmd);
 t_bool		valid_commas(t_shell *shell, char *cmd);
+t_bool		valid_pipes(t_shell *shell, char *cmd);
 
 /*
 ** Define termcaps utils
