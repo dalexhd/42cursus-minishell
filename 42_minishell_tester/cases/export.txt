@@ -16,7 +16,6 @@ export TE-ST=100
 export -TEST=100
 export TEST-=100
 export _TEST=100
-export | grep "SHLVL"
 export TEST ; env | grep "TEST"
 export ==========
 export 1TEST=

@@ -33,6 +33,13 @@ execute_shell () {
 }
 
 replace_stderr () {
+	grep "minishell: -c" ${MINISHELL_STDERR_FILE} > /dev/null
+	if [ $? -eq 0 ]; then
+		sed -i $SED_STRING -e 's/bash: -c: line [0-9]*:/minishell:/g' -e '2d' ${MINISHELL_STDERR_FILE}
+	else
+		sed -i $SED_STRING -e 's/bash: line [0-9]*:/bash:/g' ${MINISHELL_STDERR_FILE}
+		sed -i $SED_STRING -e 's/bash:/minishell:/g' ${MINISHELL_STDERR_FILE}
+	fi
 	grep "bash: -c" ${BASH_STDERR_FILE} > /dev/null
 	if [ $? -eq 0 ]; then
 		sed -i $SED_STRING -e 's/bash: -c: line [0-9]*:/minishell:/g' -e '2d' ${BASH_STDERR_FILE}

@@ -8,10 +8,10 @@ t_aslist		*ft_safesplitlist_new(char *s, char c, char *set, t_bool force_set)
 	t_aslist	*list;
 	t_asrg		*arg;
 	char		*tmp;
-	char		next;
 	int			bef_bool;
 	int			bef_bool2;
 
+	(void)force_set;
 	fl = 0;
 	size = 0;
 	list = NULL;
@@ -36,7 +36,7 @@ t_aslist		*ft_safesplitlist_new(char *s, char c, char *set, t_bool force_set)
 				arg->concat = list && ft_aslstlast(list) && ft_aslstlast(list)->content->next != c;
 				ft_aslstadd_back(&list, ft_aslstnew(arg));
 			}
-			start += size + (!bef_bool2 || start[size] == c)  + (!bef_bool2 && start[size + 1] == c);
+			start += size + (!bef_bool2 || start[size] == c);
 			size = s[0] != c;
 		}
 		else
