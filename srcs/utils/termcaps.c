@@ -47,7 +47,7 @@ void	init_tc(t_shell *shell)
 	shell->term.cursor = 11;
 	shell->term.pos = 0;
 	old(shell);
-	//ft_hlstadd_front(&shell->term.history, ft_hlstnew(""));
+	ft_hlstadd_front(&shell->term.history, ft_hlstnew(""));
 	shell->term.term_name = getenv("TERM");
 	tgetent(NULL, shell->term.term_name);
 	if (tcgetattr(STDIN_FILENO, &shell->term.termios_raw) == -1)
