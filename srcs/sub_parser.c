@@ -21,7 +21,8 @@ void	parse_args(t_shell *shell, t_parsed **parsed, char *cmd)
 				arg->readable = false;
 				arg->spaced = ft_alstlast((*parsed)->args)->content->spaced;
 			}
-			if ((*parsed)->args && ft_alstlast((*parsed)->args) && !ft_alstlast((*parsed)->args)->content->readable)
+			if ((*parsed)->args && ft_alstlast((*parsed)->args)
+				&& !ft_alstlast((*parsed)->args)->content->readable)
 				arg->spaced = ft_alstlast((*parsed)->args)->content->spaced;
 			ft_alstadd_back(&(*parsed)->args, ft_alstnew(arg));
 			tmp = tmp->next;
