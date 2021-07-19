@@ -50,5 +50,6 @@
 # define ERR_FA "minishell: %s: filename argument required\n.: "
 # define ERR_UT "minishell: syntax error near unexpected token `%s'\n"
 # define ERR_UQ "minishell: Unmaching opening quotes at col %d: %s\n"
-
+# define ERR_UQ "minishell: Unmaching opening quotes at col %d: %s\n"
+# define ERR_UN "minishell: unset: `%s': not a valid identifier\n"
 #endif
