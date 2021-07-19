@@ -6,7 +6,7 @@ t_bool	valid_unset(t_shell *shell, char *val)
 
 	if (ft_isdigit(val[0]) || !(ft_isalnum(val[0]) || val[0] == '_'))
 	{
-		sh_error(shell, "minishell: unset: `%s': not a valid identifier\n", (val[0] != '+') + 1);
+		sh_error(shell, ERR_UN, (val[0] != '+') + 1);
 		return (false);
 	}
 	i = 1;
@@ -14,7 +14,7 @@ t_bool	valid_unset(t_shell *shell, char *val)
 	{
 		if (!(ft_isalnum(val[i]) || val[i] == '_'))
 		{
-			sh_error(shell, "minishell: unset: `%s': not a valid identifier\n", 1, val);
+			sh_error(shell, ERR_UN, 1, val);
 			return (false);
 		}
 		i++;
