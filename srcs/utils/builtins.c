@@ -103,7 +103,7 @@ char	*builtin_bin_path(t_shell *shell, char *builtin)
 			ft_split_del(folders);
 			return (path);
 		}
-		free(path);
+		ft_strdel(&path);
 		i++;
 	}
 	ft_split_del(folders);
