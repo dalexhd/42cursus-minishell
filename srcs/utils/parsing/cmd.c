@@ -55,9 +55,8 @@ static	char	*ret_cmd(char *cmd)
 		}
 		i++;
 	}
-	tmp[j] = 0;
-	free(cmd);
-	cmd = ft_strdup(tmp);
+	tmp[j] = '\0';
+	ft_strdel(&cmd);
 	return (tmp);
 }
 
