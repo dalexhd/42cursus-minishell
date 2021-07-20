@@ -36,7 +36,11 @@ static void	parse_typo(t_shell *shell, t_args *arg)
 	arg->cmd = parse_line(shell, arg, arg->cmd);
 	arg->is_builtin = ft_isbuiltin(arg->cmd);
 	if (!arg->is_builtin)
+	{
+		if (arg->bin_path)
+			ft_strdel(&arg->bin_path);
 		arg->bin_path = builtin_bin_path(shell, arg->cmd);
+	}
 	if (arg->is_builtin || arg->bin_path)
 	{
 		arg->type = CMD;

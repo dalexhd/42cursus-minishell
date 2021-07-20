@@ -82,7 +82,7 @@ void	lsh_split_line(t_shell *shell, char *line)
 	{
 		parsed = (t_parsed *)malloc(sizeof(t_parsed));
 		ft_slstadd_back(&shell->parsed, ft_slstnew(parsed));
-		parse_args(shell, &parsed, tokens->content->arg);
+		parse_args(shell, parsed, tokens->content->arg);
 		if (shell->parsed->content->args)
 		{
 			parsed->line = ft_strdup(line);

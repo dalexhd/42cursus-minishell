@@ -100,7 +100,7 @@ char		*get_current_dir(char *path);
 void		exec(t_shell *shell, t_parsed *parsed);
 void		run(t_shell *shell);
 char		*clean_str(t_shell *shell, t_args *arg, char *c);
-void		parse_args(t_shell *shell, t_parsed **parsed, char *cmd);
+void		parse_args(t_shell *shell, t_parsed *parsed, char *cmd);
 t_args		*parse_arg(t_shell *shell, t_alist *args, t_aslist *value);
 char		**ft_safesplit(t_shell *shell, t_alist *list);
 void		debug_log(char *string);
@@ -125,6 +125,7 @@ void		parse_commands(t_shell *shell, char *line);
 ** Memory
 */
 void		del_alst(t_args *args);
+void		del_slst(t_parsed *parsed);
 
 /*
 ** Vallidation
