@@ -28,76 +28,17 @@ int	get_quote_type(char *cmd)
 		return (N_QUOT);
 }
 
-static	int	filtering_args(t_alist **tmp, t_alist *args)
+t_bool	arg_is_readable(t_args *content)
 {
-	if (!args)
-		return (0);
-	else if (args->content->readable)
-		ft_alstadd_back(&(*tmp), ft_alstnew(args->content));
-	return (filtering_args(tmp, args->next));
+	return (content->readable);
 }
 
-void	filter_readable_args(t_slist **parsed)
+void	filter_readable_args(t_slist *parsed)
 {
-	t_alist	*tmp;
-
-	if (*parsed)
+	if (parsed)
 	{
-		tmp = (t_alist *)malloc(sizeof(t_alist));
-		tmp = NULL;
-		while (1)
-		{
-			if (!filtering_args(&tmp, (*parsed)->content->args))
-				break ;
-		}
-		(*parsed)->content->args = tmp;
-		filter_readable_args(&(*parsed)->next);
+		parsed->content->args = ft_alstfilter(parsed->content->args,
+				arg_is_readable, del_alst);
+		filter_readable_args(parsed->next);
 	}
-}
-
-static void	ft_safesplit_init(int *flags, int *size, t_aslist **list)
-{
-	*flags = 0;
-	*size = 0;
-	*list = NULL;
-}
-
-t_aslist		*ft_safesplitlist(char *s, char c, char *set, t_bool force_set)
-{
-	int			size;
-	int			fl;
-	char		*start;
-	t_aslist	*list;
-	t_asrg		*arg;
-	char		*tmp;
-
-	ft_safesplit_init(&fl, &size, &list);
-	start = s;
-	while (1)
-	{
-		if (ft_strchr(set, *s) && (!fl || fl & 1 << (ft_strchr(set, *s) - set)))
-			fl ^= 1 << (ft_strchr(set, *s) - set);
-		if ((!*s || (((force_set && ft_strchr(set, *s) && s[1] != c) || *s == c) && !fl))
-			|| (!fl && force_set && ft_strchr(set, *s) && s[1] != c))
-		{
-			if (size > 0)
-			{
-				tmp = ft_calloc(sizeof(char), size + (!fl && ft_strchr(set, *s)) + 1);
-				ft_memcpy(tmp, start, size + (!fl && ft_strchr(set, *s)));
-				arg = (t_asrg *)malloc(sizeof(t_asrg));
-				arg->arg = tmp;
-				arg->next = s[0];
-				arg->concat = list && ft_aslstlast(list) && ft_aslstlast(list)->content->next != c;
-				ft_aslstadd_back(&list, ft_aslstnew(arg));
-			}
-			start += size + 1;
-			size = 0;
-		}
-		else
-			size++;
-		if (!*s)
-			break ;
-		s++;
-	}
-	return (list);
 }

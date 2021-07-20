@@ -66,7 +66,8 @@ HISTORY_LISTS		=	lists/history/ft_hlstadd_back.c		lists/history/ft_hlstadd_front
 
 ARGS_LISTS			=	lists/args/ft_alstadd_back.c		lists/args/ft_alstadd_front.c		lists/args/ft_alstclear.c	\
 						lists/args/ft_alstdelone.c			lists/args/ft_alstfirst.c			lists/args/ft_alstlast.c	\
-						lists/args/ft_alstnew.c				lists/args/ft_alstsize.c
+						lists/args/ft_alstnew.c				lists/args/ft_alstsize.c			lists/args/ft_alstmap.c		\
+						lists/args/ft_alstfilter.c
 
 SARG_LISTS			=	lists/arg/ft_aslstadd_back.c		lists/arg/ft_aslstadd_front.c		lists/arg/ft_aslstclear.c	\
 						lists/arg/ft_aslstdelone.c			lists/arg/ft_aslstfirst.c			lists/arg/ft_aslstlast.c	\

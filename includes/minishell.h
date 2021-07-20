@@ -106,7 +106,8 @@ char		**ft_safesplit(t_shell *shell, t_alist *list);
 void		debug_log(char *string);
 t_bool		has_redirect(t_rlist *redirect);
 t_bool		arg_has_red(t_alist *arg);
-void		filter_readable_args(t_slist **parsed);
+t_bool		arg_is_readable(t_args *content);
+void		filter_readable_args(t_slist *parsed);
 int			get_quote_type(char *cmd);
 t_aslist	*ft_safesplitlist(char *s, char c, char *set, t_bool force_set);
 t_aslist	*ft_safesplitlist_new(char *s, char c, char *set, t_bool force_set);
@@ -119,6 +120,11 @@ void		parse_dollar(t_shell *shell, char **cmd, int *i, char **line);
 void		parse_tilde(t_shell *shell, char *cmd, int *i, char **line);
 char		*remove_cmd_quotes(char *cmd);
 void		parse_commands(t_shell *shell, char *line);
+
+/*
+** Memory
+*/
+void		del_alst(t_args *args);
 
 /*
 ** Vallidation
