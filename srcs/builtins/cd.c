@@ -48,8 +48,7 @@ void	ft_cd(t_shell *shell, char **args)
 
 	if (args[1] && args[2])
 	{
-		sh_error(shell, "minishell: cd: too many arguments\n", 1,
-			dir, strerror(errno));
+		sh_error(shell, "minishell: cd: too many arguments\n", 1);
 		return ;
 	}
 	pwd = ft_cd_checker(shell, &dir, args);
