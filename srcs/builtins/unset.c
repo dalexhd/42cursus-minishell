@@ -22,33 +22,40 @@ t_bool	valid_unset(t_shell *shell, char *val)
 	return (true);
 }
 
-static	void	ft_internal_unset(t_shell *shell, char *arg)
+static void	inter_internal(t_shell *shell, char ***tmp, char *arg)
 {
+	char	*tmp2;
 	int		i;
 	int		u;
-	char	**tmp;
-	char	*tmp2;
 
 	i = 0;
 	u = 0;
+	while (shell->envp[i] != 0)
+	{
+		tmp2 = ft_strjoin(arg, "=");
+		if (ft_strncmp(shell->envp[i], tmp2, ft_strlen(arg) + 1) != 0)
+			(*tmp)[u++] = shell->envp[i];
+		ft_strdel(&tmp2);
+		i++;
+	}
+}
+
+static	void	ft_internal_unset(t_shell *shell, char *arg)
+{
+	int		i;
+	char	**tmp;
+
+	i = 0;
 	if (!arg || !valid_unset(shell, arg))
 		return ;
 	while (shell->envp[i] != 0)
 		i++;
 	tmp = calloc(i + 1, sizeof(char *));
-	i = 0;
 	if (ft_strcmp(arg, "HOME") == 0)
 		shell->home_dir = NULL;
 	else
 	{
-		while (shell->envp[i] != 0)
-		{
-			tmp2 = ft_strjoin(arg, "=");
-			if (ft_strncmp(shell->envp[i], tmp2, ft_strlen(arg) + 1) != 0)
-				tmp[u++] = shell->envp[i];
-			ft_strdel(&tmp2);
-			i++;
-		}
+		inter_internal(shell, &tmp, arg);
 		shell->envp = tmp;
 	}
 }

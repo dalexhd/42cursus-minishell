@@ -18,7 +18,8 @@ static int	slowquo(char **cmd, int i)
 {
 	char	*tmp;
 
-	if (i > 0 && (*cmd)[i - 1] != '<' && (*cmd)[i - 1] != '>' && (*cmd)[i - 1] != ' ')
+	if (i > 0 && (*cmd)[i - 1] != '<' &&
+		(*cmd)[i - 1] != '>' && (*cmd)[i - 1] != ' ')
 	{
 		tmp = ft_strduplen(*cmd, ft_strlen(*cmd) + 1);
 		ft_strdel(&(*cmd));
