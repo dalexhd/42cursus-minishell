@@ -27,6 +27,7 @@ static	void	ft_internal_unset(t_shell *shell, char *arg)
 	int		i;
 	int		u;
 	char	**tmp;
+	char	*tmp2;
 
 	i = 0;
 	u = 0;
@@ -42,9 +43,10 @@ static	void	ft_internal_unset(t_shell *shell, char *arg)
 	{
 		while (shell->envp[i] != 0)
 		{
-			if (ft_strncmp(shell->envp[i], ft_strjoin(arg, "="),
-					ft_strlen(arg) + 1) != 0)
+			tmp2 = ft_strjoin(arg, "=");
+			if (ft_strncmp(shell->envp[i], tmp2, ft_strlen(arg) + 1) != 0)
 				tmp[u++] = shell->envp[i];
+			ft_strdel(&tmp2);
 			i++;
 		}
 		shell->envp = tmp;

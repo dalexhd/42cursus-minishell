@@ -14,18 +14,18 @@ static int	quosingle(char c, int quo, int qd)
 	return (quo);
 }
 
-static int	slowquo(char *cmd, int i)
+static int	slowquo(char **cmd, int i)
 {
-	if (i > 0 && cmd[i - 1] != '<' && cmd[i - 1] != '>' && cmd[i - 1] != ' ')
+	if (i > 0 && (*cmd)[i - 1] != '<' && (*cmd)[i - 1] != '>' && (*cmd)[i - 1] != ' ')
 	{
-		cmd = ft_strduplen(cmd, ft_strlen(cmd) + 1);
-		ft_insertchar(cmd, ' ', i);
+		*cmd = ft_strduplen(*cmd, ft_strlen(*cmd) + 1);
+		ft_insertchar(*cmd, ' ', i);
 		i++;
 	}
-	if (cmd[i + 1] != '<' && cmd[i + 1] != '>' && cmd[i + 1] != ' ')
+	if ((*cmd)[i + 1] != '<' && (*cmd)[i + 1] != '>' && (*cmd)[i + 1] != ' ')
 	{
-		cmd = ft_strduplen(cmd, ft_strlen(cmd) + 1);
-		ft_insertchar(cmd, ' ', i + 1);
+		*cmd = ft_strduplen(*cmd, ft_strlen(*cmd) + 1);
+		ft_insertchar(*cmd, ' ', i + 1);
 		i++;
 	}
 	return (i);
@@ -35,12 +35,10 @@ char	*fix_cmd(char *cmd)
 {
 	size_t	i;
 	int		quo[2];
-	char	*tmp;
 
 	i = 0;
 	quo[0] = 0;
 	quo[1] = 0;
-	tmp = cmd;
 	while (i < ft_strlen(cmd))
 	{
 		quo[0] = quodouble(cmd[i], quo[0]);
@@ -49,10 +47,8 @@ char	*fix_cmd(char *cmd)
 			&& cmd[i + 1] != '\'' && cmd[i + 1] != '"')
 			i++;
 		if ((!quo[0] && !quo[1]) && (cmd[i] == '<' || cmd[i] == '>'))
-		{
-			i = slowquo(cmd, i);
-		}
+			i = slowquo(&cmd, i);
 		i++;
 	}
-	return (tmp);
+	return (cmd);
 }

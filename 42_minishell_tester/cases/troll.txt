@@ -13,3 +13,4 @@ echo | |
 echo something > > file ; cat < file
 echo something > file ; ls -la >> file ; cat file ; pwd
 echo "text" > file >> file1 ; cat file file1 ; rm -f file file1
+ls-la>test ; cat test

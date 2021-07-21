@@ -18,15 +18,6 @@ t_shell	*init_shell(char **envp)
 	return (shell);
 }
 
-void	del_slst(t_parsed *parsed)
-{
-	if (parsed->line)
-		free(parsed->line);
-	if (parsed->redirects)
-		ft_rlstclear(&parsed->redirects, free);
-	free(parsed);
-}
-
 void	del_alst(t_args *args)
 {
 	if (args && args->cmd)
@@ -40,10 +31,19 @@ void	del_alst(t_args *args)
 	free(args);
 }
 
+void	del_slst(t_parsed *parsed)
+{
+	if (parsed->line)
+		free(parsed->line);
+	if (parsed->redirects)
+		ft_rlstclear(&parsed->redirects, free);
+	if (parsed->args)
+		ft_alstclear(&parsed->args, del_alst);
+	free(parsed);
+}
+
 void	clear_cmd(t_shell *shell)
 {
-	if (shell->parsed && shell->parsed->content->args)
-		ft_alstclear(&shell->parsed->content->args, del_alst);
 	if (shell->mierdecilla)
 		free(shell->mierdecilla);
 	if (shell->parsed)

@@ -60,10 +60,11 @@ char	*clean_str(t_shell *shell, t_args *arg, char *c)
 	int		i;
 	char	*res;
 	char	*status;
+	char	*tmp;
 
 	if (arg)
 		i = 0;
-	res = ft_strnew(ft_strlen(c) + 1);
+	res = ft_calloc(ft_strlen(c) + 1, sizeof(char *));
 	i = 0;
 	while (i < (int)ft_strlen(c))
 	{
@@ -93,7 +94,8 @@ char	*clean_str(t_shell *shell, t_args *arg, char *c)
 			ft_strncat(res, &c[i], 1);
 		i++;
 	}
-	res = ft_strdup(res);
 	ft_strdel(&c);
-	return (res);
+	tmp = ft_strdup(res);
+	ft_strdel(&res);
+	return (tmp);
 }
