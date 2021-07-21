@@ -101,7 +101,7 @@ void		exec(t_shell *shell, t_parsed *parsed);
 void		run(t_shell *shell);
 char		*clean_str(t_shell *shell, t_args *arg, char *c);
 t_aslist	*second_parse(t_shell *shell, t_parsed *parsed, t_aslist *tmp);
-void		parse_args(t_shell *shell, t_parsed *parsed, char *cmd);
+void		parse_args(t_shell *shell, t_parsed *parsed, char **cmd);
 t_args		*parse_arg(t_shell *shell, t_alist *args, t_aslist *value);
 char		**ft_safesplit(t_shell *shell, t_alist *list);
 void		debug_log(char *string);
