@@ -1,17 +1,17 @@
 #include "../includes/minishell.h"
 
-void	echoes(char **args, t_bool *skip_new_line, size_t *i)
+void	echoes(char ***args, t_bool *skip_new_line, size_t *i)
 {
 	int	u;
 
-	if (!args[1])
+	if (!(*args)[1])
 		ft_printf("\n");
-	if (args[*i] && !ft_strncmp(args[*i], "-n", 2))
+	if ((*args)[*i] && !ft_strncmp((*args)[*i], "-n", 2))
 	{
 		u = 2;
-		while (u < (int)ft_strlen(args[*i]))
+		while (u < (int)ft_strlen((*args)[*i]))
 		{
-			if (args[*i][u] != 'n')
+			if ((*args)[*i][u] != 'n')
 			{
 				u = -1;
 				break ;
@@ -21,10 +21,10 @@ void	echoes(char **args, t_bool *skip_new_line, size_t *i)
 		if (u != -1)
 		{
 			*skip_new_line = true;
-			while (args[*i + 1] && (!ft_strncmp(args[*i + 1], "-n", 2)
-					&& args[*i + 1][ft_strlen(args[*i + 1]) - 1] == 'n'))
+			while ((*args)[*i + 1] && (!ft_strncmp((*args)[*i + 1], "-n", 2)
+					&& (*args)[*i + 1][ft_strlen((*args)[*i + 1]) - 1] == 'n'))
 				(*i)++;
-			args = &args[1];
+			*args = &(*args)[1];
 		}
 	}
 }
@@ -36,7 +36,7 @@ int	ft_echo(t_shell *shell, char **args)
 
 	skip_new_line = false;
 	i = 1;
-	echoes(args, &skip_new_line, &i);
+	echoes(&args, &skip_new_line, &i);
 	while (args[i])
 	{
 		if (args[i + 1])
