@@ -28,7 +28,6 @@ void	parse_args(t_shell *shell, t_parsed *parsed, char *cmd)
 			tmp = tmp->next;
 		}
 		ft_aslstclear(&tmplist, free);
-		free(tmplist);
 	}
 }
 

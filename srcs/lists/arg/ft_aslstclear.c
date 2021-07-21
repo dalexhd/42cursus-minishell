@@ -12,6 +12,7 @@ void	ft_aslstclear(t_aslist **lst, void (*del)(void *))
 		{
 			next = new->next;
 			del(new->content->arg);
+			free(new->content);
 			free(new);
 			new = next;
 		}
