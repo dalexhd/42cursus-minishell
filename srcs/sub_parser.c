@@ -17,17 +17,16 @@ t_aslist	*second_parse(t_shell *shell, t_parsed *parsed, t_aslist *tmp)
 	return (tmp);
 }
 
-void	parse_args(t_shell *shell, t_parsed *parsed, char *cmd)
+void	parse_args(t_shell *shell, t_parsed *parsed, char **cmd)
 {
 	t_aslist	*tmp;
 	t_aslist	*tmplist;
-	char		*tmpchar;
 
 	parsed->args = NULL;
-	tmpchar = fix_cmd(cmd);
-	if (validate_str(shell, tmpchar))
+	*cmd = fix_cmd(*cmd);
+	if (validate_str(shell, *cmd))
 	{
-		tmp = ft_safesplitlist_new(tmpchar, ' ', "\"'", true);
+		tmp = ft_safesplitlist_new(*cmd, ' ', "\"'", true);
 		tmplist = tmp;
 		while (tmp)
 		{

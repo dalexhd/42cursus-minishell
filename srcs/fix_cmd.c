@@ -16,15 +16,21 @@ static int	quosingle(char c, int quo, int qd)
 
 static int	slowquo(char **cmd, int i)
 {
+	char	*tmp;
+
 	if (i > 0 && (*cmd)[i - 1] != '<' && (*cmd)[i - 1] != '>' && (*cmd)[i - 1] != ' ')
 	{
-		*cmd = ft_strduplen(*cmd, ft_strlen(*cmd) + 1);
+		tmp = ft_strduplen(*cmd, ft_strlen(*cmd) + 1);
+		ft_strdel(&(*cmd));
+		*cmd = tmp;
 		ft_insertchar(*cmd, ' ', i);
 		i++;
 	}
 	if ((*cmd)[i + 1] != '<' && (*cmd)[i + 1] != '>' && (*cmd)[i + 1] != ' ')
 	{
-		*cmd = ft_strduplen(*cmd, ft_strlen(*cmd) + 1);
+		tmp = ft_strduplen(*cmd, ft_strlen(*cmd) + 1);
+		ft_strdel(&(*cmd));
+		*cmd = tmp;
 		ft_insertchar(*cmd, ' ', i + 1);
 		i++;
 	}
