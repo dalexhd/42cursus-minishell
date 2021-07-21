@@ -16,6 +16,8 @@ static int	quosingle(char c, int quo, int qd)
 
 static int	slowquo(char **cmd, int i)
 {
+	char	*tmp;
+
 	if (i > 0 && (*cmd)[i - 1] != '<' &&
 		(*cmd)[i - 1] != '>' && (*cmd)[i - 1] != ' ')
 	{
