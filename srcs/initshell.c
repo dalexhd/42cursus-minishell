@@ -22,6 +22,8 @@ void	del_slst(t_parsed *parsed)
 {
 	if (parsed->line)
 		free(parsed->line);
+	if (parsed->redirects)
+		ft_rlstclear(&parsed->redirects, free);
 	free(parsed);
 }
 
@@ -29,18 +31,10 @@ void	del_alst(t_args *args)
 {
 	if (args && args->cmd)
 		ft_strdel(&args->cmd);
-	if (args)
-	{
-		if (args->redirect->in.status)
-			ft_strdel(&args->redirect->in.file);
-		if (args->redirect->out.status)
-			ft_strdel(&args->redirect->out.file);
-		if (args->redirect->aout.status)
-			ft_strdel(&args->redirect->aout.file);
-		free(args->redirect);
-	}
 	if (args && args->bin_path)
 		ft_strdel(&args->bin_path);
+	if (args)
+		free(args->redirect);
 	if (args && args->file)
 		ft_strdel(&args->file);
 	free(args);

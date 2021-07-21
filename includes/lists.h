@@ -132,7 +132,7 @@ int				ft_rlstsize(t_rlist *lst);
 t_rlist			*ft_rlstlast(t_rlist *lst);
 void			ft_rlstadd_back(t_rlist **alst, t_rlist *new);
 void			ft_rlstdelone(t_rlist *lst, void (*del)(t_redirect *));
-void			ft_rlstclear(t_rlist **lst, void (*del)(t_redirect *));
+void			ft_rlstclear(t_rlist **lst, void (*del)(void *));
 void			ft_rlstiter(t_rlist *lst, void (*f)(t_redirect *));
 
 /*
