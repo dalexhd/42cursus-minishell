@@ -170,7 +170,8 @@ void			ft_alstadd_back(t_alist **alst, t_alist *new);
 void			ft_alstdelone(t_alist *lst, void (*del)(t_args *));
 void			ft_alstclear(t_alist **lst, void (*del)(t_args *));
 void			ft_alstiter(t_alist *lst, void (*f)(t_args *));
-t_alist			*ft_alstmap(t_alist *lst, void *(*f)(t_args *), void (*del)(t_args *));
+t_alist			*ft_alstmap(t_alist *lst, void *(*f)(t_args *),
+					void (*del)(t_args *));
 t_alist			*ft_alstfirst(t_alist *lst);
 t_alist			*ft_alstfilter(t_alist *lst, t_bool (*f)(t_args *),
 					void (*del)(t_args *));

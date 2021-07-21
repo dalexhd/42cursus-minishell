@@ -1,8 +1,24 @@
 #include "../includes/minishell.h"
 
+t_aslist	*second_parse(t_shell *shell, t_parsed *parsed, t_aslist *tmp)
+{
+	t_args	*arg;
+
+	arg = parse_arg(shell, parsed->args, tmp);
+	if (parsed->args && arg->cmd[0] == DEL)
+	{
+		arg->readable = false;
+		arg->spaced = ft_alstlast(parsed->args)->content->spaced;
+	}
+	if (parsed->args && ft_alstlast(parsed->args)
+		&& !ft_alstlast(parsed->args)->content->readable)
+		arg->spaced = ft_alstlast(parsed->args)->content->spaced;
+	ft_alstadd_back(&parsed->args, ft_alstnew(arg));
+	return (tmp);
+}
+
 void	parse_args(t_shell *shell, t_parsed *parsed, char *cmd)
 {
-	t_args		*arg;
 	t_aslist	*tmp;
 	t_aslist	*tmplist;
 	char		*tmpchar;
@@ -15,16 +31,7 @@ void	parse_args(t_shell *shell, t_parsed *parsed, char *cmd)
 		tmplist = tmp;
 		while (tmp)
 		{
-			arg = parse_arg(shell, parsed->args, tmp);
-			if (parsed->args && arg->cmd[0] == DEL)
-			{
-				arg->readable = false;
-				arg->spaced = ft_alstlast(parsed->args)->content->spaced;
-			}
-			if (parsed->args && ft_alstlast(parsed->args)
-				&& !ft_alstlast(parsed->args)->content->readable)
-				arg->spaced = ft_alstlast(parsed->args)->content->spaced;
-			ft_alstadd_back(&parsed->args, ft_alstnew(arg));
+			tmp = second_parse(shell, parsed, tmp);
 			tmp = tmp->next;
 		}
 		ft_aslstclear(&tmplist, free);
