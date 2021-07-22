@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/22 20:45:27 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/18 17:30:01 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/07/22 17:08:02 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,4 +132,7 @@ t_llong			ft_atoll(const char *str);
 size_t			ft_countnumbers(char const *str);
 char			*ft_strcut(char *str, int from, int to);
 char			*ft_insertchar(char *s, char c, size_t pos);
+char			**ft_split_dup(char **s);
+void			*ft_realloc(void *ptr, size_t size);
+size_t			ft_splitlen(char **s);
 #endif

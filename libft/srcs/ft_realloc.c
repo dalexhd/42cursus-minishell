@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split_del.c                                     :+:      :+:    :+:   */
+/*   ft_realloc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/08 19:21:03 by aborboll          #+#    #+#             */
-/*   Updated: 2021/07/22 17:55:51 by aborboll         ###   ########.fr       */
+/*   Created: 2019/11/05 13:42:14 by aborboll          #+#    #+#             */
+/*   Updated: 2021/07/22 17:34:48 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-void	ft_split_del(char **ptr)
+void	*ft_realloc(void *ptr, size_t size)
 {
-	int	i;
+	char	*new;
 
-	i = 0;
-	while (ptr[i])
-	{
-		ft_strdel(&ptr[i]);
-		i++;
-	}
+	if (!ptr)
+		return (malloc(size));
+	new = malloc(size);
+	ft_memcpy(new, ptr, size);
 	free(ptr);
+	return (new);
 }

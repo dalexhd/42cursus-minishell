@@ -26,7 +26,6 @@ static void	parse_typo_sec(t_args *arg, char *new)
 	arg->cmd = ft_strdup(new);
 	arg->bin_path = ft_strdup(new);
 	arg->type = ARG;
-	ft_strdel(&new);
 }
 
 static void	parse_typo(t_shell *shell, t_args *arg)
@@ -48,6 +47,7 @@ static void	parse_typo(t_shell *shell, t_args *arg)
 	}
 	new = ft_strnew(ft_strlen(arg->cmd));
 	parse_typo_sec(arg, new);
+	ft_strdel(&new);
 }
 
 static	void	parse_type(t_shell *shell, t_alist *args, t_args *arg)

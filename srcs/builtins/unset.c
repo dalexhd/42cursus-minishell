@@ -34,7 +34,7 @@ static void	inter_internal(t_shell *shell, char ***tmp, char *arg)
 	{
 		tmp2 = ft_strjoin(arg, "=");
 		if (ft_strncmp(shell->envp[i], tmp2, ft_strlen(arg) + 1) != 0)
-			(*tmp)[u++] = shell->envp[i];
+			(*tmp)[u++] = ft_strdup(shell->envp[i]);
 		ft_strdel(&tmp2);
 		i++;
 	}
@@ -50,12 +50,13 @@ static	void	ft_internal_unset(t_shell *shell, char *arg)
 		return ;
 	while (shell->envp[i] != 0)
 		i++;
-	tmp = calloc(i + 1, sizeof(char *));
+	tmp = ft_calloc(i + 1, sizeof(char *));
 	if (ft_strcmp(arg, "HOME") == 0)
 		shell->home_dir = NULL;
 	else
 	{
 		inter_internal(shell, &tmp, arg);
+		ft_split_del(shell->envp);
 		shell->envp = tmp;
 	}
 }

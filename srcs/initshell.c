@@ -8,7 +8,7 @@ t_shell	*init_shell(char **envp)
 	bzero(shell, sizeof(t_shell));
 	g_running = true;
 	shell->should_wait = true;
-	shell->envp = envp;
+	shell->envp = ft_split_dup(envp);
 	shell->parsed = NULL;
 	shell->first = true;
 	shell->is_cmd = false;
