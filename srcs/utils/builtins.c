@@ -84,28 +84,31 @@ char	*builtin_bin_path(t_shell *shell, char *builtin)
 	char	*path;
 	char	*path_env;
 
-	if (file_exists(builtin))
-		return (ft_strdup(builtin));
-	path_env = ft_getenv(shell, "PATH");
-	if (!path_env)
+	if (!file_exists(builtin)) //negado para pasar el return al final
 	{
-		sh_error(shell, ERR_N_FILE_DIR, 127, builtin);
-		shell->parsed->content->valid = false;
-		return (ft_strdup(builtin));
-	}
-	folders = ft_split(path_env, ':');
-	i = 0;
-	while (folders[i])
-	{
-		path = ft_strjoin_free(ft_strdup(folders[i]), ft_strjoin("/", builtin));
-		if (file_exists(path))
+		path_env = ft_getenv(shell, "PATH");
+		if (!path_env)
 		{
-			ft_split_del(folders);
-			return (path);
+			sh_error(shell, ERR_N_FILE_DIR, 127, builtin);
+			shell->parsed->content->valid = false;
+			return (ft_strdup(builtin));
 		}
-		ft_strdel(&path);
-		i++;
+		folders = ft_split(path_env, ':');
+		i = 0;
+		while (folders[i])
+		{
+			path = ft_strjoin_free(ft_strdup(folders[i]), ft_strjoin("/", builtin));
+			if (file_exists(path))
+			{
+				ft_split_del(folders);
+				return (path);
+			}
+			ft_strdel(&path);
+			i++;
+		}
+		ft_split_del(folders);
 	}
-	ft_split_del(folders);
+	else
+		return (ft_strdup(builtin));
 	return (NULL);
 }
