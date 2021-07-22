@@ -143,6 +143,7 @@ t_bool		valid_pipes(t_shell *shell, char *cmd);
 */
 void		init_tc(t_shell *shell);
 void		end_tc(t_shell *shell);
+void		enable_raw_mode(t_shell *shell);
 void		loureed(t_shell *shell);
 void		ft_printshell(t_shell *shell);
 void		ctld(t_shell *shell);
