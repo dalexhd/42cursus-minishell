@@ -65,6 +65,7 @@ char	*clean_str(t_shell *shell, t_args *arg, char *c)
 	if (arg)
 		i = 0;
 	res = ft_calloc(ft_strlen(c) + 1, sizeof(char *));
+	status = NULL;
 	i = 0;
 	while (i < (int)ft_strlen(c))
 	{
@@ -95,6 +96,8 @@ char	*clean_str(t_shell *shell, t_args *arg, char *c)
 		i++;
 	}
 	ft_strdel(&c);
+	if (status)
+		ft_strdel(&status);
 	tmp = ft_strdup(res);
 	ft_strdel(&res);
 	return (tmp);
