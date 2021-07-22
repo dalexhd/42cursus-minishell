@@ -19,7 +19,7 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 				tokens[i] = ft_itoa(shell->status);
 			else
 			{
-				if (i > 1 && list->prev->content->type != FLAG && !c->spaced)
+				if (i > 1 && list->prev && list->prev->content->type != FLAG && !c->spaced)
 				{
 					tokens[i - 1] = ft_strjoin_free(tokens[i - 1], ft_strdup(c->cmd));
 					i--;

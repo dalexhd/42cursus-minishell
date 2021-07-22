@@ -6,5 +6,6 @@ void	ft_alstdelone(t_alist *lst, void (*del)(t_args *))
 	{
 		del(lst->content);
 		free(lst);
+		lst = NULL;
 	}
 }
