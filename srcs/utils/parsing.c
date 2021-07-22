@@ -95,7 +95,6 @@ char	*clean_str(t_shell *shell, t_args *arg, char *c)
 			ft_strncat(res, &c[i], 1);
 		i++;
 	}
-	ft_strdel(&c);
 	if (status)
 		ft_strdel(&status);
 	tmp = ft_strdup(res);

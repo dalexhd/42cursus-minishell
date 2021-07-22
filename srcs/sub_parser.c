@@ -61,7 +61,15 @@ void	parse_commands(t_shell *shell, char *line)
 
 char	*parse_line(t_shell *shell, t_args *arg, char *cmd)
 {
+	char	*tmp;
+	char	*res;
+
 	if (cmd)
-		return (clean_str(shell, arg, cmd));
+	{
+		tmp = arg->cmd;
+		res = clean_str(shell, arg, cmd);
+		ft_strdel(&tmp);
+		return (res);
+	}
 	return (cmd);
 }
