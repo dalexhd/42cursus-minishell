@@ -21,5 +21,6 @@ void	ft_exit(t_shell *shell, char **args)
 		sh_error(shell, "minishell: exit: too many arguments\n", 1);
 	else
 		shell->status = number;
+	ft_strdel(&arg);
 	g_running = false;
 }
