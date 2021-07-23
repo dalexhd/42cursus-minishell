@@ -31,7 +31,7 @@ void	parse_tilde(t_shell *shell, char *cmd, int *i, char **line)
 			(*i)++;
 		}
 		(*i)--;
-		ft_strcat(*line, tmp);
+		*line = ft_strjoin_free(*line, tmp);
 	}
 	else
 		ft_strcat(*line, "~");
