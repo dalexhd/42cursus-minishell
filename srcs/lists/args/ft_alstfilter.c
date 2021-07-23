@@ -20,6 +20,16 @@ static	t_alist	*ft_alstpush(t_alist **lst, t_alist *sec)
 	return (*lst);
 }
 
+static	void	prev_alst(t_alist *lst)
+{
+	if (lst)
+	{
+		if (lst->next)
+			lst->next->prev = lst;
+		prev_alst(lst->next);
+	}
+}
+
 t_alist	*ft_alstfilter(t_alist *lst, t_bool (*f)(t_args *),
 	void (*del)(t_args *))
 {
@@ -39,5 +49,6 @@ t_alist	*ft_alstfilter(t_alist *lst, t_bool (*f)(t_args *),
 			ft_alstdelone(lst, del);
 		lst = next;
 	}
+	prev_alst(result);
 	return (result);
 }

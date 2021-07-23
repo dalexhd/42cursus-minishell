@@ -22,7 +22,7 @@ char	*ft_getenv(t_shell *shell, char *env)
 
 	tmp = ft_strjoin(env, "=");
 	i = 0;
-	while (shell->envp[i] != 0)
+	while (shell->envp[i])
 	{
 		if (ft_strncmp(shell->envp[i], tmp, ft_strlen(tmp)) == 0)
 		{

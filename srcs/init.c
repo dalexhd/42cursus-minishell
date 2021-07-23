@@ -26,6 +26,7 @@ static int	split(t_redirect *redirect, t_alist *args,
 	t_parsed *parsed, t_rstatus *status)
 {
 	status->status = true;
+	ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
 	if (!args->next)
 	{
 		ft_error(ERR_UT, false, "newline");
@@ -36,7 +37,6 @@ static int	split(t_redirect *redirect, t_alist *args,
 	fill_redirect(status, args);
 	args->content->readable = false;
 	args->next->content->readable = false;
-	ft_rlstadd_back(&parsed->redirects, ft_rlstnew(redirect));
 	return (0);
 }
 

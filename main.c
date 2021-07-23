@@ -7,6 +7,8 @@ static int	shell_clear(t_shell *shell)
 	status = shell->status;
 	if (shell->tmp_dir)
 		free(shell->tmp_dir);
+	if (shell->envp)
+		ft_split_del(shell->envp);
 	ft_hlstclear(&shell->term.history, free);
 	free(shell);
 	if (status != 0)

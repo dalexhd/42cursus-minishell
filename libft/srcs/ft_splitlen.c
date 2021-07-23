@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split_del.c                                     :+:      :+:    :+:   */
+/*   ft_splitlen.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/08 19:21:03 by aborboll          #+#    #+#             */
-/*   Updated: 2021/07/22 17:55:51 by aborboll         ###   ########.fr       */
+/*   Created: 2019/11/05 13:42:14 by aborboll          #+#    #+#             */
+/*   Updated: 2021/07/22 17:07:38 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-void	ft_split_del(char **ptr)
+size_t	ft_splitlen(char **s)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
-	while (ptr[i])
-	{
-		ft_strdel(&ptr[i]);
+	while (s[i])
 		i++;
-	}
-	free(ptr);
+	return (i);
 }

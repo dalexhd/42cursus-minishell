@@ -19,7 +19,7 @@ char	**ft_safesplit(t_shell *shell, t_alist *list)
 				tokens[i] = ft_itoa(shell->status);
 			else
 			{
-				if (i > 1 && list->prev->content->type != FLAG && !c->spaced)
+				if (i > 1 && list->prev && list->prev->content->type != FLAG && !c->spaced)
 				{
 					tokens[i - 1] = ft_strjoin_free(tokens[i - 1], ft_strdup(c->cmd));
 					i--;
@@ -65,6 +65,7 @@ char	*clean_str(t_shell *shell, t_args *arg, char *c)
 	if (arg)
 		i = 0;
 	res = ft_calloc(ft_strlen(c) + 1, sizeof(char *));
+	status = NULL;
 	i = 0;
 	while (i < (int)ft_strlen(c))
 	{
@@ -94,7 +95,8 @@ char	*clean_str(t_shell *shell, t_args *arg, char *c)
 			ft_strncat(res, &c[i], 1);
 		i++;
 	}
-	ft_strdel(&c);
+	if (status)
+		ft_strdel(&status);
 	tmp = ft_strdup(res);
 	ft_strdel(&res);
 	return (tmp);

@@ -1,5 +1,12 @@
 #include "../../includes/minishell.h"
 
+static	void	ft_exit_no_arg(t_shell *shell)
+{
+	g_running = false;
+	ft_printf("exit\n");
+	shell->status = 0;
+}
+
 void	ft_exit(t_shell *shell, char **args)
 {
 	size_t	i;
@@ -8,6 +15,8 @@ void	ft_exit(t_shell *shell, char **args)
 
 	i = 1;
 	arg = ft_strtrim(args[1], " ");
+	if (!arg)
+		return (ft_exit_no_arg(shell));
 	number = ft_atoll(arg);
 	if ((((arg[0] == '-' && (!arg[1] || !ft_strevery(&arg[1], ft_isdigit)))
 				|| (arg[0] != '-' && !ft_strevery(arg, ft_isdigit)))
@@ -21,5 +30,6 @@ void	ft_exit(t_shell *shell, char **args)
 		sh_error(shell, "minishell: exit: too many arguments\n", 1);
 	else
 		shell->status = number;
+	ft_strdel(&arg);
 	g_running = false;
 }

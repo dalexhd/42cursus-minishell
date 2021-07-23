@@ -25,13 +25,13 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char **line)
 	char	*tmp;
 	char	*aux;
 
-	tmp = ft_strnew(1);
 	if (ft_isdigit((*cmd)[*i + 1]))
 	{
 		*cmd = ft_strcut(*cmd, 2, ft_strlen(*cmd));
 		(*i)--;
 		return ;
 	}
+	tmp = ft_strnew(1);
 	aux = ft_strdup(*cmd);
 	(*i)++;
 	while (aux[*i] && ft_isenv(aux[*i]))

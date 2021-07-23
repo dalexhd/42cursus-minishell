@@ -15,12 +15,12 @@ void	ft_printshell(t_shell *shell)
 	if (shell->term.new_line)
 	{
 		ft_fprintf(STDOUT_FILENO,
-			C_GREEN "\n%s " C_GREEN "(%i)❯ " C_X, dir, shell->status);
+			C_GREEN "\n%s " C_GREEN "(%i)> " C_X, dir, shell->status);
 		shell->term.new_line = false;
 	}
 	else
 		ft_fprintf(STDOUT_FILENO,
-			C_GREEN "%s " C_GREEN "(%i)❯ " C_X, dir, shell->status);
+			C_GREEN "%s " C_GREEN "(%i)> " C_X, dir, shell->status);
 	free(dir);
 	free(pwd);
 }
