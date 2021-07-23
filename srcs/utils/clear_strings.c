@@ -1,13 +1,13 @@
 #include "../../includes/minishell.h"
 
-static void	no_quot(t_shell *shell, t_args *a, char *c, int *i, char *res)
+static void	no_quot(t_shell *shell, char *c, int *i, char *res)
 {
-	if (a->quot_type == N_QUOT && c[*i] == '\\')
+	if (c[*i] == '\\')
 	{
 		ft_strncat(res, &c[*i + (ft_strchr("`\\", c[*i + 1]) == NULL)], 1);
 		(*i)++;
 	}
-	else if (a->quot_type == N_QUOT && c[*i] == '~')
+	else if (c[*i] == '~')
 		parse_tilde(shell, c, i, &(res));
 }
 
@@ -24,7 +24,7 @@ char	*clean_str(t_shell *shell, t_args *a, char *c)
 	while (i < (int)ft_strlen(c))
 	{
 		if (a->quot_type == N_QUOT)// && c[i] == '\\')
-			no_quot(shell, a, c, &i, res);
+			no_quot(shell, c, &i, res);
 	//	{
 	//		ft_strncat(res, &c[i + (ft_strchr("`\\", c[i + 1]) == NULL)], 1);
 	//		i++;
