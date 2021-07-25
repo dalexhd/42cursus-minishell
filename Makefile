@@ -43,8 +43,8 @@ VER					=	$(shell lsb_release -sr)
 
 SRCS				=	init.c				parser.c		sub_parser.c		initshell.c		fix_cmd.c
 
-BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c	builtins/export.c \
-						builtins/unset.c	builtins/exit.c
+BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c		builtins/unset.c	\
+						builtins/exit.c		builtins/export/export.c		builtins/export/utils.c
 
 UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/execution.c		utils/termcaps.c \
 						utils/parsing.c		utils/parsing/cmd.c			utils/parsing/tilde.c			\
@@ -150,6 +150,7 @@ $(OBJ_DIR):
 			@echo ${CUT}[${Y}$(OUTPUT)]${X} ${B}Creating: ${R}$(OBJ_DIR)${X}
 			@mkdir -p $(OBJ_DIR)
 			@mkdir -p $(OBJ_DIR)/$(BUILTINS_DIR)
+			@mkdir -p $(OBJ_DIR)/$(BUILTINS_DIR)/export
 			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)/$(PARSING_DIR)
 			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)/$(VALIDATION_DIR)

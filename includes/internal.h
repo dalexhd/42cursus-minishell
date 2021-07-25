@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/06/20 14:51:38 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/07/25 13:05:33 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,6 @@
 # define ERR_UQ "minishell: Unmaching opening quotes at col %d: %s\n"
 # define ERR_UQ "minishell: Unmaching opening quotes at col %d: %s\n"
 # define ERR_UN "minishell: unset: `%s': not a valid identifier\n"
+# define ERR_EX "minishell: export: `%s=%s': not a valid identifier\n"
+# define ERR_EXI "minishell: export: `%s': not a valid identifier\n"
 #endif

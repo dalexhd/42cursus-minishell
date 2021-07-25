@@ -3,7 +3,6 @@
 static	void	ft_exit_no_arg(t_shell *shell)
 {
 	g_running = false;
-	ft_printf("exit\n");
 	shell->status = 0;
 }
 

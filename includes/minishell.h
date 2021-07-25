@@ -113,6 +113,8 @@ int			get_quote_type(char *cmd);
 t_aslist	*ft_safesplitlist(char *s, char c, char *set, t_bool force_set);
 t_aslist	*ft_safesplitlist_new(char *s, char c, char *set, t_bool force_set);
 void		sh_error(t_shell *shell, char *s, int force, ...);
+void		ft_print_declare(t_shell *shell);
+t_bool		valid_export(t_shell *shell, char *s, char **val);
 
 /*
 ** Parsing

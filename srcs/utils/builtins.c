@@ -77,6 +77,13 @@ void	ft_exec_bin(t_shell *shell, t_alist *args)
 	}
 }
 
+char	*builtin_bin_path_sec(t_shell *shell, char *bu)
+{
+	sh_error(shell, ERR_N_FILE_DIR, 127, bu);
+	shell->parsed->content->valid = false;
+	return (ft_strdup(bu));
+}
+
 char	*builtin_bin_path(t_shell *shell, char *bu)
 {
 	char	**folders;
@@ -88,26 +95,19 @@ char	*builtin_bin_path(t_shell *shell, char *bu)
 	{
 		path_env = ft_getenv(shell, "PATH");
 		if (!path_env)
-		{
-			sh_error(shell, ERR_N_FILE_DIR, 127, bu);
-			shell->parsed->content->valid = false;
-			return (ft_strdup(bu));
-		}
+			return (builtin_bin_path_sec(shell, bu));
 		folders = ft_split(path_env, ':');
 		i = 0;
-		while (folders[i])
+		path = NULL;
+		while (folders[++i])
 		{
 			path = ft_strjoin_free(ft_strdup(folders[i]), ft_strjoin("/", bu));
 			if (file_exists(path))
-			{
-				ft_split_del(folders);
-				return (path);
-			}
+				break ;
 			ft_strdel(&path);
-			i++;
 		}
 		ft_split_del(folders);
-		return (NULL);
+		return (path);
 	}
 	else
 		return (ft_strdup(bu));

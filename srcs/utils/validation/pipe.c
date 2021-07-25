@@ -50,7 +50,6 @@ static t_bool	check_error(t_shell *shell, char *cmd, int *pos, char one)
 t_bool	valid_pipes(t_shell *shell, char *cmd)
 {
 	char	one;
-	int		pos;
 	int		i;
 
 	i = 0;
@@ -64,17 +63,12 @@ t_bool	valid_pipes(t_shell *shell, char *cmd)
 		if (cmd[i] == '|')
 		{
 			if (i > 0 && cmd[i - 1] == '\\')
-			{
-				i++;
 				return (true);
-			}
 			one = cmd[i];
-			pos = i++;
+			i++;
 			quotes(cmd, &i, one);
 			if (i == -42)
-				return (check_error(shell, cmd, &pos, one));
-			else if (cmd[i] == one)
-				one = 0;
+				return (check_error(shell, cmd, &i, one));
 		}
 		i++;
 	}
