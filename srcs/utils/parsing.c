@@ -1,15 +1,15 @@
 #include "../../includes/minishell.h"
 
-static void	splitoo(t_alist *l, t_args *c, char **tok, int *i)
+static void	split_sec(t_alist *list, t_args *arg, char ***tok, int *i)
 {
-	if (*i > 1 && l->prev
-		&& l->prev->content->type != FLAG && !c->spaced)
+	if (*i > 1 && list->prev
+		&& list->prev->content->type != FLAG && !arg->spaced)
 	{
-		tok[*i - 1] = ft_strjoin_free(tok[*i - 1], ft_strdup(c->cmd));
+		(*tok)[*i - 1] = ft_strjoin_free((*tok)[*i - 1], ft_strdup(arg->cmd));
 		(*i)--;
 	}
 	else
-		tok[*i] = ft_strdup(c->cmd);
+		(*tok)[*i] = ft_strdup(arg->cmd);
 }
 
 char	**ft_safesplit(t_shell *shell, t_alist *l)
@@ -30,7 +30,7 @@ char	**ft_safesplit(t_shell *shell, t_alist *l)
 			if (!c->is_literal && !ft_strncmp(c->cmd, "$?", 2))
 				tok[i] = ft_itoa(shell->status);
 			else
-				splitoo(l, c, tok, &i);
+				split_sec(l, c, &tok, &i);
 			i++;
 		}
 		l = l->next;
