@@ -95,7 +95,7 @@ void		ft_exec_bin(t_shell *shell, t_alist *args);
 t_bool		file_exists(char *filename);
 t_bool		is_directory(char *path);
 t_bool		has_access(char *path);
-char		*builtin_bin_path(t_shell *shell, char *builtin);
+char		*builtin_bin_path(t_shell *shell, char *bu);
 char		*get_current_dir(char *path);
 void		exec(t_shell *shell, t_parsed *parsed);
 void		run(t_shell *shell);
