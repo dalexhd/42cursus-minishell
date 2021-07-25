@@ -115,6 +115,7 @@ t_aslist	*ft_safesplitlist_new(char *s, char c, char *set);
 void		sh_error(t_shell *shell, char *s, int force, ...);
 void		ft_print_declare(t_shell *shell);
 t_bool		valid_export(t_shell *shell, char *s, char **val);
+void		shell_lvl(t_shell *shell);
 
 /*
 ** Parsing

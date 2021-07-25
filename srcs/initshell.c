@@ -15,6 +15,7 @@ t_shell	*init_shell(char **envp)
 	shell->status = 0;
 	shell->home_dir = ft_getenv(shell, "HOME");
 	shell->tmp_dir = ft_strjoin(shell->home_dir, "/.minishell_history");
+	shell_lvl(shell);
 	return (shell);
 }
 

@@ -92,3 +92,19 @@ void	lsh_split_line(t_shell *shell, char *line)
 	}
 	ft_aslstclear(&tokens_tmp, free);
 }
+
+void	shell_lvl(t_shell *shell)
+{
+	char	*value;
+	char	*tmp;
+
+	value = ft_getenv(shell, "SHLVL");
+	if (value && ft_strevery(value, ft_isalnum))
+	{
+		tmp = ft_itoa(ft_atoi(value) + 1);
+		ft_export_internal(shell, "SHLVL", tmp);
+		ft_strdel(&tmp);
+	}
+	else
+		ft_export_internal(shell, "SHLVL", "1");
+}
