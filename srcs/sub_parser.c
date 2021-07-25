@@ -26,7 +26,7 @@ void	parse_args(t_shell *shell, t_parsed *parsed, char **cmd)
 	*cmd = fix_cmd(*cmd);
 	if (validate_str(shell, *cmd))
 	{
-		tmp = ft_safesplitlist_new(*cmd, ' ', "\"'", true);
+		tmp = ft_safesplitlist_new(*cmd, ' ', "\"'");
 		tmplist = tmp;
 		while (tmp)
 		{
@@ -53,7 +53,7 @@ void	parse_commands(t_shell *shell, char *line)
 
 	commands = NULL;
 	shell->force_stop = false;
-	commands = ft_safesplitlist(line, ';', "\"'", false);
+	commands = ft_safesplitlist(line, ';', "\"'");
 	exec_commands(shell, commands);
 	ft_aslstclear(&commands, free);
 	free(commands);

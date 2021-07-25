@@ -39,7 +39,7 @@ void	ft_export(t_shell *shell, char **args)
 	i = 1;
 	while (args[i])
 	{
-		tokens = ft_safesplitlist(args[i], '=', "\"'", false);
+		tokens = ft_safesplitlist(args[i], '=', "\"'");
 		if (!tokens)
 		{
 			sh_error(shell, ERR_EXI, 1, "=");
