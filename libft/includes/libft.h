@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/22 20:45:27 by aborboll          #+#    #+#             */
-/*   Updated: 2021/07/22 17:08:02 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/07/25 11:32:30 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,4 +135,5 @@ char			*ft_insertchar(char *s, char c, size_t pos);
 char			**ft_split_dup(char **s);
 void			*ft_realloc(void *ptr, size_t size);
 size_t			ft_splitlen(char **s);
+char			*ft_strdupdel(const char *s1);
 #endif

@@ -29,12 +29,20 @@ static	t_bool	clean_str_sec(t_args *arg, int *i, char **res, char **c)
 	return (ret);
 }
 
+static	void	clean_str_dollar(t_shell *shell, int *i, char **res)
+{
+	char	*status;
+
+	status = ft_itoa(shell->status);
+	ft_strncat(*res, status, ft_strlen(status));
+	ft_strdel(&status);
+	(*i)++;
+}
+
 char	*clean_str(t_shell *shell, t_args *arg, char *c)
 {
 	int		i;
 	char	*res;
-	char	*status;
-	char	*tmp;
 
 	res = ft_calloc(ft_strlen(c) + 1, sizeof(char *));
 	i = 0;
@@ -48,18 +56,11 @@ char	*clean_str(t_shell *shell, t_args *arg, char *c)
 			else if (arg->quot_type == N_QUOT && c[i] == '~')
 				parse_tilde(shell, c, &i, &res);
 			else if (!ft_strncmp(&c[i], "$?", 2))
-			{
-				status = ft_itoa(shell->status);
-				ft_strncat(res, status, ft_strlen(status));
-				ft_strdel(&status);
-				i++;
-			}
+				clean_str_dollar(shell, &i, &res);
 			else
 				ft_strncat(res, &c[i], 1);
 		}
 		i++;
 	}
-	tmp = ft_strdup(res);
-	ft_strdel(&res);
-	return (tmp);
+	return (ft_strdupdel(res));
 }
