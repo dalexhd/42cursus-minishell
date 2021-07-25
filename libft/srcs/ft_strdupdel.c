@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/05 13:42:20 by aborboll          #+#    #+#             */
-/*   Updated: 2021/07/25 11:32:15 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/07/25 11:43:48 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,6 @@ char	*ft_strdupdel(const char *s1)
 		return (NULL);
 	ft_memcpy(str, s1, i);
 	str[i++] = '\0';
-	ft_strdel(&s1);
+	free((char *)s1);
 	return (str);
 }

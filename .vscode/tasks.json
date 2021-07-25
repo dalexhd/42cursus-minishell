@@ -33,6 +33,15 @@
             "options": {
                 "cwd": "${workspaceRoot}/tester"
             }
+        },
+        {
+            "type": "shell",
+            "label": "new test",
+            "command": "cd ${workspaceRoot} && make re && cd 42_minishell_tester && ./grademe.sh -c",
+            "options": {
+                "cwd": "${workspaceRoot}/42_minishell_tester"
+            },
+            "problemMatcher": []
         }
     ],
     "version": "2.0.0"

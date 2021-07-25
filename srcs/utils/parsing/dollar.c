@@ -27,7 +27,7 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char **line)
 
 	if (ft_isdigit((*cmd)[*i + 1]))
 	{
-		*cmd = ft_strcut(*cmd, 2, ft_strlen(*cmd));
+		*cmd = &(*cmd)[2];
 		(*i)--;
 		return ;
 	}
