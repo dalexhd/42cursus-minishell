@@ -15,11 +15,11 @@ void	newliner(t_shell *shell)
 {
 	if (*shell->term.line)
 	{
-		free(shell->term.history->copy);
+		ft_strdel(&shell->term.history->copy);
 		shell->term.history->copy = ft_strdup(shell->term.history->original);
 		shell->term.history = ft_hlstfirst(shell->term.history);
-		free(shell->term.history->original);
-		free(shell->term.history->copy);
+		ft_strdel(&shell->term.history->original);
+		ft_strdel(&shell->term.history->copy);
 		shell->term.history->original = ft_strdup(shell->term.line);
 		shell->term.history->copy = ft_strdup(shell->term.line);
 		new(shell);
@@ -30,7 +30,7 @@ void	newliner(t_shell *shell)
 void	sandman(t_shell *shell)
 {
 	newliner(shell);
-	free(shell->term.history->copy);
+	ft_strdel(&shell->term.history->copy);
 	shell->term.history->copy = ft_strdup(shell->term.history->original);
 	ft_putchar_fd('\n', STDOUT_FILENO);
 	if (shell->term.line[0] == ';')

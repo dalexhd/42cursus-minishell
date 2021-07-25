@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/07/01 22:02:15 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/07/25 15:39:13 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,8 @@ typedef struct s_pipes
 
 typedef struct s_hist
 {
-	void			*original;
-	void			*copy;
+	char			*original;
+	char			*copy;
 	struct s_hist	*next;
 	struct s_hist	*prev;
 }				t_hist;

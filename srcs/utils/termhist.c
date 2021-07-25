@@ -31,10 +31,10 @@ void	old(t_shell *shell)
 		while (test)
 		{
 			ft_hlstadd_front(&shell->term.history, ft_hlstnew(line));
-			free(line);
+			ft_strdel(&line);
 			test = get_next_line(fd, &line);
 		}
-		free(line);
+		ft_strdel(&line);
 		close(fd);
 	}
 }
@@ -46,7 +46,7 @@ void	history_up(t_shell *shell)
 		tputs(tgetstr("cr", NULL), 1, ft_iputchar);
 		tputs(tgetstr("dl", NULL), 1, ft_iputchar);
 		ft_printshell(shell);
-		free(shell->term.history->copy);
+		ft_strdel(&shell->term.history->copy);
 		shell->term.history->copy = ft_strdup(shell->term.line);
 		shell->term.history = shell->term.history->next;
 		ft_strcpy(shell->term.line, shell->term.history->copy);
@@ -65,7 +65,7 @@ void	history_down(t_shell *shell)
 		tputs(tgetstr("cr", NULL), 1, ft_iputchar);
 		tputs(tgetstr("dl", NULL), 1, ft_iputchar);
 		ft_printshell(shell);
-		free(shell->term.history->copy);
+		ft_strdel(&shell->term.history->copy);
 		shell->term.history->copy = ft_strdup(shell->term.line);
 		shell->term.history = shell->term.history->prev;
 		ft_strcpy(shell->term.line, shell->term.history->copy);
