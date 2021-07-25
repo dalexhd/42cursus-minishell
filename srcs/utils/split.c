@@ -23,36 +23,46 @@ static	void	sec(char *start, int size, char *s, t_aslist **list, char c)
 	ft_aslstadd_back(&(*list), ft_aslstnew(arg));
 }
 
-t_aslist		*ft_safesplitlist_new(char *s, char c, char *set)
+static t_bool	soft_split(char **s, int **b, char **t)
 {
-	int			size;
-	int			fl;
-	char		*start;
-	t_aslist	*list;
-	int			bef[2];
+	t_bool	split;
 
-	start = ft_safesplit_init(&fl, &size, &list, s);
+	split = false;
+	if (*s)
+	{
+		*b[0] = (b[1] != b[3] && *b[2] > 1 && !b[3]) || (*b[2] > 0 && !b[3]
+				&& ft_strchr(*t, *s[1]) && *s[0] != '\\');
+		(*s)++;
+		split = true;
+	}
+	return (split);
+}
+
+t_aslist	*ft_safesplitlist_new(char *s, char c, char *t)
+{
+	char		*z;
+	t_aslist	*list;
+	int			b[4];
+
+	z = ft_safesplit_init(&b[3], &b[2], &list, s);
 	while (1)
 	{
-		bef[1] = fl;
-		if (ft_strchr(set, *s) && (!fl || fl & 1 << (ft_strchr(set, *s) - set)))
-			fl ^= 1 << (ft_strchr(set, *s) - set);
-		if (!*s || (*s == c && !fl) || bef[0])
+		b[1] = b[3];
+		if (ft_strchr(t, *s) && (!b[3] || b[3] & 1 << (ft_strchr(t, *s) - t)))
+			b[3] ^= 1 << (ft_strchr(t, *s) - t);
+		if (!*s || (*s == c && !b[3]) || b[0])
 		{
 			if (!*s)
-				size = ft_strlen(start);
-			if (size > 0)
-				sec(start, size, s, &list, c);
-			start += size + (!bef[0] || start[size] == c);
-			size = s[0] != c;
+				b[2] = ft_strlen(z);
+			if (b[2] > 0)
+				sec(z, b[2], s, &list, c);
+			z += b[2] + (!b[0] || z[b[2]] == c);
+			b[2] = s[0] != c;
 		}
 		else
-			size++;
-		if (!*s)
+			b[2]++;
+		if (!soft_split(&s, &b, &t))
 			break ;
-		bef[0] = (bef[1] != fl && size > 1 && !fl) || (size > 0 && !fl
-				&& ft_strchr(set, s[1]) && s[0] != '\\');
-		s++;
 	}
 	return (list);
 }
