@@ -76,7 +76,9 @@ void	lsh_split_line(t_shell *shell, char *line)
 
 	if (!valid_pipes(shell, line))
 		return ;
+	g_running = '|';
 	tokens = ft_safesplitlist(line, '|', "\"'");
+	g_running = true;
 	tokens_tmp = tokens;
 	while (tokens)
 	{
