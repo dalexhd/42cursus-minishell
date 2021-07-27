@@ -13,6 +13,7 @@ void	ctld(t_shell *shell)
 void	ctlc(t_shell *shell)
 {
 	ft_bzero(&shell->term.line, BUFF_SIZE);
+	shell->term.history = ft_hlstfirst(shell->term.history);
 	shell->term.pos = 0;
 	shell->term.new_line = true;
 	shell->status = 1;
