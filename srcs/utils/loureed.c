@@ -52,6 +52,7 @@ void	loureed(t_shell *shell)
 		while (1)
 		{
 			enable_raw_mode(shell);
+			ft_bzero(&b, 4);
 			ret = read(STDIN_FILENO, &b, 4);
 			if (ret == -1)
 				ft_error("Read error #332", true);
@@ -61,9 +62,7 @@ void	loureed(t_shell *shell)
 				|| b[0] == 'C' - 64 || b[0] == 'L' - 64
 				|| (b[0] > 31 && b[0] < 127 && b[1] == 0))
 				neworder(shell, b);
-			else if (history_repeating(shell, b))
-				continue ;
-			ft_bzero(&b, 4);
+			history_repeating(shell, b);
 		}
 		end_tc(shell);
 	}
