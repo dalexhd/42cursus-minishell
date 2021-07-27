@@ -15,6 +15,7 @@ void	ctlc(t_shell *shell)
 	ft_bzero(&shell->term.line, BUFF_SIZE);
 	shell->term.pos = 0;
 	shell->term.new_line = true;
+	shell->status = 1;
 	ft_printshell(shell);
 	shell->term.cursor = 11;
 }
