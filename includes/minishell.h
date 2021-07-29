@@ -135,9 +135,9 @@ void		del_slst(t_parsed *parsed);
 ** Vallidation
 */
 char		*fix_cmd(char *cmdi);
-t_bool		valid_quotes(t_shell *shell, char *cmd, int *i);
+t_bool		valid_quotes(t_shell *shell, char **cmd, int *i);
 t_bool		valid_redirects(t_shell *shell, char *cmd, int *i);
-t_bool		validate_str(t_shell *shell, char *cmd);
+t_bool		validate_str(t_shell *shell, char **cmd);
 t_bool		valid_commas(t_shell *shell, char *cmd);
 t_bool		valid_pipes(t_shell *shell, char *cmd);
 

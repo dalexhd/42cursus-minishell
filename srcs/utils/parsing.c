@@ -38,18 +38,18 @@ char	**ft_safesplit(t_shell *shell, t_alist *l)
 	return (tok);
 }
 
-t_bool	validate_str(t_shell *shell, char *cmd)
+t_bool	validate_str(t_shell *shell, char **cmd)
 {
 	int		i;
 	t_bool	status;
 
 	i = 0;
 	status = true;
-	while (i < (int)ft_strlen(cmd))
+	while (i < (int)ft_strlen(*cmd))
 	{
-		if (!valid_redirects(shell, cmd, &i)
-			|| !valid_quotes(shell, cmd, &i)
-			|| !valid_commas(shell, cmd))
+		if (!valid_redirects(shell, *cmd, &i)
+			|| !valid_quotes(shell, &(*cmd), &i)
+			|| !valid_commas(shell, *cmd))
 		{
 			status = false;
 			break ;

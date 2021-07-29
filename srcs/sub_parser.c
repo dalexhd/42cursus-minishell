@@ -24,7 +24,7 @@ void	parse_args(t_shell *shell, t_parsed *parsed, char **cmd)
 
 	parsed->args = NULL;
 	*cmd = fix_cmd(*cmd);
-	if (validate_str(shell, *cmd))
+	if (validate_str(shell, &(*cmd)))
 	{
 		g_running = ' ';
 		tmp = ft_safesplitlist_new(*cmd, ' ', "\"'");
