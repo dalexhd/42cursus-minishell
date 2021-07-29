@@ -63,7 +63,7 @@ void	ft_exec_cmd(t_shell *shell, t_slist *parsed, int prepipe)
 	if (waitpid(pid, &status, 0) < 0)
 		ft_error("Waitpid error: %s\n", 1, strerror(errno));
 	if (!parsed->next && WIFSIGNALED(status))
-		shell->status = WTERMSIG(status) + 12;
+		shell->status = WTERMSIG(status) + 128;
 	else if (!parsed->next)
 		shell->status = WEXITSTATUS(status);
 }

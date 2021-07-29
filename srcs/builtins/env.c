@@ -7,7 +7,7 @@ void	ft_env(t_shell *shell, char **args)
 	if (args[1])
 	{
 		sh_error(shell, "minishell: env: too many arguments\n", 1);
-		return (NULL);
+		return ;
 	}
 	i = 0;
 	while (shell->envp[i] != 0)
