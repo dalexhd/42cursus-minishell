@@ -1,9 +1,14 @@
 #include "../includes/minishell.h"
 
-void	ft_env(t_shell *shell)
+void	ft_env(t_shell *shell, char **args)
 {
 	int		i;
 
+	if (args[1])
+	{
+		sh_error(shell, "minishell: env: too many arguments\n", 1);
+		return (NULL);
+	}
 	i = 0;
 	while (shell->envp[i] != 0)
 	{
@@ -13,7 +18,7 @@ void	ft_env(t_shell *shell)
 }
 
 /*
-* Get an environment variable
+** Get an environment variable
 */
 char	*ft_getenv(t_shell *shell, char *env)
 {

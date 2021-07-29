@@ -30,7 +30,7 @@ int	ft_exec_builtin(t_shell *shell, t_slist *parsed)
 	else if (!ft_strcmp(parsed->content->args->content->cmd, "unset"))
 		ft_unset(shell, args);
 	else if (!ft_strcmp(parsed->content->args->content->cmd, "env"))
-		ft_env(shell);
+		ft_env(shell, args);
 	else if (!ft_strcmp(parsed->content->args->content->cmd, "pwd"))
 	{
 		pwd = ft_pwd();
