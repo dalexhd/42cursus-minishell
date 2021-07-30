@@ -6,7 +6,7 @@ t_bool	valid_unset(t_shell *shell, char *val)
 
 	if (ft_isdigit(val[0]) || !(ft_isalnum(val[0]) || val[0] == '_'))
 	{
-		sh_error(shell, ERR_UN, (val[0] != '+') + 1);
+		sh_error(shell, ERR_UN, !ft_strchr("+=", val[0]) + 1, val);
 		return (false);
 	}
 	i = 1;
