@@ -13,10 +13,13 @@ static	void	ft_export_sec(t_shell *shell, char *env, char *value,
 	ft_aslstclear(&tokens_tmp, free);
 }
 
-static	t_bool	ft_export_declare(t_shell *shell, char **args)
+static	t_bool	ft_export_declare(t_shell *shell, char **args,
+	char **value, size_t *i)
 {
 	t_bool		status;
 
+	*i = 0;
+	*value = NULL;
 	status = false;
 	if (!args[1])
 	{
@@ -40,14 +43,12 @@ void	ft_export(t_shell *shell, char **args)
 {
 	t_aslist	*tokens;
 	t_aslist	*tokens_tmp;
-	char		*env;
 	char		*value;
 	size_t		i;
 
-	if (ft_export_declare(shell, args))
+	if (ft_export_declare(shell, args, &value, &i))
 		return ;
-	i = 1;
-	while (args[i])
+	while (args[++i])
 	{
 		tokens = ret_tokens(args[i]);
 		if (!tokens)
@@ -57,10 +58,12 @@ void	ft_export(t_shell *shell, char **args)
 		}
 		tokens_tmp = tokens;
 		if (!tokens->next)
+		{
+			valid_export(shell, tokens->content->arg, &value);
+			ft_strdel(&value);
 			return (ft_aslstclear(&tokens_tmp, free));
-		env = ft_strdup(tokens->content->arg);
-		value = ft_strdup(tokens->next->content->arg);
-		ft_export_sec(shell, env, value, tokens_tmp);
-		i++;
+		}
+		ft_export_sec(shell, ft_strdup(tokens->content->arg),
+			ft_strdup(tokens->next->content->arg), tokens_tmp);
 	}
 }

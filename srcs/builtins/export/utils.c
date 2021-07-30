@@ -68,13 +68,15 @@ static	t_bool	valid_export_init(t_shell *shell, char *s,
 {
 	t_bool	status;
 
+	if (!*val)
+		*val = ft_strdup("");
 	if (ft_isdigit(s[0]) || !(ft_isalnum(s[0]) || s[0] == '_' || s[0] == '\\'))
 	{
-		sh_error(shell, ERR_EX, !ft_strchr("+=", s[0]) + 1, s, *val);
+		sh_error(shell, ERR_EX, 1, s, *val);
 		return (false);
 	}
 	status = true;
-	(*i) = 1;
+	(*i) = 0;
 	return (status);
 }
 
@@ -85,7 +87,7 @@ t_bool	valid_export(t_shell *shell, char *s, char **val)
 	t_bool	status;
 
 	status = valid_export_init(shell, s, val, &i);
-	while (i < ft_strlen(s))
+	while (++i < ft_strlen(s))
 	{
 		if (!ft_isalnum(s[i]) && s[i] != '_' && s[i])
 		{
@@ -98,11 +100,10 @@ t_bool	valid_export(t_shell *shell, char *s, char **val)
 				*val = ft_strjoin_free(bef, *val);
 				break ;
 			}
-			status = false;
 			sh_error(shell, ERR_EX, 1, s, *val);
-			break ;
+			ft_strdel(val);
+			return (false);
 		}
-		i++;
 	}
 	return (status);
 }

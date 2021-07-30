@@ -29,7 +29,7 @@ static void	check_var(t_shell *shell, char **cmd, int *i)
 	e = 1;
 	while (e < ft_strlen(&(*cmd)[*i]) + 1)
 	{
-		if (ft_strchr(" $'\"\"\0", (*cmd)[*i + e]))
+		if (ft_strchr(" -./$'\"\"\0", (*cmd)[*i + e]))
 		{
 			env = ft_strcut(&(*cmd)[*i], 1, e - 1);
 			value = ft_getenv(shell, env);
@@ -39,7 +39,7 @@ static void	check_var(t_shell *shell, char **cmd, int *i)
 						ft_strjoin(ft_getenv(shell, env), &(*cmd)[*i + e]));
 				ft_strdel(&(*cmd));
 				*cmd = tmp;
-				*i += ft_strlen(value);
+				*i += ft_strlen(value) - 1;
 			}
 			ft_strdel(&env);
 			break ;
