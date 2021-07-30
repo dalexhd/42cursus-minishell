@@ -19,35 +19,33 @@ static t_bool	check_error(t_shell *shell, char *cmd, int *pos, char one)
 	return (true);
 }
 
-static t_bool	check_var(t_shell *shell, char **cmd, int *i)
+static void	check_var(t_shell *shell, char **cmd, int *i)
 {
 	size_t		e;
 	char		*env;
 	char		*value;
+	char		*tmp;
 
-	(void)shell;
-	if ((*cmd)[*i] == '$' && (*cmd)[*i + 1] != '?')
+	e = 1;
+	while (e < ft_strlen(&(*cmd)[*i]) + 1)
 	{
-		e = 1;
-		while (e < ft_strlen(&(*cmd)[*i]) + 1)
+		if (ft_strchr(" $'\"\"\0", (*cmd)[*i + e]))
 		{
-			if (ft_strchr(" '\"\"\0", (*cmd)[*i + e]))
+			env = ft_strcut(&(*cmd)[*i], 1, e - 1);
+			value = ft_getenv(shell, env);
+			if (ft_getenv(shell, env))
 			{
-				env = ft_strcut(&(*cmd)[*i], 1, e - 1);
-				value = ft_getenv(shell, env);
-				if (value)
-				{
-					*cmd = ft_strjoin_free(ft_strjoin(value, &(*cmd)[*i + e]),
-							ft_strcut(*cmd, 0, *i));
-					*i = *i + ft_strlen(value);
-				}
-				ft_strdel(&env);
-				break ;
+				tmp = ft_strjoin_free(ft_strcut(*cmd, 0, *i),
+						ft_strjoin(ft_getenv(shell, env), &(*cmd)[*i + e]));
+				ft_strdel(&(*cmd));
+				*cmd = tmp;
+				*i += ft_strlen(value);
 			}
-			e++;
+			ft_strdel(&env);
+			break ;
 		}
+		e++;
 	}
-	return (true);
 }
 
 t_bool	valid_quotes(t_shell *shell, char **cmd, int *i)
@@ -70,6 +68,7 @@ t_bool	valid_quotes(t_shell *shell, char **cmd, int *i)
 		else if ((*cmd)[*i] == one)
 			one = 0;
 	}
-	check_var(shell, &(*cmd), i);
+	if ((*cmd)[*i] == '$' && (*cmd)[*i + 1] != '?')
+		check_var(shell, &(*cmd), i);
 	return (true);
 }
