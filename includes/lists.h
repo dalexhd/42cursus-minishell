@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/07/25 15:39:13 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/08/02 10:36:26 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,13 @@ typedef struct s_parsed
 	t_rlist		*redirects;
 }				t_parsed;
 
+typedef struct s_env
+{
+	char		*key;
+	t_bool		has_val;
+	char		*val;
+}				t_env;
+
 typedef struct s_pipes
 {
 	size_t	count;
@@ -103,6 +110,13 @@ typedef struct s_slist
 	struct s_slist	*next;
 	struct s_slist	*prev;
 }				t_slist;
+
+typedef struct s_envp
+{
+	t_env			*content;
+	struct s_envp	*next;
+	struct s_envp	*prev;
+}				t_envp;
 
 typedef struct s_aslist
 {
@@ -175,6 +189,23 @@ t_alist			*ft_alstmap(t_alist *lst, void *(*f)(t_args *),
 t_alist			*ft_alstfirst(t_alist *lst);
 t_alist			*ft_alstfilter(t_alist *lst, t_bool (*f)(t_args *),
 					void (*del)(t_args *));
+
+/*
+** Env lists
+*/
+t_envp			*ft_envlstnew(t_env *content);
+void			ft_envlstadd_front(t_envp **alst, t_envp *new);
+int				ft_envlstsize(t_envp *lst);
+t_envp			*ft_envlstlast(t_envp *lst);
+void			ft_envlstadd_back(t_envp **alst, t_envp *new);
+void			ft_envlstdelone(t_envp *lst, void (*del)(t_env *));
+void			ft_envlstclear(t_envp **lst, void (*del)(t_env *));
+void			ft_envlstiter(t_envp *lst, void (*f)(t_env *));
+t_envp			*ft_envlstmap(t_envp *lst, void *(*f)(t_env *),
+					void (*del)(t_env *));
+t_envp			*ft_envlstfirst(t_envp *lst);
+t_envp			*ft_envlstfilter(t_envp *lst, t_bool (*f)(t_env *),
+					void (*del)(t_env *));
 
 /*
 ** Single Arguments lists

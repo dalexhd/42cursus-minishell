@@ -56,6 +56,7 @@ typedef struct s_shell
 	t_slist	*parsed;
 	t_term	term;
 	t_bool	force_stop;
+	t_envp	*envp_2;
 	int		status;
 	char	*home_dir;
 	char	*tmp_dir;

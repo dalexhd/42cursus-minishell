@@ -18,6 +18,7 @@ REDIRECTS_LISTS_DIR	=	redirects/
 HISTORY_LISTS_DIR	=	history/
 ARGS_LISTS_DIR		=	args/
 ARG_LISTS_DIR		=	arg/
+ENV_LISTS_DIR		=	env/
 UTILS_DIR			=	utils/
 SRC_DIR				=	srcs/
 PARSING_DIR			=	parsing/
@@ -69,11 +70,16 @@ ARGS_LISTS			=	lists/args/ft_alstadd_back.c		lists/args/ft_alstadd_front.c		list
 						lists/args/ft_alstnew.c				lists/args/ft_alstsize.c			lists/args/ft_alstmap.c		\
 						lists/args/ft_alstfilter.c
 
+ENV_LISTS			=	lists/env/ft_envlstadd_back.c		lists/env/ft_envlstadd_front.c		lists/env/ft_envlstclear.c	\
+						lists/env/ft_envlstdelone.c		lists/env/ft_envlstfirst.c			lists/env/ft_envlstlast.c	\
+						lists/env/ft_envlstnew.c			lists/env/ft_envlstsize.c			lists/env/ft_envlstmap.c		\
+						lists/env/ft_envlstfilter.c
+
 SARG_LISTS			=	lists/arg/ft_aslstadd_back.c		lists/arg/ft_aslstadd_front.c		lists/arg/ft_aslstclear.c	\
 						lists/arg/ft_aslstdelone.c			lists/arg/ft_aslstfirst.c			lists/arg/ft_aslstlast.c	\
 						lists/arg/ft_aslstnew.c				lists/arg/ft_aslstsize.c
 
-LISTS				=	$(SHELL_LISTS) $(REDIRECTS_LISTS) $(HISTORY_LISTS) $(ARGS_LISTS) $(SARG_LISTS)
+LISTS				=	$(SHELL_LISTS) $(REDIRECTS_LISTS) $(HISTORY_LISTS) $(ARGS_LISTS) $(SARG_LISTS) $(ENV_LISTS)
 
 SOURCES				=	$(SRCS) $(BUILTINS) $(UTILS) $(LISTS)
 
@@ -161,6 +167,7 @@ $(OBJ_DIR):
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(ARGS_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(ARGS_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(ARG_LISTS_DIR)
+			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(ENV_LISTS_DIR)
 
 # Normal objects
 $(NAME): $(OBJ_DIR) $(OBJS)
