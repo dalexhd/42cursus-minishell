@@ -44,12 +44,14 @@ void	ft_export(t_shell *shell, char **args)
 	t_aslist	*tokens;
 	t_aslist	*tokens_tmp;
 	char		*value;
+	t_bool		has_equal;
 	size_t		i;
 
 	if (ft_export_declare(shell, args, &value, &i))
 		return ;
 	while (args[++i])
 	{
+		has_equal = ft_strchr(args[i], '=') != NULL;
 		tokens = ret_tokens(args[i]);
 		if (!tokens)
 		{
@@ -57,13 +59,13 @@ void	ft_export(t_shell *shell, char **args)
 			return (ft_aslstclear(&tokens, free));
 		}
 		tokens_tmp = tokens;
-		if (!tokens->next)
-		{
-			valid_export(shell, tokens->content->arg, &value);
-			ft_strdel(&value);
-			return (ft_aslstclear(&tokens_tmp, free));
-		}
+		if (!tokens->next || !tokens->next->content->arg)
+			value = "\0";
+		else
+			value = tokens->next->content->arg;
+		if (has_equal && value[0] == '\0')
+			value = "\177\0";
 		ft_export_sec(shell, ft_strdup(tokens->content->arg),
-			ft_strdup(tokens->next->content->arg), tokens_tmp);
+			ft_strdup(value), tokens_tmp);
 	}
 }

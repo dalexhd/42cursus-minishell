@@ -22,43 +22,25 @@ t_bool	valid_unset(t_shell *shell, char *val)
 	return (true);
 }
 
-static void	inter_internal(t_shell *shell, char ***tmp, char *arg)
+static	t_bool	filter_del(t_env *env, char *arg)
 {
-	char	*tmp2;
-	int		i;
-	int		u;
+	return (ft_strcmp(env->key, arg) != 0);
+}
 
-	i = 0;
-	u = 0;
-	while (shell->envp[i] != 0)
-	{
-		tmp2 = ft_strjoin(arg, "=");
-		if (ft_strncmp(shell->envp[i], tmp2, ft_strlen(arg) + 1) != 0)
-			(*tmp)[u++] = ft_strdup(shell->envp[i]);
-		ft_strdel(&tmp2);
-		i++;
-	}
+static void	inter_internal(t_shell *shell, char *arg)
+{
+	shell->envp_2 = ft_envlstfilterarg(shell->envp_2, filter_del,
+			del_envlst, arg);
 }
 
 static	void	ft_internal_unset(t_shell *shell, char *arg)
 {
-	int		i;
-	char	**tmp;
-
-	i = 0;
 	if (!arg || !valid_unset(shell, arg))
 		return ;
-	while (shell->envp[i] != 0)
-		i++;
-	tmp = ft_calloc(i + 1, sizeof(char *));
 	if (ft_strcmp(arg, "HOME") == 0)
 		shell->home_dir = NULL;
 	else
-	{
-		inter_internal(shell, &tmp, arg);
-		ft_split_del(shell->envp);
-		shell->envp = tmp;
-	}
+		inter_internal(shell, arg);
 }
 
 /*

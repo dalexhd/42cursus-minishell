@@ -2,33 +2,22 @@
 
 void	ft_print_declare(t_shell *shell)
 {
-	int		i;
-	char	*key;
-	char	*value;
+	t_envp	*tmp;
 
-	i = 0;
-	while (shell->envp[i])
+	tmp = shell->envp_2;
+	while (tmp)
 	{
-		key = ft_substr(shell->envp[i], 0,
-				(int)(ft_strchr(shell->envp[i], '=') - shell->envp[i]));
-		value = ft_strdup(ft_strstr(shell->envp[i], "="));
-		ft_printf("declare -x %s=\"%s\"\n", key, ft_strcpy(&value[0], &value[1]));
-		ft_strdel(&key);
-		ft_strdel(&value);
-		i++;
+		ft_printf("declare -x %s", tmp->content->key);
+		if (tmp->content->has_val)
+			ft_printf("=\"%s\"", tmp->content->val);
+		ft_printf("\n");
+		tmp = tmp->next;
 	}
 }
 
-static	void	ft_export_internal_sec(t_shell *shell, char *env, char *value,
-	int i)
+static	void	ft_export_internal_sec(t_shell *shell, char *env, char *value)
 {
-	char	*tmp;
-
-	shell->envp = ft_realloc(shell->envp,
-			sizeof(char *) * (ft_splitlen(shell->envp) + 2));
-	tmp = ft_strjoin_free(ft_strjoin(env, "="), ft_strdup(value));
-	ft_strdel(&shell->envp[i]);
-	shell->envp[i] = tmp;
+	ft_envlstadd_back(&shell->envp_2, ft_envlstnew(ft_parse_env(env, value)));
 }
 
 /*
@@ -36,31 +25,33 @@ static	void	ft_export_internal_sec(t_shell *shell, char *env, char *value,
 */
 void	ft_export_internal(t_shell *shell, char *env, char *value)
 {
-	int		i;
 	t_bool	skip;
+	t_envp	*tmp;
 
-	i = 0;
 	if (ft_isdigit(env[0]) || !(ft_isalnum(env[0]) || env[0] == '_'))
 		return (sh_error(shell, ERR_EXI, 1, env));
 	skip = (ft_strcmp(env, "HOME") == 0);
-	while (shell->envp[i])
+	tmp = shell->envp_2;
+	while (tmp)
 	{
-		if (ft_strncmp(shell->envp[i], env, ft_strlen(env)) == 0)
+		if (ft_strcmp(tmp->content->key, env) == 0)
 		{
 			if (skip)
 			{
 				ft_cd_internal(shell, value);
 				shell->home_dir = ft_pwd();
 			}
-			ft_strdel(&shell->envp[i]);
-			shell->envp[i] = ft_strjoin_free(ft_strjoin(env, "="),
-					ft_strdup(value));
+			ft_strdel(&tmp->content->key);
+			ft_strdel(&tmp->content->val);
+			tmp->content->key = ft_strdup(env);
+			tmp->content->val = ft_strdup(value);
+			tmp->content->has_val = value[0] == '\0';
 			return ;
 		}
-		i++;
+		tmp = tmp->next;
 	}
 	if (!skip)
-		return (ft_export_internal_sec(shell, env, value, i));
+		return (ft_export_internal_sec(shell, env, value));
 }
 
 static	t_bool	valid_export_init(t_shell *shell, char *s,
@@ -94,7 +85,7 @@ t_bool	valid_export(t_shell *shell, char *s, char **val)
 			if (s[i + 1] == '\0' && s[i] == '+')
 			{
 				s[i] = '\0';
-				bef = ft_strdup(ft_getenv(shell, s));
+				bef = ft_strdup(ft_getenv(shell, s, false));
 				if (!bef)
 					bef = ft_strdup("");
 				*val = ft_strjoin_free(bef, *val);

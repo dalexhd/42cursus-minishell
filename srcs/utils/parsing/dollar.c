@@ -42,6 +42,6 @@ void	parse_dollar(t_shell *shell, char **cmd, int *i, char **line)
 	}
 	(*i)--;
 	ft_strdel(&aux);
-	parse_aux(ft_getenv(shell, tmp), line, tmp);
+	parse_aux(ft_getenv(shell, tmp, false), line, tmp);
 	ft_strdel(&tmp);
 }

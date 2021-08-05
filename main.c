@@ -1,5 +1,14 @@
 #include "includes/minishell.h"
 
+void	del_envlst(t_env *env)
+{
+	if (env->key)
+		ft_strdel(&env->key);
+	if (env->val)
+		ft_strdel(&env->val);
+	free(env);
+}
+
 static int	shell_clear(t_shell *shell)
 {
 	int	status;
@@ -9,6 +18,9 @@ static int	shell_clear(t_shell *shell)
 		free(shell->tmp_dir);
 	if (shell->envp)
 		ft_split_del(shell->envp);
+	if (shell->envp_2)
+		ft_envlstclear(&shell->envp_2, del_envlst);
+	free(shell->envp_2);
 	ft_hlstclear(&shell->term.history, free);
 	free(shell);
 	if (status != 0)

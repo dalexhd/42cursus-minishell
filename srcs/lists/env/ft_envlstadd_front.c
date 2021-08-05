@@ -1,8 +1,8 @@
 #include "../../../includes/minishell.h"
 
-void	ft_envlstadd_front(t_envp **alst, t_envp *new)
+void	ft_envlstadd_front(t_envp **envlst, t_envp *new)
 {
-	if (alst)
-		new->next = *alst;
-	*alst = new;
+	if (envlst)
+		new->next = *envlst;
+	*envlst = new;
 }

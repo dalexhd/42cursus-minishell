@@ -93,7 +93,7 @@ char	*builtin_bin_path(t_shell *shell, char *bu)
 
 	if (!file_exists(bu))
 	{
-		path_env = ft_getenv(shell, "PATH");
+		path_env = ft_getenv(shell, "PATH", false);
 		if (!path_env)
 			return (builtin_bin_path_sec(shell, bu));
 		folders = ft_split(path_env, ':');

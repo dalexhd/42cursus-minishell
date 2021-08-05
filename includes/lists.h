@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/08/02 10:36:26 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/08/05 11:05:09 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,10 +194,10 @@ t_alist			*ft_alstfilter(t_alist *lst, t_bool (*f)(t_args *),
 ** Env lists
 */
 t_envp			*ft_envlstnew(t_env *content);
-void			ft_envlstadd_front(t_envp **alst, t_envp *new);
+void			ft_envlstadd_front(t_envp **envlst, t_envp *new);
 int				ft_envlstsize(t_envp *lst);
 t_envp			*ft_envlstlast(t_envp *lst);
-void			ft_envlstadd_back(t_envp **alst, t_envp *new);
+void			ft_envlstadd_back(t_envp **envlst, t_envp *new);
 void			ft_envlstdelone(t_envp *lst, void (*del)(t_env *));
 void			ft_envlstclear(t_envp **lst, void (*del)(t_env *));
 void			ft_envlstiter(t_envp *lst, void (*f)(t_env *));
@@ -206,7 +206,8 @@ t_envp			*ft_envlstmap(t_envp *lst, void *(*f)(t_env *),
 t_envp			*ft_envlstfirst(t_envp *lst);
 t_envp			*ft_envlstfilter(t_envp *lst, t_bool (*f)(t_env *),
 					void (*del)(t_env *));
-
+t_envp			*ft_envlstfilterarg(t_envp *lst, t_bool (*f)(t_env *, char *arg),
+					void (*del)(t_env *), char *arg);
 /*
 ** Single Arguments lists
 */

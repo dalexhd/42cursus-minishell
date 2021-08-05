@@ -2,40 +2,26 @@
 
 void	ft_env(t_shell *shell, char **args)
 {
-	int		i;
+	t_envp	*tmp;
+	char	*res;
+	char	*res2;
 
 	if (args[1])
 	{
 		sh_error(shell, "minishell: env: too many arguments\n", 1);
 		return ;
 	}
-	i = 0;
-	while (shell->envp[i] != 0)
+	tmp = shell->envp_2;
+	while (tmp)
 	{
-		ft_printf("%s\n", shell->envp[i]);
-		i++;
-	}
-}
-
-/*
-** Get an environment variable
-*/
-char	*ft_getenv(t_shell *shell, char *env)
-{
-	int		i;
-	char	*tmp;
-
-	tmp = ft_strjoin(env, "=");
-	i = 0;
-	while (shell->envp[i])
-	{
-		if (ft_strncmp(shell->envp[i], tmp, ft_strlen(tmp)) == 0)
+		if (tmp->content->has_val)
 		{
-			ft_strdel(&tmp);
-			return (&shell->envp[i][ft_strlen(env) + 1]);
+			res = ft_strjoin(tmp->content->key, "=");
+			res2 = ft_strjoin(res, tmp->content->val);
+			ft_printf("%s\n", res2);
+			ft_strdel(&res);
+			ft_strdel(&res2);
 		}
-		i++;
+		tmp = tmp->next;
 	}
-	ft_strdel(&tmp);
-	return (NULL);
 }

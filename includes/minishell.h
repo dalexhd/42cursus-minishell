@@ -85,7 +85,9 @@ void		ft_exit(t_shell *shell, char **args);
 /*
 ** Define builtins helpers
 */
-char		*ft_getenv(t_shell *shell, char *env);
+t_envp		*ft_setup_env(t_shell *shell, char **envp);
+void		*ft_getenv(t_shell *shell, char *key, t_bool ret_stuct);
+t_env		*ft_parse_env(char *key, char *val);
 
 /*
 ** Define utils
@@ -131,6 +133,7 @@ void		parse_commands(t_shell *shell, char *line);
 */
 void		del_alst(t_args *args);
 void		del_slst(t_parsed *parsed);
+void		del_envlst(t_env *env);
 
 /*
 ** Vallidation

@@ -32,11 +32,11 @@ static void	check_var(t_shell *shell, char **cmd, int *i)
 		if (ft_strchr(" -./$'\"\"\0", (*cmd)[*i + e]))
 		{
 			env = ft_strcut(&(*cmd)[*i], 1, e - 1);
-			value = ft_getenv(shell, env);
-			if (ft_getenv(shell, env))
+			value = ft_getenv(shell, env, false);
+			if (ft_getenv(shell, env, false))
 			{
 				tmp = ft_strjoin_free(ft_strcut(*cmd, 0, *i),
-						ft_strjoin(ft_getenv(shell, env), &(*cmd)[*i + e]));
+						ft_strjoin(ft_getenv(shell, env, 0), &(*cmd)[*i + e]));
 				ft_strdel(&(*cmd));
 				*cmd = tmp;
 				*i += ft_strlen(value) - 1;

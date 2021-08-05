@@ -97,13 +97,13 @@ void	lsh_split_line(t_shell *shell, char *line)
 
 void	shell_lvl(t_shell *shell)
 {
-	char	*value;
+	t_env	*env;
 	char	*tmp;
 
-	value = ft_getenv(shell, "SHLVL");
-	if (value && ft_strevery(value, ft_isalnum))
+	env = ft_getenv(shell, "SHLVL", true);
+	if (env && ft_strevery(env->val, ft_isalnum))
 	{
-		tmp = ft_itoa(ft_atoi(value) + 1);
+		tmp = ft_itoa(ft_atoi(env->val) + 1);
 		ft_export_internal(shell, "SHLVL", tmp);
 		ft_strdel(&tmp);
 	}

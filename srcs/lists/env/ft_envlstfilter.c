@@ -52,3 +52,26 @@ t_envp	*ft_envlstfilter(t_envp *lst, t_bool (*f)(t_env *),
 	prev_envlst(result);
 	return (result);
 }
+
+t_envp	*ft_envlstfilterarg(t_envp *lst, t_bool (*f)(t_env *, char *arg),
+	void (*del)(t_env *), char *arg)
+{
+	t_envp	*result;
+	t_envp	*next;
+
+	result = NULL;
+	while (lst)
+	{
+		next = lst->next;
+		if (f(lst->content, arg))
+		{
+			lst->next = NULL;
+			ft_envlstpush(&result, lst);
+		}
+		else
+			ft_envlstdelone(lst, del);
+		lst = next;
+	}
+	prev_envlst(result);
+	return (result);
+}

@@ -1,16 +1,16 @@
 #include "../../../includes/minishell.h"
 
-void	ft_envlstadd_back(t_envp **alst, t_envp *new)
+void	ft_envlstadd_back(t_envp **envlst, t_envp *new)
 {
 	t_envp	*lst;
 
-	if (alst && new)
+	if (envlst && new)
 	{
-		if (!(*alst))
-			*alst = new;
+		if (!(*envlst))
+			*envlst = new;
 		else
 		{
-			lst = *alst;
+			lst = *envlst;
 			while (lst->next)
 				lst = lst->next;
 			lst->next = new;
