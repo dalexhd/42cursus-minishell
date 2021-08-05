@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "../../../includes/minishell.h"
 
 t_env	*ft_parse_env(char *key, char *val)
 {

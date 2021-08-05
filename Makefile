@@ -44,7 +44,7 @@ VER					=	$(shell lsb_release -sr)
 
 SRCS				=	init.c				parser.c		sub_parser.c		initshell.c		fix_cmd.c
 
-BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/env.c	builtins/cd.c		builtins/unset.c	\
+BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/cd.c		builtins/unset.c	\
 						builtins/exit.c		builtins/export/export.c		builtins/export/utils.c					\
 						builtins/env/env.c	builtins/env/utils.c			builtins/export/utils2.c
 
@@ -72,7 +72,7 @@ ARGS_LISTS			=	lists/args/ft_alstadd_back.c		lists/args/ft_alstadd_front.c		list
 						lists/args/ft_alstfilter.c
 
 ENV_LISTS			=	lists/env/ft_envlstadd_back.c		lists/env/ft_envlstadd_front.c		lists/env/ft_envlstclear.c	\
-						lists/env/ft_envlstdelone.c		lists/env/ft_envlstfirst.c			lists/env/ft_envlstlast.c	\
+						lists/env/ft_envlstdelone.c			lists/env/ft_envlstfirst.c			lists/env/ft_envlstlast.c	\
 						lists/env/ft_envlstnew.c			lists/env/ft_envlstsize.c			lists/env/ft_envlstmap.c		\
 						lists/env/ft_envlstfilter.c
 

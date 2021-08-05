@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "../../../includes/minishell.h"
 
 static	void	ft_export_sec(t_shell *shell, char *env, char *value,
 	t_aslist	*tokens_tmp)

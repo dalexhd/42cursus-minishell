@@ -112,6 +112,7 @@ t_bool		has_redirect(t_rlist *redirect);
 t_bool		arg_has_red(t_alist *arg);
 t_bool		arg_is_readable(t_args *content);
 void		filter_readable_args(t_slist *parsed);
+void		ft_envlstfilter_exec(t_shell *shell);
 int			get_quote_type(char *cmd);
 t_aslist	*ft_safesplitlist(char *s, char c, char *st);
 t_aslist	*ft_safesplitlist_new(char *s, char c, char *set);

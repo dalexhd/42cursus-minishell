@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 void	echoes(char ***args, t_bool *skip_new_line, size_t *i)
 {

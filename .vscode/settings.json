@@ -80,7 +80,8 @@
 		"limits": "c",
 		"stdexcept": "c",
 		"*.tcc": "c",
-		"cstdbool": "c"
+		"cstdbool": "c",
+		"limits.h": "c"
 	},
 	"42header.email": "aborboll@student.42.fr",
 	"42header.username": "aborboll",

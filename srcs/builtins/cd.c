@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 static char	*ft_cd_checker(t_shell *shell, char **dir, char **args)
 {

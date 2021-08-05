@@ -72,8 +72,7 @@ void	ft_exec_bin(t_shell *shell, t_alist *args)
 		else if (ft_strncmp(a->bin_path, "./", 2) == 0
 			|| ft_strncmp(a->bin_path, "/", 1) == 0)
 			ft_error(ERR_N_FILE_DIR, 127, a->cmd);
-		else
-			ft_error(ERR_C, 127, a->cmd);
+		ft_error(ERR_C, 127, a->cmd);
 	}
 }
 
