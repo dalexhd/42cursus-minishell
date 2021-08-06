@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/24 18:29:39 by aborboll          #+#    #+#             */
-/*   Updated: 2021/08/05 12:21:20 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/08/06 10:00:37 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,8 @@ t_envp			*ft_envlstmap(t_envp *lst, void *(*f)(t_env *),
 					void (*del)(t_env *));
 t_envp			*ft_envlstfirst(t_envp *lst);
 t_envp			*ft_envlstfilter(t_envp *lst, t_bool (*f)(t_env *));
-t_envp			*ft_envlstfilterarg(t_envp *lst, t_bool (*f)(t_env *, char *arg),
+t_envp			*ft_envlstfilterarg(t_envp *lst,
+					t_bool (*f)(t_env *, char *arg),
 					void (*del)(t_env *), char *arg);
 /*
 ** Single Arguments lists
