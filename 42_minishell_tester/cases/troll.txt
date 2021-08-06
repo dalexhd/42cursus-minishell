@@ -15,3 +15,4 @@ echo something > file ; ls -la >> file ; cat file ; pwd
 echo "text" > file >> file1 ; cat file file1 ; rm -f file file1
 ls-la>test ; cat test
 export Lorem=test ipsum=Lorem dolor=ipsum amet=dolor consectetur=amet adipisicing=consectetur elit=adipisicing Quisquam=elit eius=Quisquam incidunt=eius repellat=incidunt natus=repellat porro=natus autem=porro officiis=autem ipsum=officiis velit=ipsum adipisci=velit
+echo hola >> test ; cat test

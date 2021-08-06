@@ -1,25 +1,20 @@
 #include "../includes/minishell.h"
 
-static void	fill_redirect(t_rstatus *status, t_alist *args)
+static int	fill_redirect(t_parsed *parsed, t_rstatus *status, t_alist *args)
 {
 	if (args->content->type == R_IN)
-	{
 		status->fd = open(status->file, O_RDONLY, 0600);
-		if (status->fd < 0)
-			ft_error(ERR_RED, false, status->file, strerror(errno));
-	}
 	else if (args->content->type == R_OUT)
-	{
 		status->fd = open(status->file, O_TRUNC | O_WRONLY | O_CREAT, 0666);
-		if (status->fd < 0)
-			ft_error(ERR_RED, false, status->file, strerror(errno));
-	}
 	else if (args->content->type == R_AOUT)
-	{
 		status->fd = open(status->file, O_WRONLY | O_CREAT | O_APPEND, 0600);
-		if (status->fd < 0)
-			ft_error(ERR_RED, false, status->file, strerror(errno));
-	}
+	if (status->fd < 0)
+		ft_error(ERR_RED, false, status->file, strerror(errno));
+	status->status = status->fd != -1;
+	parsed->valid = status->status;
+	if (!status->status)
+		ft_strdel(&status->file);
+	return (parsed->valid == 0);
 }
 
 static int	split(t_redirect *redirect, t_alist *args,
@@ -34,10 +29,9 @@ static int	split(t_redirect *redirect, t_alist *args,
 		return (1);
 	}
 	status->file = ft_strdup(args->next->content->file);
-	fill_redirect(status, args);
 	args->content->readable = false;
 	args->next->content->readable = false;
-	return (0);
+	return (fill_redirect(parsed, status, args));
 }
 
 static	void	args_loop(t_shell *shell, t_alist *args, t_parsed *parsed)

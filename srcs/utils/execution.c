@@ -18,6 +18,9 @@ static	void	redirect_dup_close(t_rlist *redirect)
 		else if (redirect->content->out.status
 			&& redirect->content->out.fd != 1)
 			dup_close(redirect->content->out.fd, 1);
+		else if (redirect->content->aout.status
+			&& redirect->content->aout.fd != 1)
+			dup_close(redirect->content->aout.fd, 1);
 	}
 	else
 		return ;
