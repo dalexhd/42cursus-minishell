@@ -63,7 +63,10 @@ static	t_bool	valid_export_init(t_shell *shell, char *s,
 		*val = ft_strdup("");
 	if (ft_isdigit(s[0]) || !(ft_isalnum(s[0]) || s[0] == '_' || s[0] == '\\'))
 	{
-		sh_error(shell, ERR_EX, 1, s, *val);
+		if (*val[0] == DEL)
+			sh_error(shell, ERR_EXI, 1, s);
+		else
+			sh_error(shell, ERR_EX, 1, s, *val);
 		return (false);
 	}
 	status = true;
