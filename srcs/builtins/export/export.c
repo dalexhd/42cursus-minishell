@@ -41,31 +41,28 @@ static	t_aslist	*ret_tokens(char *arg)
 
 void	ft_export(t_shell *shell, char **args)
 {
-	t_aslist	*tokens;
-	t_aslist	*tokens_tmp;
-	char		*value;
+	t_aslist	*t;
+	char		*v;
 	t_bool		has_equal;
 	size_t		i;
 
-	if (ft_export_declare(shell, args, &value, &i))
+	if (ft_export_declare(shell, args, &v, &i))
 		return ;
 	while (args[++i])
 	{
 		has_equal = ft_strchr(args[i], '=') != NULL;
-		tokens = ret_tokens(args[i]);
-		if (!tokens)
+		t = ret_tokens(args[i]);
+		if (!t)
 		{
 			sh_error(shell, ERR_EXI, 1, "=");
-			return (ft_aslstclear(&tokens, free));
+			return (ft_aslstclear(&t, free));
 		}
-		tokens_tmp = tokens;
-		if (!tokens->next || !tokens->next->content->arg)
-			value = "\0";
+		if (!t->next || !t->next->content->arg)
+			v = "\0";
 		else
-			value = tokens->next->content->arg;
-		if (has_equal && value[0] == '\0')
-			value = "\177\0";
-		ft_export_sec(shell, ft_strdup(tokens->content->arg),
-			ft_strdup(value), tokens_tmp);
+			v = t->next->content->arg;
+		if (has_equal && v[0] == '\0')
+			v = "\177\0";
+		ft_export_sec(shell, ft_strdup(t->content->arg), ft_strdup(v), t);
 	}
 }
