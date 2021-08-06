@@ -42,7 +42,7 @@ void	ft_export_internal(t_shell *shell, char *env, char *value)
 			ft_strdel(&tmp->content->val);
 			tmp->content->key = ft_strdup(env);
 			tmp->content->val = ft_strdup(value);
-			tmp->content->has_val = value[0] == '\0';
+			tmp->content->has_val = value[0] != '\0';
 			return ;
 		}
 		tmp = tmp->next;
