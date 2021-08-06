@@ -19,7 +19,7 @@ static char	*ft_cd_checker(t_shell *shell, char **dir, char **args)
 	return (pwd);
 }
 
-void	ft_cd_internal(t_shell *shell, char *dir)
+void	ft_cd_internal(t_shell *shell, char *dir, t_bool set_home)
 {
 	char	*pwd;
 
@@ -39,6 +39,8 @@ void	ft_cd_internal(t_shell *shell, char *dir)
 	pwd = ft_pwd();
 	ft_export_internal(shell, "PWD", pwd);
 	ft_strdel(&pwd);
+	if (set_home)
+		shell->home_dir = ft_pwd();
 }
 
 void	ft_cd(t_shell *shell, char **args)

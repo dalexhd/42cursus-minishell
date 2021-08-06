@@ -76,7 +76,7 @@ int			ft_echo(t_shell *shell, char **args);
 char		*ft_pwd(void);
 void		ft_env(t_shell *shell, char **args);
 void		ft_cd(t_shell *shell, char **args);
-void		ft_cd_internal(t_shell *shell, char *dir);
+void		ft_cd_internal(t_shell *shell, char *dir, t_bool set_home);
 void		ft_export_internal(t_shell *shell, char *env, char *value);
 void		ft_export(t_shell *shell, char **args);
 void		ft_unset(t_shell *shell, char **args);

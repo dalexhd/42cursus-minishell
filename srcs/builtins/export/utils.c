@@ -37,10 +37,7 @@ void	ft_export_internal(t_shell *shell, char *env, char *value)
 		if (ft_strcmp(tmp->content->key, env) == 0)
 		{
 			if (skip)
-			{
-				ft_cd_internal(shell, value);
-				shell->home_dir = ft_pwd();
-			}
+				ft_cd_internal(shell, value, true);
 			ft_strdel(&tmp->content->key);
 			ft_strdel(&tmp->content->val);
 			tmp->content->key = ft_strdup(env);
