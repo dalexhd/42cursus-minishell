@@ -1,6 +1,5 @@
 #-fsanitize=address
 NAME				=	minishell.a
-BONUS				=	minishell_bonus
 OUTPUT				=	minishell
 PID					=	.pid
 
@@ -23,7 +22,6 @@ UTILS_DIR			=	utils/
 SRC_DIR				=	srcs/
 PARSING_DIR			=	parsing/
 VALIDATION_DIR		=	validation/
-BONUS_DIR			=	bonus/
 LIBFT_DIR			=	libft/
 ifeq ($(shell whoami), runner)
 	COVID_NORM		=	ruby ~/.norminette/norminette.rb
@@ -42,17 +40,19 @@ VER					=	$(shell lsb_release -sr)
 
 # Mandatory part
 
-SRCS				=	init.c				parser.c		sub_parser.c		initshell.c		fix_cmd.c
+SRCS				=	init.c					parser.c					sub_parser.c				initshell.c			\
+						fix_cmd.c
 
-BUILTINS			=	builtins/echo.c		builtins/pwd.c	builtins/cd.c		builtins/unset.c	\
-						builtins/exit.c		builtins/export/export.c		builtins/export/utils.c					\
-						builtins/env/env.c	builtins/env/utils.c			builtins/export/utils2.c
+BUILTINS			=	builtins/echo.c			builtins/pwd.c				builtins/cd.c				builtins/unset.c	\
+						builtins/exit.c			builtins/export/export.c	builtins/export/utils.c		builtins/env/env.c	\
+						builtins/env/utils.c	builtins/export/utils2.c
 
-UTILS				=	utils/builtins.c	utils/file.c	utils/signals.c	utils/execution.c		utils/termcaps.c \
-						utils/parsing.c		utils/parsing/cmd.c			utils/parsing/tilde.c			\
-						utils/parsing/dollar.c	utils/validation/quotes.c			utils/validation/redirect.c	\
-						utils/control.c	utils/termtext.c	utils/termhist.c	utils/redirection.c		utils/args.c \
-						utils/validation/pipe.c		utils/error.c	utils/split.c	utils/loureed.c		utils/clear_strings.c
+UTILS				=	utils/builtins.c		utils/file.c				utils/signals.c				utils/execution.c		\
+						utils/termcaps.c 		utils/parsing.c				utils/parsing/cmd.c			utils/parsing/tilde.c	\
+						utils/parsing/dollar.c	utils/validation/quotes.c	utils/validation/redirect.c	utils/control.c	\
+						utils/termtext.c		utils/termhist.c			utils/redirection.c			utils/args.c \
+						utils/validation/pipe.c	utils/error.c				utils/split.c				utils/loureed.c	\
+						utils/clear_strings.c
 
 SHELL_LISTS			=	lists/shell/ft_slstadd_back.c		lists/shell/ft_slstadd_front.c	lists/shell/ft_slstclear.c	\
 						lists/shell/ft_slstdelone.c			lists/shell/ft_slstiter.c		lists/shell/ft_slstlast.c	\
@@ -86,18 +86,12 @@ SOURCES				=	$(SRCS) $(BUILTINS) $(UTILS) $(LISTS)
 
 # Bonus part
 
-
-B_SRCS				=
-
-BONUS_SOURCES		=	$(B_SRCS)
-
 LEAKS_FLAGS			=	--tool=memcheck --leak-check=full --leak-resolution=high --show-leak-kinds=all --track-origins=yes
 
 
 LEAKS_EXE			=	./tools/memory_leak.sh ${OUTPUT} ${LEAKS_FLAGS}
 NORME				=	$(addsuffix *.h,$(HEADER_DIR)) \
 						$(addprefix $(SRC_DIR),$(SOURCES)) \
-						$(addprefix $(BONUS_DIR),$(BONUS_SOURCES)) \
 						$(addsuffix **/*.h,$(LIBFT_DIR)) \
 						$(addsuffix **/*.c,$(LIBFT_DIR)) \
 						$(addsuffix **/**/*.c,$(LIBFT_DIR))
@@ -106,9 +100,6 @@ NORME				=	$(addsuffix *.h,$(HEADER_DIR)) \
 # Mandatory Objects
 OFILE				=	$(SOURCES:%.c=%.o)
 OBJS				=	$(addprefix $(OBJ_DIR), $(OFILE))
-# Bonus Objects
-BONUS_OFILE			=	$(BONUS_SOURCES:%.c=%.o)
-BONUS_OBJS			=	$(addprefix $(OBJ_DIR), $(BONUS_OFILE))
 
 # Functions
 disp_indent			=	for I in `seq 1 $(MAKELEVEL)`; do \
@@ -155,14 +146,10 @@ all:
 $(OBJ_DIR):
 			@make -C $(LIBFT_DIR)
 			@echo ${CUT}[${Y}$(OUTPUT)]${X} ${B}Creating: ${R}$(OBJ_DIR)${X}
-			@mkdir -p $(OBJ_DIR)
-			@mkdir -p $(OBJ_DIR)/$(BUILTINS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(BUILTINS_DIR)/export
 			@mkdir -p $(OBJ_DIR)/$(BUILTINS_DIR)/env
-			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)/$(PARSING_DIR)
 			@mkdir -p $(OBJ_DIR)/$(UTILS_DIR)/$(VALIDATION_DIR)
-			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(SHELL_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(REDIRECTS_LISTS_DIR)
 			@mkdir -p $(OBJ_DIR)/$(LISTS_DIR)/$(HISTORY_LISTS_DIR)
@@ -189,23 +176,6 @@ $(OFILE):
 			@printf ${R}'$(@:%.o=%.c) '${X}
 			$(CC) -o $(OBJ_DIR)$@ -I$(HEADER_DIR) -c $(SRC_DIR)$(@:%.o=%.c) $(FLAGS)
 
-# Bonus objects
-$(BONUS): $(OBJ_DIR) $(BONUS_OBJS) $(CRAFT)
-			@echo ${B}[-----------------------------------------]${X}
-			@echo ${B}[------------ ${BOLD}OK${X}${B} - ${BOLD}$(NAME)${X}${B} -----------]${X}
-			@echo ${B}[----- 🦑 Iä, iä, Cthulhu fhtagn! 🦑 -----]${X}
-			@echo ${B}[-----------------------------------------]${X}
-
-$(BONUS_OBJS):
-			@printf '${CUT}[${Y}$(OUTPUT)]${X} ${B}Compiling: ${X}'
-			@make $(BONUS_OFILE)
-			@echo ${B}Crafting: ${R}$(OUTPUT)${X}
-			$(CC) main.c $(BONUS_OBJS) $(LIBFT_DIR)libft.a -I $(HEADER_DIR) $(FLAGS) -o $(OUTPUT)
-
-$(BONUS_OFILE):
-			@printf ${R}'$(@:%.o=%.c) '${X}
-			$(CC) -o $(OBJ_DIR)$@ -I$(HEADER_DIR) -c $(BONUS_DIR)$(@:%.o=%.c) $(FLAGS)
-
 ##@ Cleaning
 clean:		## Clean all objects.
 			$(RM) $(OBJ_DIR)
@@ -228,20 +198,15 @@ normi:		## Check norminette.
 			fi
 
 ##@ Compilation
-bonus:		## Make bonus
-			@make clean
-			@make $(BONUS)
 
 re:			## Call fclean => all
 			@make clean
 			@make all
 
 ##@ Testing
-testback:		## Make minishell test
-			cd ./tools/tester && ./test_map_valid_function.sh -f
 
 test:		## Make minishell test
-			cd ./unittest && ./unit_test.sh && cd ..
+			make re && cd 42_minishell_tester && ./grademe.sh -c
 
 leak:		## Run memory leak for valid cub file.
 			@if [ $(shell ./tools/memory_leak.sh $(OUTPUT) -c $$FOO $(LEAKS_FLAGS) && cat valgrind_out | grep "definitely lost:" | cut -d : -f 2 | cut -d b  -f 1 | tr -d " " | tr -d ",") ]; then\
@@ -277,4 +242,4 @@ help:		## View all available commands.
 			@awk 'BEGIN {FS = ":.*##"; printf ""} /^[a-zA-Z_-]+:.*?##/ { printf "  ${CYAN}%-25s${X} %s\n", $$1, $$2 } /^##@/ { printf "\n${UND}${BOLD}%s${X}\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 			@echo ${CYAN}--------------------------------------------------------------------------
 
-.PHONY:		all clean flclean re bonus test
+.PHONY:		all clean flclean re test

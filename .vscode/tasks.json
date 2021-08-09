@@ -29,14 +29,6 @@
         {
             "type": "shell",
             "label": "test",
-            "command": "cd ${workspaceRoot} && make re && cd tester && rm minishell || true && bash test.sh --fast",
-            "options": {
-                "cwd": "${workspaceRoot}/tester"
-            }
-        },
-        {
-            "type": "shell",
-            "label": "new test",
             "command": "cd ${workspaceRoot} && make re && cd 42_minishell_tester && ./grademe.sh -c",
             "options": {
                 "cwd": "${workspaceRoot}/42_minishell_tester"
