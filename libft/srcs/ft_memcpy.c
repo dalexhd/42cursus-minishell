@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/07 16:35:18 by aborboll          #+#    #+#             */
-/*   Updated: 2020/08/28 10:36:23 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/08/09 11:24:55 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	t_uchar	*s;
 	t_uchar	*d;
 
+	if (dst == NULL && src == NULL)
+		return (0);
 	d = (t_uchar *)dst;
 	s = (t_uchar *)src;
 	i = 0;
-	if (*d == '\0' && *s == '\0')
-		return (0);
 	if (!n || dst == src)
 		return (dst);
 	while (n--)

@@ -6,7 +6,7 @@
 /*   By: aborboll <aborboll@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/01 14:28:38 by aborboll          #+#    #+#             */
-/*   Updated: 2020/08/28 17:08:59 by aborboll         ###   ########.fr       */
+/*   Updated: 2021/08/09 11:24:36 by aborboll         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_strdel(char **str)
 {
-	if (str)
+	if (*str)
 	{
 		free(*str);
 		*str = NULL;
